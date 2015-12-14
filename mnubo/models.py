@@ -54,3 +54,20 @@ class Event(object):
         self.x_timestamp = timestamp
         self.timeseries = timeseries
 
+
+class AccessToken(object):
+    """ Model for access token
+
+    Properties:
+        token: (string)
+        expiresIn: (int) in seconds
+        requestedAt: (datetime)
+    """
+
+    def __init__(self, token, expires_in, requested_at=datetime.datetime.now()):
+        self.token = token
+        self.expires_in = datetime.timedelta(seconds=expires_in)
+        self.requested_at = requested_at
+
+    def is_valid(self):
+        return self.requested_at + self.expires_in > datetime.datetime.now()

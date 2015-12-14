@@ -3,6 +3,7 @@ import datetime
 from mnubo.models import Owner
 from mnubo.models import Event
 from mnubo.models import Object
+from mnubo.models import AccessToken
 
 
 def test_owner_to_dict():
@@ -76,3 +77,21 @@ def test_event_default_values():
     assert event.x_event_type is None
     assert event.x_timestamp is not None
     assert event.timeseries is None
+
+
+def test_access_token_default_value():
+    token = AccessToken('TOKEN', 123)
+
+    assert token.requested_at is not None
+
+
+def test_access_token_is_valid():
+    token = AccessToken('TOKEN', 123, datetime.datetime.now())
+
+    assert token.is_valid() is True
+
+
+def test_access_token_is_not_valid():
+    token = AccessToken('TOKEN', -10, datetime.datetime.now())
+
+    assert token.is_valid() is False

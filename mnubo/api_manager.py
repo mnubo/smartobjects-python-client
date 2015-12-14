@@ -1,6 +1,10 @@
 import requests
 import json
 import base64
+import datetime
+
+from mnubo.models import AccessToken
+
 
 class APIManager(object):
 
@@ -8,18 +12,23 @@ class APIManager(object):
         self.__client_id = client_id
         self.__client_secret = client_secret
         self.__hostname = hostname
-        self.client_access_token = self.fetch_client_access_token()
+        self.access_token = self.fetch_access_token()
 
-    def fetch_client_access_token(self):
-    	r = requests.post(self.get_auth_url(), headers=self.get_token_authorization_header())
-    	jsonResponse = json.loads(r.content)
-    	return jsonResponse['access_token']
+    def fetch_access_token(self):
+        requested_at = datetime.datetime.now()
+
+        r = requests.post(self.get_auth_url(), headers=self.get_token_authorization_header())
+        json_response = json.loads(r.content)
+
+        token = AccessToken(json_response['access_token'], json_response['expires_in'], requested_at)
+
+        return token
 
     def get_token_authorization_header(self):
         return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic " + base64.b64encode(self.__client_id + ":" + self.__client_secret)}
 
     def get_authorization_header(self):
-        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.client_access_token}
+        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token.token}
 
     def get_api_url(self):
         return self.__hostname + '/api/v3/'
