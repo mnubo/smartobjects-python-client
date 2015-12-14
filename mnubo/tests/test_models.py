@@ -1,13 +1,13 @@
 import datetime
 
-from mnubo.models import MNUOwner
-from mnubo.models import MNUEvent
-from mnubo.models import MNUSmartObject
+from mnubo.models import Owner
+from mnubo.models import Event
+from mnubo.models import Object
 
 
 def test_owner_to_dict():
     current_time = datetime.datetime.now().isoformat()
-    owner = MNUOwner('USERNAME', 'PASSWORD', current_time, 'EVENT_ID')
+    owner = Owner('USERNAME', 'PASSWORD', current_time, 'EVENT_ID')
     owner.gender = 'male'
     owner.age = 30
     owner.height = 1.80
@@ -24,7 +24,7 @@ def test_owner_to_dict():
 
 
 def test_owner_default_values():
-    owner = MNUOwner()
+    owner = Owner()
 
     assert owner.username is None
     assert owner.x_password is None
@@ -34,7 +34,7 @@ def test_owner_default_values():
 
 def test_smart_object_to_dict():
     current_time = datetime.datetime.now().isoformat()
-    smart_object = MNUSmartObject('DEVICE_ID', 'OBJECT_TYPE', current_time, None, 'EVENT_ID')
+    smart_object = Object('DEVICE_ID', 'OBJECT_TYPE', current_time, None, 'EVENT_ID')
 
     smart_object_dict = smart_object.__dict__
 
@@ -46,7 +46,7 @@ def test_smart_object_to_dict():
 
 
 def test_smart_object_default_values():
-    smart_object = MNUSmartObject()
+    smart_object = Object()
 
     assert smart_object.x_device_id is None
     assert smart_object.x_object_type is None
@@ -57,7 +57,7 @@ def test_smart_object_default_values():
 
 def test_event_to_dict():
     current_time = datetime.datetime.now().isoformat()
-    event = MNUEvent('EVENT_ID', None, 'EVENT_TYPE', current_time, None)
+    event = Event('EVENT_ID', None, 'EVENT_TYPE', current_time, None)
 
     event_dict = event.__dict__
 
@@ -69,7 +69,7 @@ def test_event_to_dict():
 
 
 def test_event_default_values():
-    event = MNUEvent()
+    event = Event()
 
     assert event.event_id is None
     assert event.x_object is None

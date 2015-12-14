@@ -2,7 +2,7 @@ import requests
 import json
 import base64
 
-class MNUAPIManager(object):
+class APIManager(object):
 
     def __init__(self, client_id, client_secret, hostname):
         self.__client_id = client_id

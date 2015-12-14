@@ -1,7 +1,7 @@
 import datetime
 
 
-class MNUOwner(object):
+class Owner(object):
     """A mnubo owner object model with the following properties:
 
     Properties:
@@ -17,14 +17,14 @@ class MNUOwner(object):
         self.event_id = event_id
 
 
-class MNUSmartObject(object):
+class Object(object):
     """A mnubo smart object model with the following properties:
 
     Properties:
         x_device_id: (string)
         x_object_type: (string)
         x_registration_date: (datetime)
-        x_owner: (MNUOwner)
+        x_owner: (Owner)
         event_id: (string)
     """
 
@@ -36,12 +36,12 @@ class MNUSmartObject(object):
         self.event_id = event_id
 
 
-class MNUEvent(object):
+class Event(object):
     """A mnubo event model with the following properties:
 
     Properties:
         event_id: (string)
-        x_object: (MNUSmartObject)
+        x_object: (Object)
         x_event_type: (string)
         x_timestamp: (datetime)
 

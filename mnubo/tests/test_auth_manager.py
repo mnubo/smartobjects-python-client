@@ -1,4 +1,4 @@
-from mnubo.api_manager import MNUAPIManager
+from mnubo.api_manager import APIManager
 import requests
 import json
 from requests import Response
@@ -10,7 +10,7 @@ def test_auth_maneger_init():
     response = Response()
     response._content = '{"access_token":"CLIENT_ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
     requests.post = MagicMock(return_value=response)
-    auth = MNUAPIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
+    auth = APIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
 
     requests.post.assert_called_with('HOSTNAME/oauth/token?grant_type=client_credentials', headers={'content-type': 'application/x-www-form-urlencoded', 'Authorization': 'Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ='})
 
@@ -33,7 +33,7 @@ def test_create_operations():
     response._content = '{"access_token":"CLIENT_ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
     requests.post = MagicMock(return_value=response)
 
-    auth = MNUAPIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
+    auth = APIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
 
     response = Response()
     response._content = '{"message": "SUCCESS"}'
@@ -49,7 +49,7 @@ def test_put_operation():
     response._content = '{"access_token":"CLIENT_ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
     requests.post = MagicMock(return_value=response)
 
-    auth = MNUAPIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
+    auth = APIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
 
     response = Response()
     response._content = '{"message": "SUCCESS"}'
@@ -62,7 +62,7 @@ def test_delete_operation():
     response._content = '{"access_token":"CLIENT_ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
     requests.post = MagicMock(return_value=response)
 
-    auth = MNUAPIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
+    auth = APIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
 
     response = Response()
     response._content = '{"message": "SUCCESS"}'

@@ -1,8 +1,6 @@
-import json
+# Owner
 
-# MNUOwner
-
-class MNUOwnerServices(object):
+class OwnerServices(object):
 
     def __init__(self, api_manager):
         self.api_manager = api_manager
@@ -20,8 +18,8 @@ class MNUOwnerServices(object):
         return self.api_manager.delete('owners/' + username)
 
 
-# MNUSmartObject
-class MNUSmartObjectServices(object):
+# Object
+class ObjectServices(object):
 
     def __init__(self, api_manager):
         self.api_manager = api_manager
@@ -36,8 +34,8 @@ class MNUSmartObjectServices(object):
         return self.api_manager.delete('objects/'+device_id)
 
 
-# MNUEvent
-class MNUEventServices(object):
+# Event
+class EventServices(object):
 
     def __init__(self, api_manager):
         self.api_manager = api_manager
