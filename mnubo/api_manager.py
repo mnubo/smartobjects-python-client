@@ -6,6 +6,14 @@ import datetime
 from mnubo.models import AccessToken
 
 
+def authenticate(func):
+    def authenticate_and_call(*args):
+        if not args[0].access_token.is_valid():
+            args[0].access_token = args[0].fetch_access_token()
+        return func(*args)
+    return authenticate_and_call
+
+
 class APIManager(object):
 
     def __init__(self, client_id, client_secret, hostname):
@@ -58,6 +66,7 @@ class APIManager(object):
 
         return self.__hostname + '/oauth/token?grant_type=client_credentials'
 
+    @authenticate
     def post(self, route, body={}):
         """ Build and send a post request authenticated
 
@@ -70,6 +79,7 @@ class APIManager(object):
         r = requests.post(url, json=body, headers=headers)
         return json.loads(r.content)
 
+    @authenticate
     def put(self, route, body={}):
         """ Build and send a put request authenticated
 
@@ -82,6 +92,7 @@ class APIManager(object):
         r = requests.put(url, json=body, headers=headers)
         return json.loads(r.content)
 
+    @authenticate
     def delete(self, route):
         """ Build and send a delete request authenticated
 

@@ -10,8 +10,8 @@ class MnuboClient(object):
     """
 
     def __init__(self, client_id, client_secret, hostname):
-        self.__auth_manager = APIManager(client_id, client_secret, hostname)
-        self.owner_services = OwnerServices(self.__auth_manager)
-        self.event_services = EventServices(self.__auth_manager)
-        self.smart_object_services = ObjectServices(self.__auth_manager)
+        self.__api_manager = APIManager(client_id, client_secret, hostname)
+        self.owner_services = OwnerServices(self.__api_manager)
+        self.event_services = EventServices(self.__api_manager)
+        self.smart_object_services = ObjectServices(self.__api_manager)
 

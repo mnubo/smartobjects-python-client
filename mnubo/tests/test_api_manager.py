@@ -6,7 +6,7 @@ from requests import Response
 from mock import MagicMock
 
 
-def test_auth_manager_init():
+def test_api_manager_init():
 
     response = Response()
     response._content = '{"access_token":"ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
@@ -72,3 +72,21 @@ def test_delete_operation():
     requests.delete = MagicMock(return_value=response)
     delete = auth.delete('ROUTE')
     assert delete == {"message": "SUCCESS"}
+
+
+def test_authenticate_decorator():
+    response = Response()
+    response._content = '{"access_token":"ACCESS_TOKEN","token_type":"Bearer","expires_in":-5}'
+    requests.post = MagicMock(return_value=response)
+
+    auth = APIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
+
+    assert auth.access_token.token == 'ACCESS_TOKEN'
+
+    response._content = '{"access_token":"REFRESHED_ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
+    auth.post('/')
+
+    assert auth.access_token.token == 'REFRESHED_ACCESS_TOKEN'
+
+
+
