@@ -4,7 +4,10 @@ from services import OwnerServices
 from services import ObjectServices
 from api_manager import APIManager
 
+
 class MnuboClient(object):
+    """ Initializes the mnubo client which contains the API manager as well as the available resource services
+    """
 
     def __init__(self, client_id, client_secret, hostname):
         self.__auth_manager = APIManager(client_id, client_secret, hostname)

@@ -2,7 +2,7 @@ import datetime
 
 
 class Owner(object):
-    """A mnubo owner object model with the following properties:
+    """ A mnubo owner object model with the following properties:
 
     Properties:
         username: (string)
@@ -37,7 +37,7 @@ class Object(object):
 
 
 class Event(object):
-    """A mnubo event model with the following properties:
+    """ A mnubo event model with the following properties:
 
     Properties:
         event_id: (string)
@@ -56,7 +56,7 @@ class Event(object):
 
 
 class AccessToken(object):
-    """ Model for access token
+    """ An access token model with the following properties
 
     Properties:
         token: (string)
@@ -70,4 +70,9 @@ class AccessToken(object):
         self.requested_at = requested_at
 
     def is_valid(self):
+        """ Validates if the token is still valid
+
+        :return: True of the token is still valid, False if it is expired
+        """
+
         return self.requested_at + self.expires_in > datetime.datetime.now()

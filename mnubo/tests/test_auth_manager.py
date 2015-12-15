@@ -6,7 +6,7 @@ from requests import Response
 from mock import MagicMock
 
 
-def test_auth_maneger_init():
+def test_auth_manager_init():
 
     response = Response()
     response._content = '{"access_token":"ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
@@ -58,6 +58,7 @@ def test_put_operation():
     requests.put = MagicMock(return_value=response)
     put = auth.put('ROUTE', None)
     assert put == {"message": "SUCCESS"}
+
 
 def test_delete_operation():
     response = Response()
