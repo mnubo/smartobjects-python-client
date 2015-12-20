@@ -8,6 +8,7 @@ class Owner(object):
         username: (string)
         password: (string)
         registration_date: (datetime)
+        event_id: (string)
     """
 
     def __init__(self, username=None, password=None, registration_date=datetime.datetime.now().isoformat(), event_id=None):
