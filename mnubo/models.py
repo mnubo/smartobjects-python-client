@@ -8,14 +8,12 @@ class Owner(object):
         username: (string)
         password: (string)
         registration_date: (datetime)
-        event_id: (string)
     """
 
-    def __init__(self, username=None, password=None, registration_date=datetime.datetime.now().isoformat(), event_id=None):
+    def __init__(self, username=None, password=None, registration_date=datetime.datetime.now().isoformat()):
         self.username = username
         self.x_password = password
         self.x_registration_date = registration_date
-        self.event_id = event_id
 
 
 class Object(object):
@@ -26,15 +24,13 @@ class Object(object):
         x_object_type: (string)
         x_registration_date: (datetime)
         x_owner: (Owner)
-        event_id: (string)
     """
 
-    def __init__(self, device_id=None, object_type=None, registration_date=datetime.datetime.now().isoformat(), owner=None, event_id=None):
+    def __init__(self, device_id=None, object_type=None, registration_date=datetime.datetime.now().isoformat(), owner=None):
         self.x_device_id = device_id
         self.x_object_type = object_type
         self.x_registration_date = registration_date
         self.x_owner = owner
-        self.event_id = event_id
 
 
 class Event(object):
@@ -61,8 +57,8 @@ class AccessToken(object):
 
     Properties:
         token: (string)
-        expiresIn: (int) in seconds
-        requestedAt: (datetime)
+        expires_in: (int) in seconds
+        requested_at: (datetime)
     """
 
     def __init__(self, token, expires_in, requested_at=datetime.datetime.now()):

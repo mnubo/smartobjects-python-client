@@ -1,7 +1,6 @@
 from mnubo.services import OwnerServices, ObjectServices, EventServices
 from mnubo.models import Owner, Object, Event
 from mock import Mock
-import uuid
 
 ####################################
 # OwnerServices
@@ -9,15 +8,14 @@ import uuid
 
 
 def test_create_owner():
-    event_id = str(uuid.uuid1())
     api_manager_mock = Mock()
     api_manager_mock.post.return_value = 'SUCCESS'
 
     owner_services = OwnerServices(api_manager_mock)
-    owner = Owner('USERNAME', 'PASSWORD', '2015-01-01T12:00:00', event_id)
+    owner = Owner('USERNAME', 'PASSWORD', '2015-01-01T12:00:00')
 
     create = owner_services.create(owner)
-    api_manager_mock.post.assert_called_with('owners', {'username': 'USERNAME', 'x_registration_date': '2015-01-01T12:00:00', 'x_password': 'PASSWORD', 'event_id': event_id})
+    api_manager_mock.post.assert_called_with('owners', {'username': 'USERNAME', 'x_registration_date': '2015-01-01T12:00:00', 'x_password': 'PASSWORD'})
     assert create == 'SUCCESS'
 
 
@@ -40,7 +38,7 @@ def test_update_owner():
     owner = Owner('USERNAME', 'PASSWORD', '2015-01-01T12:00:00')
     update = owner_services.update(owner)
 
-    api_manager_mock.put.assert_called_with('owners/USERNAME', {'username': 'USERNAME', 'x_registration_date': '2015-01-01T12:00:00', 'x_password': 'PASSWORD', 'event_id': None})
+    api_manager_mock.put.assert_called_with('owners/USERNAME', {'username': 'USERNAME', 'x_registration_date': '2015-01-01T12:00:00', 'x_password': 'PASSWORD'})
     assert update == 'SUCCESS'
 
 
@@ -67,7 +65,7 @@ def test_create_object():
     smart_object = Object('DEVICE_ID', 'OBJECT_TYPE', '2015-01-01T12:00:00')
     create = object_services.create(smart_object)
 
-    api_manager_mock.post.assert_called_with('objects', {'x_device_id': 'DEVICE_ID', 'x_object_type': 'OBJECT_TYPE', 'event_id': None, 'x_owner': None, 'x_registration_date': '2015-01-01T12:00:00'})
+    api_manager_mock.post.assert_called_with('objects', {'x_device_id': 'DEVICE_ID', 'x_object_type': 'OBJECT_TYPE', 'x_owner': None, 'x_registration_date': '2015-01-01T12:00:00'})
     assert create == 'SUCCESS'
 
 
@@ -79,7 +77,7 @@ def test_update_object():
     smart_object = Object('DEVICE_ID', 'OBJECT_TYPE', '2015-01-01T12:00:00')
     update = object_services.update(smart_object)
 
-    api_manager_mock.put.assert_called_with('objects/DEVICE_ID', {'x_device_id': 'DEVICE_ID', 'x_object_type': 'OBJECT_TYPE', 'event_id': None, 'x_owner': None, 'x_registration_date': '2015-01-01T12:00:00'})
+    api_manager_mock.put.assert_called_with('objects/DEVICE_ID', {'x_device_id': 'DEVICE_ID', 'x_object_type': 'OBJECT_TYPE', 'x_owner': None, 'x_registration_date': '2015-01-01T12:00:00'})
     assert update == 'SUCCESS'
 
 

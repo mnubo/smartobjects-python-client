@@ -8,7 +8,7 @@ from mnubo.models import AccessToken
 
 def test_owner_to_dict():
     current_time = datetime.datetime.now().isoformat()
-    owner = Owner('USERNAME', 'PASSWORD', current_time, 'EVENT_ID')
+    owner = Owner('USERNAME', 'PASSWORD', current_time)
     owner.gender = 'male'
     owner.age = 30
     owner.height = 1.80
@@ -18,7 +18,6 @@ def test_owner_to_dict():
     assert owner_dict.get('username') == 'USERNAME'
     assert owner_dict.get('x_password') == 'PASSWORD'
     assert owner_dict.get('x_registration_date') == current_time
-    assert owner_dict.get('event_id') == 'EVENT_ID'
     assert owner_dict.get('gender') == 'male'
     assert owner_dict.get('age') == 30
     assert owner_dict.get('height') == 1.80
@@ -30,12 +29,11 @@ def test_owner_default_values():
     assert owner.username is None
     assert owner.x_password is None
     assert owner.x_registration_date is not None
-    assert owner.event_id is None
 
 
 def test_smart_object_to_dict():
     current_time = datetime.datetime.now().isoformat()
-    smart_object = Object('DEVICE_ID', 'OBJECT_TYPE', current_time, None, 'EVENT_ID')
+    smart_object = Object('DEVICE_ID', 'OBJECT_TYPE', current_time, None)
 
     smart_object_dict = smart_object.__dict__
 
@@ -43,7 +41,6 @@ def test_smart_object_to_dict():
     assert smart_object_dict.get('x_object_type') == 'OBJECT_TYPE'
     assert smart_object_dict.get('x_registration_date') == current_time
     assert smart_object_dict.get('x_owner') is None
-    assert smart_object_dict.get('event_id') == 'EVENT_ID'
 
 
 def test_smart_object_default_values():
@@ -53,12 +50,11 @@ def test_smart_object_default_values():
     assert smart_object.x_object_type is None
     assert smart_object.x_registration_date is not None
     assert smart_object.x_owner is None
-    assert smart_object.event_id is None
 
 
 def test_event_to_dict():
     current_time = datetime.datetime.now().isoformat()
-    event = Event('EVENT_ID', None, 'EVENT_TYPE', current_time, None)
+    event = Event('EVENT_ID', None, 'EVENT_TYPE', current_time)
 
     event_dict = event.__dict__
 
