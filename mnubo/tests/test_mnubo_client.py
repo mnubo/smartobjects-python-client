@@ -3,6 +3,7 @@ import requests
 from requests import Response
 from mock import MagicMock
 
+
 def test_mnubo_client_init():
 
     response = Response()

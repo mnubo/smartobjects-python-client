@@ -21,8 +21,8 @@ def test_api_manager_init():
     api_url = auth.get_api_url()
     auth_url = auth.get_auth_url()
 
-    assert auth.access_token.token == 'ACCESS_TOKEN'
-    assert auth.access_token.expires_in == datetime.timedelta(seconds=3887999)
+    assert auth.access_token['access_token'] == 'ACCESS_TOKEN'
+    assert auth.access_token['expires_in'] == datetime.timedelta(seconds=3887999)
     assert auth_authorization_header == {'content-type': 'application/x-www-form-urlencoded', 'Authorization': 'Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ='}
     assert authorization_header == {'content-type': 'application/json', 'Authorization': 'Bearer ACCESS_TOKEN'}
     assert api_url == 'HOSTNAME/api/v3/'
@@ -81,12 +81,12 @@ def test_authenticate_decorator():
 
     auth = APIManager('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
 
-    assert auth.access_token.token == 'ACCESS_TOKEN'
+    assert auth.access_token['access_token'] == 'ACCESS_TOKEN'
 
     response._content = '{"access_token":"REFRESHED_ACCESS_TOKEN","token_type":"Bearer","expires_in":3887999}'
     auth.post('/')
 
-    assert auth.access_token.token == 'REFRESHED_ACCESS_TOKEN'
+    assert auth.access_token['access_token'] == 'REFRESHED_ACCESS_TOKEN'
 
 
 
