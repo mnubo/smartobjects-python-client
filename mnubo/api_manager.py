@@ -3,12 +3,10 @@ import json
 import base64
 import datetime
 
-from mnubo.models import AccessToken
-
 
 def authenticate(func):
     def authenticate_and_call(*args):
-        if not args[0].access_token.is_valid():
+        if not args[0].is_access_token_valid():
             args[0].access_token = args[0].fetch_access_token()
         return func(*args)
     return authenticate_and_call
@@ -38,9 +36,17 @@ class APIManager(object):
         r = requests.post(self.get_auth_url(), headers=self.get_token_authorization_header())
         json_response = json.loads(r.content)
 
-        token = AccessToken(json_response['access_token'], json_response['expires_in'], requested_at)
+        token = {'access_token': json_response['access_token'], 'expires_in': datetime.timedelta(0, json_response['expires_in']), 'requested_at': requested_at}
 
         return token
+
+    def is_access_token_valid(self):
+        """ Validates if the token is still valid
+
+        :return: True of the token is still valid, False if it is expired
+        """
+
+        return self.access_token['requested_at'] + self.access_token['expires_in'] > datetime.datetime.now()
 
     def get_token_authorization_header(self):
         """ Generates the authorization header used while requesting an access token
@@ -52,7 +58,7 @@ class APIManager(object):
         """ Generates the authorization header used to access resources via mnubo's API
         """
 
-        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token.token}
+        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
 
     def get_api_url(self):
         """ Generates the general API url
