@@ -84,7 +84,6 @@ class APIManager(object):
         headers = self.get_authorization_header()
         return requests.post(url, data=body, headers=headers)
 
-
     @authenticate
     def put(self, route, body={}):
         """ Build and send a put request authenticated
@@ -95,7 +94,7 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.put(url, data=body, headers=headers)
+        return requests.put(url, json=body, headers=headers)
 
     @authenticate
     def delete(self, route):
