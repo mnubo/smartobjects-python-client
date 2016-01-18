@@ -82,8 +82,8 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        r = requests.post(url, json=body, headers=headers)
-        return json.loads(r.content)
+        return requests.post(url, json=body, headers=headers)
+
 
     @authenticate
     def put(self, route, body={}):
@@ -95,8 +95,7 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        r = requests.put(url, json=body, headers=headers)
-        return json.loads(r.content)
+        return requests.put(url, json=body, headers=headers)
 
     @authenticate
     def delete(self, route):
@@ -107,5 +106,4 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        r = requests.delete(url, headers=headers)
-        return json.loads(r.content)
+        return requests.delete(url, headers=headers)

@@ -43,7 +43,7 @@ def test_create_operations():
 
     create = auth.post('ROUTE', None)
 
-    assert create == {"message": "SUCCESS"}
+    assert create.content == '{"message": "SUCCESS"}'
 
 
 def test_put_operation():
@@ -57,7 +57,7 @@ def test_put_operation():
     response._content = '{"message": "SUCCESS"}'
     requests.put = MagicMock(return_value=response)
     put = auth.put('ROUTE', None)
-    assert put == {"message": "SUCCESS"}
+    assert put.content == '{"message": "SUCCESS"}'
 
 
 def test_delete_operation():
@@ -71,7 +71,7 @@ def test_delete_operation():
     response._content = '{"message": "SUCCESS"}'
     requests.delete = MagicMock(return_value=response)
     delete = auth.delete('ROUTE')
-    assert delete == {"message": "SUCCESS"}
+    assert delete.content == '{"message": "SUCCESS"}'
 
 
 def test_authenticate_decorator():
