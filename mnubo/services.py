@@ -91,3 +91,28 @@ class EventServices(object):
 
         return self.api_manager.post('events', event)
 
+
+class SearchServices(object):
+
+    def __init__(self, api_manager):
+        """ Initializes SearchServices with the api manager
+        """
+
+        self.api_manager = api_manager
+
+    def search(self, query):
+        """ Sends a basic search query
+
+        :param query: the query in json
+        """
+
+        return self.api_manager.post('search/basic', query)
+
+    def search_datasets(self, query):
+        """ Sends a search query on the dataset list
+
+        :param query: the query in json
+        """
+
+        return self.api_manager.get('search/datasets', query)
+
