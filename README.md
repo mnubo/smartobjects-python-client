@@ -123,6 +123,10 @@ the data modeling guide to format correctly the event's data structure.
 response = mnubo.event_services.send('EVENT_IN_JSON')
 ```
 
+### Use the Search Services
+To send search queries to the mnubo SmartObject platform, please refer to
+the Search API documentation to format your queries correctly.
+
 #### Search Query
 ```python
 response = mnubo.search_services.search('QUERY')
