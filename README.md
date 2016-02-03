@@ -43,6 +43,10 @@ To connect your Python application to our API use the mnubo Python SDK.
 
 * `EventServices`
   - `send`
+  
+* `SearchServices`
+  - `search`
+  - `search_datasets
 
 
 ---
@@ -117,6 +121,20 @@ the data modeling guide to format correctly the event's data structure.
 #### Send an Event
 ```python
 response = mnubo.event_services.send('EVENT_IN_JSON')
+```
+
+### Use the Search Services
+To send search queries to the mnubo SmartObject platform, please refer to
+the Search API documentation to format your queries correctly.
+
+#### Search Query
+```python
+response = mnubo.search_services.search('QUERY')
+```
+
+#### Search Datasets Query
+```python
+response = mnubo.search_services.search_datasets('QUERY')
 ```
 
 ---

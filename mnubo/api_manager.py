@@ -73,6 +73,17 @@ class APIManager(object):
         return self.__hostname + '/oauth/token?grant_type=client_credentials'
 
     @authenticate
+    def get(self, route, params={}):
+        """ Build and send a get request authenticated
+
+        :param route: which resource to access via the REST API
+        """
+
+        url = self.get_api_url() + route
+        headers = self.get_authorization_header()
+        return requests.get(url, params=params, headers=headers)
+
+    @authenticate
     def post(self, route, body={}):
         """ Build and send a post request authenticated
 
