@@ -6,7 +6,7 @@ from mnubo.mnubo_client import MnuboClient
 mnubo = MnuboClient('<your_client_id>', '<your_client_secret>', 'https://rest.sandbox.mnubo.com')
 
 ################
-Create an Object
+# Create an Object
 ################
 
 Obj={}
@@ -28,7 +28,7 @@ else:
     print r["message"]
 
 ################
-Update an Object
+# Update an Object
 ################
 
 Obj={}
@@ -45,7 +45,7 @@ else:
     print r["message"]
 
 ################
-Create an Owner
+# Create an Owner
 ################
 
 Owner={}
@@ -63,7 +63,7 @@ else:
     print r["message"]
 
 ################
-Update an Owner
+# Update an Owner
 ################
 
 Owner={}
@@ -80,7 +80,7 @@ else:
     print r["message"]
 
 ################
-Claim Object
+# Claim Object
 ################
 response = mnubo.owner_services.claim('owner-test', 'object-test')
 if response.status_code == 200:
@@ -91,7 +91,7 @@ else:
     print r["message"]
 
 ################
-Post an Event
+# Post an Event
 ################
 
 dev_id={}
@@ -118,7 +118,7 @@ else:
     print r["message"]
 
 ################
-Delete an Object
+# Delete an Object
 ################
 response = mnubo.smart_object_services.delete('object-test')
 if response.status_code == 200:
@@ -129,7 +129,7 @@ else:
     print r["message"]
     
 ################
-Delete an Owner
+# Delete an Owner
 ################
 
 response = mnubo.owner_services.delete('owner-test')
