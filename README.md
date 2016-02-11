@@ -46,7 +46,7 @@ To connect your Python application to our API use the mnubo Python SDK.
   
 * `SearchServices`
   - `search`
-  - `search_datasets
+  - `search_datasets`
 
 
 ---
@@ -58,7 +58,7 @@ To connect your Python application to our API use the mnubo Python SDK.
 ---
 #<a name="section4"></a>4. Installation & Configuration
 
-    pip install mnuboSDK
+    pip install mnubo
 
 ---
 #<a name="section5"></a>5. Usage
