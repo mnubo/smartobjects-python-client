@@ -155,6 +155,12 @@ response = mnubo.batch_services.owners('OWNERS_IN_JSON')
 response = mnubo.batch_services.objects('OBJECTS_IN_JSON')
 ```
 
+#### Batch Events
+'REPORT_RESULTS': is a boolean that specify if a body with the result of each individual event should be returned.
+```python
+response = mnubo.batch_services.events('EVENTS_IN_JSON', 'REPORT_RESULTS')
+```
+
 ---
 #<a name="section6"></a>6. Important notes
 

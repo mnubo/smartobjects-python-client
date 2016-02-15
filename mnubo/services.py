@@ -139,3 +139,13 @@ class BatchServices(object):
         """
 
         return self.api_manager.put('objects', objects)
+
+    def events(self, events, report_results=False):
+        """ Creates events in batch
+
+        :param events: the events to be created
+        :param report_results: returns a body with the result of each individual event
+        """
+        show_report = 'true' if report_results else 'false'
+
+        return self.api_manager.post('events?report_results='+show_report, events)
