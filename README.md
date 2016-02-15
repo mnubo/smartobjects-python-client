@@ -47,6 +47,10 @@ To connect your Python application to our API use the mnubo Python SDK.
 * `SearchServices`
   - `search`
   - `search_datasets`
+  
+* `BatchServices`
+  - `owners`
+  - `objects`
 
 
 ---
@@ -135,6 +139,20 @@ response = mnubo.search_services.search('QUERY')
 #### Search Datasets Query
 ```python
 response = mnubo.search_services.search_datasets('QUERY')
+```
+
+### Use the Batch Services
+To create or update owners or objects in batch, please refer to the Batch section
+of either the SmartObject or the Owners in the API documentation to format the data correctly.
+
+#### Batch Owners
+```python
+response = mnubo.batch_services.owners('OWNERS_IN_JSON')
+```
+
+#### Batch Objects
+```python
+response = mnubo.batch_services.objects('OBJECTS_IN_JSON')
 ```
 
 ---
