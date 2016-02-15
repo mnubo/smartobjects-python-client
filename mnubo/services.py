@@ -116,6 +116,7 @@ class SearchServices(object):
 
         return self.api_manager.get('search/datasets', query)
 
+
 class BatchServices(object):
 
     def __init__(self, api_manager):
@@ -130,7 +131,7 @@ class BatchServices(object):
         :param owners: the owners to be created
         """
 
-        return self.api_manager.put('owners', owners)
+        return self.api_manager.put('owners', owners, False)
 
     def objects(self, objects):
         """ Creates or updates objects in batch
@@ -138,7 +139,7 @@ class BatchServices(object):
         :param objects: the objects to be created
         """
 
-        return self.api_manager.put('objects', objects)
+        return self.api_manager.put('objects', objects, False)
 
     def events(self, events, report_results=False):
         """ Creates events in batch

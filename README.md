@@ -51,6 +51,7 @@ To connect your Python application to our API use the mnubo Python SDK.
 * `BatchServices`
   - `owners`
   - `objects`
+  - `events`
 
 
 ---
