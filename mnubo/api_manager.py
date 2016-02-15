@@ -96,16 +96,21 @@ class APIManager(object):
         return requests.post(url, data=body, headers=headers)
 
     @authenticate
-    def put(self, route, body={}):
+    def put(self, route, body={}, json_encoded=True):
         """ Build and send a put request authenticated
 
         :param route: which resource to access via the REST API
         :param body: body to be appended to the HTTP request
+        :param json_encoded: send the request using json body
         """
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.put(url, json=body, headers=headers)
+
+        if json_encoded:
+            return requests.put(url, json=body, headers=headers)
+        else:
+            return requests.put(url, data=body, headers=headers)
 
     @authenticate
     def delete(self, route):

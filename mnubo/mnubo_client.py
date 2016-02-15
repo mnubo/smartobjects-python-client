@@ -3,6 +3,7 @@ from services import EventServices
 from services import OwnerServices
 from services import ObjectServices
 from services import SearchServices
+from services import BatchServices
 from api_manager import APIManager
 
 
@@ -16,4 +17,5 @@ class MnuboClient(object):
         self.event_services = EventServices(self.__api_manager)
         self.smart_object_services = ObjectServices(self.__api_manager)
         self.search_services = SearchServices(self.__api_manager)
+        self.batch_services = BatchServices(self.__api_manager)
 
