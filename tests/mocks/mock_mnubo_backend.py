@@ -89,11 +89,12 @@ class MockMnuboBackend(object):
             return {"result"}
         dev_id = obj['x_device_id']
 
-        if 'x_object_type' not in obj:
-            pass
+        # x_device_id is mandatory for object creation
+        if dev_id not in self.objects and 'x_object_type' not in obj:
+            return {"result": "error", "id": dev_id, "message": "x_object_type cannot be blank."}
 
         if dev_id in self.objects and not overwrite:
-            pass
+            return {"result": "error", "id": dev_id, "message": "Object with device id '{}' already exists.".format(dev_id)}
 
         obj['x_registration_date'] = datetime.now().isoformat()
         self.objects[dev_id] = obj
@@ -117,18 +118,19 @@ class MockMnuboBackend(object):
     @route('PUT', '^/objects/(.+)$')
     def put_object_by_id(self, body, params):
         dev_id = params[0]
+        if dev_id not in self.objects:
+            return 400, "Object with x_device_id '{}' not found.".format(dev_id)
         self.objects[dev_id] = body
         return 200, None
 
     @route('DELETE', '^/objects/(.+)$')
     def delete_objects(self, body, params):
         dev_id = params[0]
-        if body and 'x_timestamp' in body:
-            pass
 
-        if dev_id in self.objects:
-            del self.objects[dev_id]
+        if dev_id not in self.objects:
+            return 400, "Object with x_device_id '{}' not found.".format(dev_id)
 
+        del self.objects[dev_id]
         return 200, None
 
     @route('GET', '^/objects/exists/(.+)$')

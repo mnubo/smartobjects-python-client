@@ -46,7 +46,8 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-            self.wfile.write(resp_content)
+            if resp_content:
+                self.wfile.write(resp_content)
 
     def do_GET(self):
         self._handle('GET', self.path)

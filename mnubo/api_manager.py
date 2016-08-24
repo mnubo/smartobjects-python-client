@@ -25,6 +25,7 @@ class APIManager(object):
         self.__client_id = client_id
         self.__client_secret = client_secret
         self.__hostname = hostname
+        self.__session = requests.Session()
         self.access_token = self.fetch_access_token()
 
     def fetch_access_token(self):
@@ -72,6 +73,11 @@ class APIManager(object):
 
         return self.__hostname + '/oauth/token?grant_type=client_credentials'
 
+    def validate_response(self, response):
+        if response.status_code == 400:
+            raise ValueError(response.content)
+        response.raise_for_status()
+
     @authenticate
     def get(self, route, params={}):
         """ Build and send a get request authenticated
@@ -81,7 +87,11 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.get(url, params=params, headers=headers)
+
+        response = self.__session.get(url, params=params, headers=headers)
+        self.validate_response(response)
+
+        return response
 
     @authenticate
     def post(self, route, body={}):
@@ -93,10 +103,14 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.post(url, data=body, headers=headers)
+
+        response = self.__session.post(url, json=body, headers=headers)
+        self.validate_response(response)
+
+        return response
 
     @authenticate
-    def put(self, route, body={}, json_encoded=True):
+    def put(self, route, body={}):
         """ Build and send a put request authenticated
 
         :param route: which resource to access via the REST API
@@ -107,10 +121,10 @@ class APIManager(object):
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
 
-        if json_encoded:
-            return requests.put(url, json=body, headers=headers)
-        else:
-            return requests.put(url, data=body, headers=headers)
+        response = self.__session.put(url, json=body, headers=headers)
+        self.validate_response(response)
+
+        return response
 
     @authenticate
     def delete(self, route):
@@ -121,4 +135,8 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.delete(url, headers=headers)
+
+        response = self.__session.delete(url, headers=headers)
+        self.validate_response(response)
+
+        return response

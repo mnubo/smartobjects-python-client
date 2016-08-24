@@ -52,7 +52,7 @@ def test_delete_owner():
     assert delete == 'SUCCESS'
 
 ####################################
-# MNUSmartObjectServices
+# ObjectServices
 ####################################
 
 
