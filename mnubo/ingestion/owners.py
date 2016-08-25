@@ -9,13 +9,19 @@ class OwnersService(object):
 
         self.api_manager = api_manager
 
+    def validate_owner(self, owner):
+        if not owner:
+            raise ValueError("Owner body cannot be null")
+        if 'username' not in owner or not owner['username']:
+            raise ValueError("username cannot be blank.")
+
     def create(self, owner):
         """ Creates a new owner for mnubo
 
         :param owner: the owner of the object to be deleted
         """
-
-        return self.api_manager.post('owners', owner)
+        self.validate_owner(owner)
+        self.api_manager.post('owners', owner)
 
     def claim(self, username, device_id):
         """ Owner claims an object
@@ -23,48 +29,64 @@ class OwnersService(object):
         :param username: the username of the owner claiming the object
         :param device_id: the device_id of the object being claimed
         """
+        if not username:
+            raise ValueError("username cannot be blank.")
+        if not device_id:
+            raise ValueError("deviceId cannot be blank.")
+        self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
 
-        return self.api_manager.post('owners/' + username + '/objects/' + device_id + '/claim')
-
-    def update(self, owner):
+    def update(self, username, owner):
         """ Updates an owner from mnubo
 
         :param owner: the owner with the updated properties
         """
+        if not username:
+            raise ValueError("username cannot be blank.")
+        if not owner:
+            raise ValueError("Object body cannot be blank.")
 
-        return self.api_manager.put('owners/' + owner['username'], owner)
+        self.api_manager.put('owners/{}'.format(username), owner)
 
     def create_update(self, owners):
-        r = self.api_manager.post('owners', owners)
-        r.raise_for_status()
-        return [Result(*result) for result in r.json()]
+        """
+
+        :param owners:
+        :return:
+        """
+        [self.validate_owner(owner) for owner in owners]
+
+        r = self.api_manager.put('owners', owners)
+        return [Result(**result) for result in r.json()]
 
     def delete(self, username):
         """ Deletes an owner from mnubo
 
         :param username: the username of the owner to be deleted
         """
+        if not username:
+            raise ValueError("username cannot be blank.")
 
-        return self.api_manager.delete('owners/' + username)
+        return self.api_manager.delete('owners/{}'.format(username))
 
-    def owner_exists(self, owner_id):
+    def owner_exists(self, username):
         """
-        :param owner_id (str|list): the owner_id or the list of owner_ids we want to check if existing
+        :param username (str|list): username we want to check if existing
         :return:
         """
+        if not username:
+            raise ValueError("username cannot be blank.")
 
-        r = self.api_manager.get('objects/exists/{0}'.format(owner_id))
-        r.raise_for_status()
+        r = self.api_manager.get('owners/exists/{}'.format(username))
+        json = r.json()
+        assert username in json
+        return json[username]
 
-        return r.json()
-
-    def owners_exist(self, owner_ids):
+    def owners_exist(self, usernames):
         """
-        :param owner_id (str|list): the owner_id or the list of owner_ids we want to check if existing
+        :param usernames: list of usernames we want to check if existing
         :return:
         """
-
-        r = self.api_manager.post('objects/exists', owner_ids)
-        r.raise_for_status()
-
-        return r.json()
+        if not usernames:
+            raise ValueError("List of username cannot be blank.")
+        r = self.api_manager.post('owners/exists', usernames)
+        return reduce(lambda x, y: dict(x.items() + y.items()), r.json())
