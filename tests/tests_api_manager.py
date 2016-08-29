@@ -54,6 +54,14 @@ class TestsApiManager(unittest.TestCase):
         api.access_token['requested_at'] = datetime.datetime.now() - datetime.timedelta(hours=2)
         self.assertFalse(api.is_access_token_valid())
 
+    def test_refresh_token(self):
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        api.access_token['requested_at'] = datetime.datetime.now() - datetime.timedelta(hours=2)
+        self.assertFalse(api.is_access_token_valid())
+
+        api.get("api_manager?parameter")
+        self.assertTrue(api.is_access_token_valid())
+
     def test_raise_valueerror_on_400(self):
         r = Response()
         r.status_code = 400
