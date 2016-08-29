@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="mnubo",
-    version="0.2.0",
+    version="2.0.0",
     description="Python SDK to access mnubo ingestion APIs",
     author="mnubo",
     author_email="sos@mnubo.com",

@@ -54,7 +54,7 @@ class TestObjectsService(unittest.TestCase):
                 "x_object_type": "car",
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_device_id cannot be null or empty.")
 
     def test_create_device_id_null(self):
         with self.assertRaises(ValueError) as ctx:
@@ -63,7 +63,7 @@ class TestObjectsService(unittest.TestCase):
                 "x_object_type": "car",
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_device_id cannot be null or empty.")
 
         with self.assertRaises(ValueError) as ctx:
             self.objects.create({
@@ -71,7 +71,7 @@ class TestObjectsService(unittest.TestCase):
                 "x_object_type": "car",
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_device_id cannot be null or empty.")
 
     def test_create_no_object_type(self):
         with self.assertRaises(ValueError) as ctx:
@@ -79,7 +79,7 @@ class TestObjectsService(unittest.TestCase):
                 "x_device_id": "vin12345",
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_object_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_object_type cannot be null or empty.")
 
     def test_create_object_type_null(self):
         with self.assertRaises(ValueError) as ctx:
@@ -88,7 +88,7 @@ class TestObjectsService(unittest.TestCase):
                 "x_object_type": "",
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_object_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_object_type cannot be null or empty.")
 
         with self.assertRaises(ValueError) as ctx:
             self.objects.create({
@@ -96,7 +96,7 @@ class TestObjectsService(unittest.TestCase):
                 "x_object_type": None,
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_object_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_object_type cannot be null or empty.")
 
     def test_delete(self):
         self.objects.create({
@@ -111,7 +111,7 @@ class TestObjectsService(unittest.TestCase):
     def test_delete_no_device_id(self):
         with self.assertRaises(ValueError) as ctx:
             self.objects.delete("")
-        self.assertEquals(ctx.exception.message, "x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_device_id cannot be null or empty.")
 
     def test_delete_not_existing(self):
         with self.assertRaises(ValueError) as ctx:
@@ -149,12 +149,12 @@ class TestObjectsService(unittest.TestCase):
             self.objects.update("", {
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "deviceId cannot be blank.")
+        self.assertEquals(ctx.exception.message, "deviceId cannot be null or empty.")
 
     def test_update_empty_body(self):
         with self.assertRaises(ValueError) as ctx:
             self.objects.update("some_id", {})
-        self.assertEquals(ctx.exception.message, "Object body cannot be blank.")
+        self.assertEquals(ctx.exception.message, "Object body cannot be null or empty.")
 
     def test_create_batch(self):
         objects = [
@@ -192,7 +192,7 @@ class TestObjectsService(unittest.TestCase):
         ]
         with self.assertRaises(ValueError) as ctx:
             self.objects.create_update(objects)
-        self.assertEquals(ctx.exception.message, "x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_device_id cannot be null or empty.")
 
     def test_create_update_some_failing(self):
         """missing x_object_type cannot be validated by the API as it requires knowledge of the model, therefore the
@@ -207,7 +207,7 @@ class TestObjectsService(unittest.TestCase):
         self.assertEquals(resp[0].id, 'new_device_with_type')
         self.assertEquals(resp[1].result, 'error')
         self.assertEquals(resp[1].id, 'new_device_without_type')
-        self.assertEquals(resp[1].message, 'x_object_type cannot be blank.')
+        self.assertEquals(resp[1].message, 'x_object_type cannot be null or empty.')
 
         self.assertIn('new_device_with_type', self.server.server.backend.objects)
         self.assertNotIn('new_device_without_type', self.server.server.backend.objects)
@@ -224,7 +224,7 @@ class TestObjectsService(unittest.TestCase):
     def test_exists_device_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.objects.object_exists(None)
-        self.assertEquals(ctx.exception.message, "deviceId cannot be blank.")
+        self.assertEquals(ctx.exception.message, "deviceId cannot be null or empty.")
 
     def test_exist_batch(self):
         self.objects.create_update([
@@ -242,7 +242,7 @@ class TestObjectsService(unittest.TestCase):
     def test_exist_batch_device_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.objects.objects_exist(None)
-        self.assertEquals(ctx.exception.message, "List of deviceId cannot be blank.")
+        self.assertEquals(ctx.exception.message, "List of deviceId cannot be null or empty.")
 
 
 if __name__ == '__main__':

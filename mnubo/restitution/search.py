@@ -22,7 +22,7 @@ class SearchService(object):
         :param query: the query in json
         """
         r = self.api_manager.get('search/datasets')
-        return [DataSet(dataset) for dataset in r.json()]
+        return {dataset['key']: DataSet(dataset) for dataset in r.json()}
 
     def validate_query(self, query):
         r = self.api_manager.post('search/validateQuery', query)

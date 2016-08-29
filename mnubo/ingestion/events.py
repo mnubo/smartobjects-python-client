@@ -11,10 +11,10 @@ class EventsService(object):
 
     def validate_event(self, event):
         if 'x_object' not in event or 'x_device_id' not in event['x_object'] or not  event['x_object']['x_device_id']:
-            raise ValueError("x_object.x_device_id cannot be blank.")
+            raise ValueError("x_object.x_device_id cannot be null or empty.")
 
         if 'x_event_type' not in event or not event['x_event_type']:
-            raise ValueError("x_event_type cannot be blank.")
+            raise ValueError("x_event_type cannot be null or empty.")
 
     def validate_event_list(self, events):
         if not events:
@@ -55,9 +55,10 @@ class EventsService(object):
         path = "events?{0}".format('&'.join(params)) if params else "events"
 
         r = self.api_manager.post(path, self.ensure_serializable(events))
-        return [EventResult(**result) for result in r.json()]
 
-    def send_from_device(self, device_id, events):
+        return [EventResult(**result) for result in r.json()] if report_results else None
+
+    def send_from_device(self, device_id, events, report_results=True):
         """
         https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-objects-x-device-id-events
 
@@ -67,12 +68,16 @@ class EventsService(object):
         """
         self.validate_event_list(events)
         if not device_id:
-            raise ValueError("device_id cannot be blank.")
+            raise ValueError("device_id cannot be null or empty.")
         if not all(['x_event_type' in event and event['x_event_type'] for event in events]):
-            raise ValueError("x_event_type cannot be blank.")
+            raise ValueError("x_event_type cannot be null or empty.")
 
-        r = self.api_manager.post("objects/{}/events".format(device_id), self.ensure_serializable(events))
-        return [EventResult(**result) for result in r.json()]
+        path = "objects/{}/events".format(device_id)
+        if report_results:
+            path += "?report_results=true"
+        r = self.api_manager.post(path, self.ensure_serializable(events))
+
+        return [EventResult(**result) for result in r.json()] if report_results else None
 
     def event_exists(self, event_id):
         """

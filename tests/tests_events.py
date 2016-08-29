@@ -51,27 +51,27 @@ class TestEventsService(unittest.TestCase):
     def test_send_device_id_missing(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send([{'x_event_type': 'invalid event'}])
-        self.assertEquals(ctx.exception.message, "x_object.x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_object.x_device_id cannot be null or empty.")
 
     def test_send_device_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send([{'x_object': {'x_device_id': None}, 'x_event_type': 'invalid event'}])
-        self.assertEquals(ctx.exception.message, "x_object.x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_object.x_device_id cannot be null or empty.")
 
     def test_send_event_type_missing(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send([{'x_object': {'x_device_id': 'invalid'}}])
-        self.assertEquals(ctx.exception.message, "x_event_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_event_type cannot be null or empty.")
 
     def test_send_object_must_exist_ok(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send([{'x_object': {'x_device_id': 'invalid'}, 'x_event_type': ''}])
-        self.assertEquals(ctx.exception.message, "x_event_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_event_type cannot be null or empty.")
 
     def test_send_event_type_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send([{'x_object': {'x_device_id': 'invalid'}, 'x_event_type': ''}])
-        self.assertEquals(ctx.exception.message, "x_event_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_event_type cannot be null or empty.")
 
     def test_send_object_must_exist_fail(self):
         self.server.server.backend.objects['kitchen_door'] = {'x_device_id': 'kitchen_door'}
@@ -146,7 +146,7 @@ class TestEventsService(unittest.TestCase):
     def test_send_from_device_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send_from_device(None, [{'x_event_type': 'open'}])
-        self.assertEquals(ctx.exception.message, "device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "device_id cannot be null or empty.")
 
     def test_send_from_device_empty_events(self):
         with self.assertRaises(ValueError) as ctx:
@@ -156,12 +156,12 @@ class TestEventsService(unittest.TestCase):
     def test_send_from_device_event_type_missing(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send_from_device('device_1', [{'some_property': 'blue'}])
-        self.assertEquals(ctx.exception.message, "x_event_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_event_type cannot be null or empty.")
 
     def test_send_from_device_event_type_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.events.send_from_device('device_1', [{'x_event_type': '', 'some_property': '42'}])
-        self.assertEquals(ctx.exception.message, "x_event_type cannot be blank.")
+        self.assertEquals(ctx.exception.message, "x_event_type cannot be null or empty.")
 
     def test_send_from_device_event_already_exist(self):
         event_id = uuid.uuid4()

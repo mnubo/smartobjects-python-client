@@ -13,7 +13,7 @@ class OwnersService(object):
         if not owner:
             raise ValueError("Owner body cannot be null")
         if 'username' not in owner or not owner['username']:
-            raise ValueError("username cannot be blank.")
+            raise ValueError("username cannot be null or empty.")
 
     def create(self, owner):
         """ Creates a new owner for mnubo
@@ -30,9 +30,9 @@ class OwnersService(object):
         :param device_id: the device_id of the object being claimed
         """
         if not username:
-            raise ValueError("username cannot be blank.")
+            raise ValueError("username cannot be null or empty.")
         if not device_id:
-            raise ValueError("deviceId cannot be blank.")
+            raise ValueError("deviceId cannot be null or empty.")
         self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
 
     def update(self, username, owner):
@@ -41,9 +41,9 @@ class OwnersService(object):
         :param owner: the owner with the updated properties
         """
         if not username:
-            raise ValueError("username cannot be blank.")
+            raise ValueError("username cannot be null or empty.")
         if not owner:
-            raise ValueError("Object body cannot be blank.")
+            raise ValueError("Object body cannot be null or empty.")
 
         self.api_manager.put('owners/{}'.format(username), owner)
 
@@ -64,7 +64,7 @@ class OwnersService(object):
         :param username: the username of the owner to be deleted
         """
         if not username:
-            raise ValueError("username cannot be blank.")
+            raise ValueError("username cannot be null or empty.")
 
         return self.api_manager.delete('owners/{}'.format(username))
 
@@ -74,7 +74,7 @@ class OwnersService(object):
         :return:
         """
         if not username:
-            raise ValueError("username cannot be blank.")
+            raise ValueError("username cannot be null or empty.")
 
         r = self.api_manager.get('owners/exists/{}'.format(username))
         json = r.json()
@@ -87,6 +87,6 @@ class OwnersService(object):
         :return:
         """
         if not usernames:
-            raise ValueError("List of username cannot be blank.")
+            raise ValueError("List of username cannot be null or empty.")
         r = self.api_manager.post('owners/exists', usernames)
         return reduce(lambda x, y: dict(x.items() + y.items()), r.json())

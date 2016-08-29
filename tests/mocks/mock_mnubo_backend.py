@@ -82,13 +82,13 @@ class MockMnuboBackend(object):
     # objects
     def _process_object(self, obj, update=False):
         if 'x_device_id' not in obj:
-            return {"result": "error", "message": "x_device_id cannot be blank."}
+            return {"result": "error", "message": "x_device_id cannot be null or empty."}
 
         dev_id = obj['x_device_id']
 
         # x_device_id is mandatory for object creation
         if dev_id not in self.objects and 'x_object_type' not in obj:
-            return {"result": "error", "id": dev_id, "message": "x_object_type cannot be blank."}
+            return {"result": "error", "id": dev_id, "message": "x_object_type cannot be null or empty."}
 
         if dev_id in self.objects:
             if update:
@@ -145,7 +145,7 @@ class MockMnuboBackend(object):
     # owners
     def _process_owner(self, owner, update=False):
         if 'username' not in owner:
-            return {"result": "error", "message": "username cannot be blank."}
+            return {"result": "error", "message": "username cannot be null or empty."}
 
         username = owner['username']
 
@@ -221,7 +221,7 @@ class MockMnuboBackend(object):
             return 400, "Owner '{}' not found.".format(username)
 
         if 'x_password' not in body:
-            return 400, "x_password cannot be blank."
+            return 400, "x_password cannot be null or empty."
 
         self.owners[username]['x_password'] = body['x_password']
         return 200, None

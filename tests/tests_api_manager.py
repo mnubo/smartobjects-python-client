@@ -28,12 +28,12 @@ class TestsApiManager(unittest.TestCase):
     def test_client_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             APIManager("", "CLIENT_SECRET", self.server.path)
-        self.assertEquals(ctx.exception.message, "client_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "client_id cannot be null or empty.")
 
     def test_client_secret_null(self):
         with self.assertRaises(ValueError) as ctx:
             APIManager("CLIENT_ID", "", self.server.path)
-        self.assertEquals(ctx.exception.message, "client_secret cannot be blank.")
+        self.assertEquals(ctx.exception.message, "client_secret cannot be null or empty.")
 
     def test_fetch_token_at_init(self):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)

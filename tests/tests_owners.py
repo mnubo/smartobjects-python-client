@@ -36,12 +36,12 @@ class TestOwnersService(unittest.TestCase):
     def test_create_username_missing(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.create({'location': 'bedroom'})
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_create_username_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.create({'username': '', 'location': 'bedroom'})
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_claim_ok(self):
         self.server.server.backend.objects['my_device'] = {'x_device_id': 'my_device'}
@@ -54,22 +54,22 @@ class TestOwnersService(unittest.TestCase):
     def test_claim_username_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim(None, "my_device")
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_claim_username_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim("", "my_device")
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_claim_device_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim("owner_1", None)
-        self.assertEquals(ctx.exception.message, "deviceId cannot be blank.")
+        self.assertEquals(ctx.exception.message, "deviceId cannot be null or empty.")
 
     def test_claim_device_id_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim("owner_1", "")
-        self.assertEquals(ctx.exception.message, "deviceId cannot be blank.")
+        self.assertEquals(ctx.exception.message, "deviceId cannot be null or empty.")
 
     def test_claim_device_id_not_found(self):
         self.owners.create({'username': 'owner_1'})
@@ -93,12 +93,12 @@ class TestOwnersService(unittest.TestCase):
     def test_delete_username_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.delete(None)
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_delete_username_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.delete("")
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_delete_not_found(self):
         with self.assertRaises(ValueError) as ctx:
@@ -123,12 +123,12 @@ class TestOwnersService(unittest.TestCase):
     def test_update_username_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.update(None, {})
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_update_username_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.update("", {})
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_create_update_ok(self):
         self.owners.create({'username': 'owner_1', 'some_property': 'green'})
@@ -153,7 +153,7 @@ class TestOwnersService(unittest.TestCase):
                 {'username': '', 'some_property': 'blue'},
                 {'username': 'owner_2', 'some_property': 'red'}
             ])
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_create_update_some_failing(self):
         resp = self.owners.create_update([
@@ -176,12 +176,12 @@ class TestOwnersService(unittest.TestCase):
     def test_owner_exists_username_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.owner_exists(None)
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
         
     def test_owner_exists_username_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.owner_exists("")
-        self.assertEquals(ctx.exception.message, "username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
 
     def test_owners_exist_ok(self):
         self.owners.create({'username': 'owner_1', 'some_property': 'green'})
@@ -196,5 +196,5 @@ class TestOwnersService(unittest.TestCase):
     def test_owners_exist_list_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.owners_exist(None)
-        self.assertEquals(ctx.exception.message, "List of username cannot be blank.")
+        self.assertEquals(ctx.exception.message, "List of username cannot be null or empty.")
 

@@ -74,14 +74,14 @@ class TestOwnersService(unittest.TestCase):
     def test_get_datasets(self):
         datasets = self.search.get_datasets()
 
-        self.assertIsInstance(datasets[0], DataSet)
-        for dataset in datasets:
+        self.assertIsInstance(datasets['owner'], DataSet)
+        for dataset in datasets.values():
             self.assertTrue(hasattr(dataset, 'key'))
             self.assertTrue(hasattr(dataset, 'display_name'))
             self.assertTrue(hasattr(dataset, 'fields'))
 
-        self.assertIsInstance(datasets[0].fields[0], Field)
-        for field in datasets[0].fields:
+        self.assertIsInstance(datasets['owner'].fields[0], Field)
+        for field in datasets['owner'].fields:
             self.assertTrue(hasattr(field, 'key'))
             self.assertTrue(hasattr(field, 'display_name'))
             self.assertTrue(hasattr(field, 'description'))
@@ -89,9 +89,9 @@ class TestOwnersService(unittest.TestCase):
             self.assertTrue(hasattr(field, 'container_type'))
             self.assertTrue(hasattr(field, 'primary_key'))
 
-        self.assertEquals(datasets[1].key, "owner")
-        self.assertEquals(datasets[2].fields[1].description, "The date and time the event have been received by Mnubo")
-        self.assertEquals(datasets[2].fields[1].high_level_type, "DATETIME")
+        self.assertEquals(datasets['owner'].key, "owner")
+        self.assertEquals(datasets['session'].fields[1].description, "The date and time the event have been received by Mnubo")
+        self.assertEquals(datasets['session'].fields[1].high_level_type, "DATETIME")
 
     def test_validate_query_ok(self):
         result = self.search.validate_query({

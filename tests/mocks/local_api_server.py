@@ -58,10 +58,12 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
     def do_DELETE(self):
         self._handle('DELETE', self.path)
 
+    def do_HEAD(self):
+        self.send_response(200)
 
 class LocalApiServer(object):
     def __init__(self):
-        self.server = HTTPServer(("localhost", 8080), LocalApiRequestHandler)
+        self.server = HTTPServer(("localhost", 0), LocalApiRequestHandler)
         self.server.backend = MockMnuboBackend()
 
         self.thread = threading.Thread(target=self.server.serve_forever)
