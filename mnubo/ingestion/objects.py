@@ -1,4 +1,5 @@
 from mnubo.ingestion import Result
+from six import string_types
 
 class ObjectsService(object):
 
@@ -66,9 +67,9 @@ class ObjectsService(object):
         :return:
         """
 
-        if isinstance(device_id, basestring):
+        if isinstance(device_id, string_types):
             r = self.api_manager.get('objects/exists/{0}'.format(device_id))
-        elif all(isinstance(dev_id, basestring) for dev_id in device_id):
+        elif all(isinstance(dev_id, string_types) for dev_id in device_id):
             r = self.api_manager.post('objects/exists', device_id)
         else:
             raise TypeError
@@ -87,4 +88,8 @@ class ObjectsService(object):
         if not device_ids:
             raise ValueError('List of deviceId cannot be null or empty.')
         r = self.api_manager.post('objects/exists', device_ids)
-        return reduce(lambda x, y: dict(x.items() + y.items()), r.json())
+
+        result = {}
+        for object in r.json():
+            result.update(object)
+        return result

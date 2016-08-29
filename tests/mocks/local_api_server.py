@@ -1,11 +1,14 @@
+from __future__ import print_function
+from six import iteritems, PY3
+
 import re
 import json
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import threading
 
-from mock_mnubo_backend import MockMnuboBackend
-from routes import ROUTES
+from .mock_mnubo_backend import MockMnuboBackend
+from .routes import ROUTES
 
 
 class LocalApiRequestHandler(BaseHTTPRequestHandler):
@@ -71,12 +74,12 @@ class LocalApiServer(object):
 
     def start(self):
         self.thread.start()
-        print "started local API server at", self.path
+        print("started local API server at", self.path)
 
     def stop(self):
         self.server.shutdown()
         self.thread.join()
-        print "stopped local API"
+        print("stopped local API")
 
     @property
     def path(self):

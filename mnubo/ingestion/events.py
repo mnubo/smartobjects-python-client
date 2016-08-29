@@ -1,5 +1,6 @@
 import uuid
 from mnubo.ingestion import EventResult
+from six import iteritems
 
 
 class EventsService(object):
@@ -102,4 +103,4 @@ class EventsService(object):
         assert all(isinstance(id, uuid.UUID) for id in event_ids)
 
         r = self.api_manager.post('events/exists', [str(id) for id in event_ids])
-        return {uuid.UUID(key): value for key, value in r.json().iteritems()}
+        return {uuid.UUID(key): value for key, value in iteritems(r.json())}

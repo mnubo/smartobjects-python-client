@@ -1,9 +1,9 @@
 
-from ingestion.events import EventsService
-from ingestion.owners import OwnersService
-from ingestion.objects import ObjectsService
-from restitution.search import SearchService
-from api_manager import APIManager
+from mnubo.ingestion.events import EventsService
+from mnubo.ingestion.owners import OwnersService
+from mnubo.ingestion.objects import ObjectsService
+from mnubo.restitution.search import SearchService
+from mnubo.api_manager import APIManager
 
 
 class Environments:

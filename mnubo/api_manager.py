@@ -27,15 +27,16 @@ class APIManager(object):
         if not client_secret:
             raise ValueError("client_secret cannot be null or empty.")
 
+        self.__session = requests.Session()
         try:
-            requests.head(hostname)
+            self.__session.head(hostname)
         except requests.exceptions.ConnectionError:
             raise ValueError("Host at {} is not reachable".format(hostname))
 
         self.__client_id = client_id
         self.__client_secret = client_secret
         self.__hostname = hostname
-        self.__session = requests.Session()
+
         self.access_token = self.fetch_access_token()
 
     def fetch_access_token(self):
@@ -44,7 +45,7 @@ class APIManager(object):
 
         requested_at = datetime.datetime.now()
 
-        r = requests.post(self.get_auth_url(), headers=self.get_token_authorization_header())
+        r = self.__session.post(self.get_auth_url(), headers=self.get_token_authorization_header())
         json_response = r.json()
         r.raise_for_status()
 
@@ -63,8 +64,8 @@ class APIManager(object):
     def get_token_authorization_header(self):
         """ Generates the authorization header used while requesting an access token
         """
-
-        return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic " + base64.b64encode("{0}:{1}".format(self.__client_id, self.__client_secret))}
+        encoded = base64.b64encode("{0}:{1}".format(self.__client_id, self.__client_secret))
+        return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic {}".format(encoded)}
 
     def get_authorization_header(self):
         """ Generates the authorization header used to access resources via mnubo's API

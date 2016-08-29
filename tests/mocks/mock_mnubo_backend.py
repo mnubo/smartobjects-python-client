@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from routes import route
+from .routes import route
 
 
 class MockMnuboBackend(object):
@@ -63,7 +63,7 @@ class MockMnuboBackend(object):
             else:
                 return 200, None
 
-    @route('POST', '^/objects/(.+)/events$')
+    @route('POST', '^/objects/(.+)/events(?:\?([a-z=_]+)?)?$')
     def post_events_on_object(self, body, params):
         [event.update({'x_object': {'x_device_id': params[0]}}) for event in body]
         result = [self._process_event(event, True) for event in body]

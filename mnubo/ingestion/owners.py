@@ -89,4 +89,8 @@ class OwnersService(object):
         if not usernames:
             raise ValueError("List of username cannot be null or empty.")
         r = self.api_manager.post('owners/exists', usernames)
-        return reduce(lambda x, y: dict(x.items() + y.items()), r.json())
+
+        result = {}
+        for owner in r.json():
+            result.update(owner)
+        return result

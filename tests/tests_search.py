@@ -1,5 +1,4 @@
 import unittest
-from datetime import datetime
 
 from mnubo.api_manager import APIManager
 from mnubo.restitution import *

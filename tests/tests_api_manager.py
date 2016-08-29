@@ -3,7 +3,7 @@ from requests import Response
 import datetime
 
 from mnubo import APIManager
-from mocks.local_api_server import LocalApiServer
+from tests.mocks.local_api_server import LocalApiServer
 
 
 class TestsApiManager(unittest.TestCase):
