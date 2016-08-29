@@ -1,5 +1,5 @@
 import uuid
-from mnubo.results import EventResult
+from mnubo.ingestion import EventResult
 
 
 class EventsService(object):

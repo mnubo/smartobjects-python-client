@@ -8,7 +8,7 @@ from tests.mocks.local_api_server import LocalApiServer
 
 class TestObjectsService(unittest.TestCase):
     """
-    https://sop-dev.mtl.mnubo.com/apps/doc/api.html#post-api-v3-objects
+    https://sop.mtl.mnubo.com/apps/doc/api.html#objects
     """
 
     @classmethod
@@ -23,6 +23,9 @@ class TestObjectsService(unittest.TestCase):
     def tearDownClass(cls):
         cls.server.stop()
 
+    def setUp(self):
+        self.server.server.backend.clear()
+
     def test_create_ok(self):
         # objects.create doesn't return anything and should not raise any error
         self.objects.create({
@@ -30,9 +33,12 @@ class TestObjectsService(unittest.TestCase):
             "x_object_type": "car",
             "x_owner": {"username": "foobar@mnubo.com"}
         })
+        self.assertIn('vin1234', self.server.server.backend.objects)
 
     def test_create_duplicate(self):
         self.objects.create({"x_device_id": "duplicated_id", "x_object_type": "cow"})
+        self.assertIn('duplicated_id', self.server.server.backend.objects)
+
         with self.assertRaises(ValueError) as ctx:
             self.objects.create({"x_device_id": "duplicated_id", "x_object_type": "cow"})
         self.assertEquals(ctx.exception.message, "Object with device id 'duplicated_id' already exists.")
@@ -97,7 +103,10 @@ class TestObjectsService(unittest.TestCase):
             "x_device_id": "to_be_deleted",
             "x_object_type": "object",
         })
+        self.assertIn('to_be_deleted', self.server.server.backend.objects)
+
         self.objects.delete("to_be_deleted")
+        self.assertNotIn('to_be_deleted', self.server.server.backend.objects)
 
     def test_delete_no_device_id(self):
         with self.assertRaises(ValueError) as ctx:
@@ -113,33 +122,39 @@ class TestObjectsService(unittest.TestCase):
         self.objects.create({
             "x_device_id": "to_be_updated",
             "x_object_type": "object",
+            "some_property": "some_value"
         })
 
-        self.objects.update({
-            "x_device_id": "to_be_updated",
-            "x_owner":{"username": "foobar@mnubo.com"}
+        self.objects.update("to_be_updated", {
+            "x_owner": {"username": "foobar@mnubo.com"}
         })
+        self.assertIn('to_be_updated', self.server.server.backend.objects)
+        # not strictly equals since x_registration_date has been added!
+        self.assertDictContainsSubset({
+            "x_device_id": "to_be_updated",
+            "x_object_type": "object",
+            "x_owner": {"username": "foobar@mnubo.com"},
+            "some_property": "some_value"
+        }, self.server.server.backend.objects['to_be_updated'])
 
     def test_update_not_existing(self):
         with self.assertRaises(ValueError) as ctx:
-            self.objects.update({
-                "x_device_id": "not_existing",
+            self.objects.update("not_existing", {
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
         self.assertEquals(ctx.exception.message, "Object with x_device_id 'not_existing' not found.")
 
     def test_update_no_device_id(self):
         with self.assertRaises(ValueError) as ctx:
-            self.objects.update({
-                "x_device_id": "",
+            self.objects.update("", {
                 "x_owner": {"username": "foobar@mnubo.com"}
             })
-        self.assertEquals(ctx.exception.message, "x_device_id cannot be blank.")
+        self.assertEquals(ctx.exception.message, "deviceId cannot be blank.")
 
     def test_update_empty_body(self):
         with self.assertRaises(ValueError) as ctx:
-            self.objects.update({})
-        self.assertEquals(ctx.exception.message, "Object body cannot be null.")
+            self.objects.update("some_id", {})
+        self.assertEquals(ctx.exception.message, "Object body cannot be blank.")
 
     def test_create_batch(self):
         objects = [
@@ -193,6 +208,9 @@ class TestObjectsService(unittest.TestCase):
         self.assertEquals(resp[1].result, 'error')
         self.assertEquals(resp[1].id, 'new_device_without_type')
         self.assertEquals(resp[1].message, 'x_object_type cannot be blank.')
+
+        self.assertIn('new_device_with_type', self.server.server.backend.objects)
+        self.assertNotIn('new_device_without_type', self.server.server.backend.objects)
 
     def test_exists(self):
         self.objects.create({

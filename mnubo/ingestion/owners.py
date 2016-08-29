@@ -1,4 +1,4 @@
-from mnubo.results import Result
+from mnubo.ingestion import Result
 
 
 class OwnersService(object):

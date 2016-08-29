@@ -21,8 +21,8 @@ class MnuboClient(object):
         if environment not in (Environments.Sandbox, Environments.Production):
             raise ValueError("Invalid 'environment' argument, must be one of: Environments.Sandbox, Environments.Production")
 
-        self.__api_manager = APIManager(client_id, client_secret, environment)
-        self.owners = OwnersService(self.__api_manager)
-        self.events = EventsService(self.__api_manager)
-        self.smart_objects = ObjectsService(self.__api_manager)
-        self.search = SearchService(self.__api_manager)
+        self._api_manager = APIManager(client_id, client_secret, environment)
+        self.owners = OwnersService(self._api_manager)
+        self.events = EventsService(self._api_manager)
+        self.smart_objects = ObjectsService(self._api_manager)
+        self.search = SearchService(self._api_manager)

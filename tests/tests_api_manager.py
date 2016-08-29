@@ -1,0 +1,145 @@
+import unittest
+from requests import Response
+import datetime
+
+from mnubo import APIManager
+from mocks.local_api_server import LocalApiServer
+
+
+class TestsApiManager(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.server = LocalApiServer()
+        cls.server.start()
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.stop()
+
+    def setUp(self):
+        self.server.server.backend.clear()
+
+    def tests_host_non_reachable(self):
+        with self.assertRaises(ValueError) as ctx:
+            APIManager("CLIENT_ID", "CLIENT_SECRET", "http://non-reachable.example.com")
+        self.assertEquals(ctx.exception.message, "Host at {} is not reachable".format("http://non-reachable.example.com"))
+
+    def test_client_id_null(self):
+        with self.assertRaises(ValueError) as ctx:
+            APIManager("", "CLIENT_SECRET", self.server.path)
+        self.assertEquals(ctx.exception.message, "client_id cannot be blank.")
+
+    def test_client_secret_null(self):
+        with self.assertRaises(ValueError) as ctx:
+            APIManager("CLIENT_ID", "", self.server.path)
+        self.assertEquals(ctx.exception.message, "client_secret cannot be blank.")
+
+    def test_fetch_token_at_init(self):
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        self.assertIn("access_token", api.access_token)
+        self.assertIn("expires_in", api.access_token)
+        self.assertIn("requested_at", api.access_token)
+
+    def test_get_api_url(self):
+        url = self.api.get_api_url()
+        self.assertEquals(url, "{}/api/v3/".format(self.server.path))
+
+    def test_token_is_valid(self):
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        self.assertTrue(api.is_access_token_valid())
+
+    def test_token_invalid(self):
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        api.access_token['requested_at'] = datetime.datetime.now() - datetime.timedelta(hours=2)
+        self.assertFalse(api.is_access_token_valid())
+
+    def test_raise_valueerror_on_400(self):
+        r = Response()
+        r.status_code = 400
+        r._content = "error message"
+
+        with self.assertRaises(ValueError) as ctx:
+            self.api.validate_response(r)
+        self.assertEquals(ctx.exception.message, "error message")
+
+    def test_get(self):
+        r = self.api.get("api_manager?parameter")
+
+        self.assertEquals(r.status_code, 200)
+        self.assertEquals(r.request.method, 'GET')
+        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertIn('parameter', r.json())
+
+    def test_post(self):
+        r = self.api.post("api_manager?parameter", {"data": "value"})
+
+        self.assertEquals(r.status_code, 200)
+        self.assertEquals(r.request.method, 'POST')
+        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertIn('parameter', r.json()[0])
+        self.assertEquals({"data": "value"}, r.json()[1])
+
+    def test_put(self):
+        r = self.api.put("api_manager?parameter", {"data": "value"})
+
+        self.assertEquals(r.status_code, 200)
+        self.assertEquals(r.request.method, 'PUT')
+        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertIn('parameter', r.json()[0])
+        self.assertEquals({"data": "value"}, r.json()[1])
+
+    def test_delete(self):
+        r = self.api.delete("api_manager?parameter")
+
+        self.assertEquals(r.status_code, 200)
+        self.assertEquals(r.request.method, 'DELETE')
+        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertIn('parameter', r.json()[0])
+
+    def test_authorization_token(self):
+        r = self.api.get("api_manager")
+        self.assertIn('Authorization', r.request.headers)
+        self.assertTrue(r.request.headers['Authorization'].startswith('Bearer'))
+
+        r = self.api.post("api_manager", {})
+        self.assertIn('Authorization', r.request.headers)
+        self.assertTrue(r.request.headers['Authorization'].startswith('Bearer'))
+
+        r = self.api.put("api_manager", {})
+        self.assertIn('Authorization', r.request.headers)
+        self.assertTrue(r.request.headers['Authorization'].startswith('Bearer'))
+
+        r = self.api.delete("api_manager")
+        self.assertIn('Authorization', r.request.headers)
+        self.assertTrue(r.request.headers['Authorization'].startswith('Bearer'))
+
+    def test_content_type(self):
+        r = self.api.get("api_manager")
+        self.assertIn('Content-Type', r.request.headers)
+        self.assertEquals('application/json', r.request.headers['Content-Type'])
+
+        r = self.api.post("api_manager", {})
+        self.assertIn('Content-Type', r.request.headers)
+        self.assertEquals('application/json', r.request.headers['Content-Type'])
+
+        r = self.api.put("api_manager", {})
+        self.assertIn('Content-Type', r.request.headers)
+        self.assertEquals('application/json', r.request.headers['Content-Type'])
+
+        r = self.api.delete("api_manager")
+        self.assertIn('Content-Type', r.request.headers)
+        self.assertEquals('application/json', r.request.headers['Content-Type'])
+
+    def test_content_encoding(self):
+        r = self.api.get("api_manager")
+        self.assertIn('Accept-Encoding', r.request.headers)
+
+        r = self.api.post("api_manager", {})
+        self.assertIn('Accept-Encoding', r.request.headers)
+
+        r = self.api.put("api_manager", {})
+        self.assertIn('Accept-Encoding', r.request.headers)
+
+        r = self.api.delete("api_manager")
+        self.assertIn('Accept-Encoding', r.request.headers)

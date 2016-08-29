@@ -1,4 +1,4 @@
-from mnubo.results import Result
+from mnubo.ingestion import Result
 
 class ObjectsService(object):
 
@@ -26,13 +26,17 @@ class ObjectsService(object):
         self.validate_object(object)
         self.api_manager.post('objects', object)
 
-    def update(self, object):
+    def update(self, device_id, object):
         """ Updates an object from mnubo
-
+        :param device_id:
         :param object: the object with the updated properties
+            if x_device_id is present in the object and differs from the argument device_id, it will be ignored
         """
-        self.validate_object(object, validate_object_type=False)
-        return self.api_manager.put('objects/'+object['x_device_id'], object)
+        if not device_id:
+            raise ValueError("deviceId cannot be blank.")
+        if not object:
+            raise ValueError("Object body cannot be blank.")
+        return self.api_manager.put('objects/{}'.format(device_id), object)
 
     def create_update(self, objects):
         """ create or update a batch of objects
@@ -54,7 +58,7 @@ class ObjectsService(object):
         """
         if not device_id:
             raise ValueError('x_device_id cannot be blank.')
-        self.api_manager.delete('objects/'+device_id)
+        self.api_manager.delete('objects/{}'.format(device_id))
 
     def exists(self, device_id):
         """

@@ -1,9 +1,6 @@
 import re
 import json
 
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import threading
 
@@ -41,12 +38,12 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
         if code < 300:
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            if resp_content:
+            if resp_content is not None:
                 self.wfile.write(json.dumps(resp_content))
         else:
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-            if resp_content:
+            if resp_content is not None:
                 self.wfile.write(resp_content)
 
     def do_GET(self):
