@@ -3,6 +3,8 @@ from datetime import datetime
 
 class ResultSet(object):
     def __init__(self, *args, **kwargs):
+        """ Contains the result of a search query """
+
         if len(args) == 1 and isinstance(args[0], dict):
             self._source = args[0]
         elif not args and kwargs:
@@ -27,20 +29,46 @@ class ResultSet(object):
         return ResultRow(self._rows[item], self)
 
     def get_column_index(self, item):
+        """Returns the column index associated with a given column name
+
+        Example:
+            >>> resultset.get_column_index("speed")
+            0
+        """
         if item not in self._col_to_idx:
             raise IndexError("Invalid column '{}'".format(item))
         return self._col_to_idx[item]
 
+    def get_column_type(self, item):
+        """Returns the highLevelType associated with a given column name
+
+        :rtype: str
+
+        Example:
+            >>> resultset.get_column_type("speed")
+            double
+        """
+        idx = self.get_column_index(item)
+        return self._columns[idx]['type']
+
     @property
     def raw(self):
+        """raw JSON object as returned by the search API"""
         return self._source
 
     @property
     def columns(self):
+        """list of dictionaries representing the columns with the `label` and `type` keys (order of columns is the same as in the rows)"""
         return self._columns
 
     @property
     def rows(self):
+        """list of rows, itself containing a list of result values
+
+        Example:
+            >>> resultset.rows
+            [[1, 2, 3], [4, 5, 6]]
+        """
         return self._rows
 
     # type conversion utils
@@ -49,6 +77,7 @@ class ResultSet(object):
 
 
 class ResultRow(object):
+    """ Single row of a ResultSet object """
     def __init__(self, row, parent_rs):
         self._source = row
         self._parent = parent_rs
@@ -57,6 +86,19 @@ class ResultRow(object):
         return self.get(item)
 
     def get(self, item, rtype=None):
+        """ Generic accessor to the row content
+
+        Allows access with index or column name:
+        >>> row.get(0)
+        >>> row.get("speed")
+
+        Raises an IndexError if out of bound or no such column
+
+        Allows conversion of the value with the optional `rtype` argument:
+        >>> row.get("speed", float)
+        >>> row.get("speed", lambda x: x * miles_to_kmh_ratio)  # also with a lambda
+        >>> row.get("timestamp", ResultSet.ToDatetime)          # shorthand to convert back to datetime
+        """
         if isinstance(item, str):
             index = self._parent.get_column_index(item)
         elif isinstance(item, int):
@@ -104,6 +146,7 @@ class Field(object):
 
 
 class QueryValidationResult(object):
+    """ Contains the result of a call to validate_query """
     def __init__(self, *args, **kwargs):
         if len(args) == 1 and isinstance(args[0], dict):
             self._source = args[0]
@@ -117,8 +160,10 @@ class QueryValidationResult(object):
 
     @property
     def is_valid(self):
+        """bool: is the query valid or not?"""
         return self._is_valid
 
     @property
     def validation_errors(self):
+        """list of errors (string) if any"""
         return self._validation_errors

@@ -16,6 +16,19 @@ class MnuboClient(object):
     """
 
     def __init__(self, client_id, client_secret, environment):
+        """ Initialization of the mnubo client
+
+        The client exposes the Events, Objects, Owners and Search services.
+        Initialization will fetch an API token with the id and secret provided.
+
+        :param client_id (string): client_id part of the OAuth 2.0 credentials (available in your dashboard)
+        :param client_secret (string): client_secret part of the OAuth 2.0 credentials (available in your dashboard)
+        :param environment: either Environments.Sandbox or Environments.Production
+            (note: client_id and client_secret are unique per environment)
+
+        :note: Do not expose publicly code containing your client_id and client_secret
+        .. seealso:: examples/simple_workflow.py
+        """
 
         if environment not in (Environments.Sandbox, Environments.Production):
             raise ValueError("Invalid 'environment' argument, must be one of: Environments.Sandbox, Environments.Production")

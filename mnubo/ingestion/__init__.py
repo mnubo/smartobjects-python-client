@@ -2,9 +2,9 @@ import uuid
 
 
 class Result(object):
-    """ Result object containing the information returned by an API call to Object/Owner/Search services
+    """ Result object containing the information returned by an API call to Object or Owner services
 
-    :seealso: EventResult
+    .. seealso:: EventResult
 
     Result object can be constructed either by passing a dictionary as the only argument (usually returned by an API HTTP call)
      >>> success = Result({'id': 'device_id', 'result': 'success'})
@@ -27,19 +27,26 @@ class Result(object):
 
     @property
     def id(self):
+        """identifier of the operation (deviceId for an object, username for an owner)"""
         return self._id
 
     @property
     def message(self):
+        """If `result` is not `success`: contains the reason of the failure"""
         return self._message
 
     @property
     def result(self):
+        """status of the operation: `success` or `failure`"""
         return self._result
 
 
 class EventResult(Result):
     def __init__(self, *args, **kwargs):
+        """Specialized version of `Result` for the EventsService
+
+        `result` property can be `success`, `failure`, `conflict`, `notfound`
+        """
         super(EventResult, self).__init__(*args, **kwargs)
         if self._id:
             self._id = uuid.UUID(self._id)
@@ -47,5 +54,9 @@ class EventResult(Result):
 
     @property
     def object_exists(self):
+        """`True` if the object specified by x_object.x_device_id actually exists.
+
+        To prevent submiting events to non_existing object, use `must_exist=True` with `send()`
+        """
         return self._object_exists
 

@@ -27,16 +27,16 @@ class APIManager(object):
         if not client_secret:
             raise ValueError("client_secret cannot be null or empty.")
 
-        self.__session = requests.Session()
+
         try:
-            self.__session.head(hostname)
+            requests.head(hostname)
         except requests.exceptions.ConnectionError:
             raise ValueError("Host at {} is not reachable".format(hostname))
 
         self.__client_id = client_id
         self.__client_secret = client_secret
         self.__hostname = hostname
-
+        self.__session = requests.Session()
         self.access_token = self.fetch_access_token()
 
     def fetch_access_token(self):
@@ -49,9 +49,11 @@ class APIManager(object):
         json_response = r.json()
         r.raise_for_status()
 
-        token = {'access_token': json_response['access_token'], 'expires_in': datetime.timedelta(0, json_response['expires_in']), 'requested_at': requested_at}
-
-        return token
+        return {
+            'access_token': json_response['access_token'],
+            'expires_in': datetime.timedelta(0, json_response['expires_in']),
+            'requested_at': requested_at
+        }
 
     def is_access_token_valid(self):
         """ Validates if the token is still valid
@@ -59,19 +61,20 @@ class APIManager(object):
         :return: True of the token is still valid, False if it is expired
         """
 
-        return self.access_token['requested_at'] + self.access_token['expires_in'] > datetime.datetime.now()
+        return (self.access_token['requested_at'] + self.access_token['expires_in']) > datetime.datetime.now()
 
     def get_token_authorization_header(self):
         """ Generates the authorization header used while requesting an access token
         """
+
         encoded = base64.b64encode("{0}:{1}".format(self.__client_id, self.__client_secret))
         return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic {}".format(encoded)}
 
     def get_authorization_header(self):
         """ Generates the authorization header used to access resources via mnubo's API
         """
-
-        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
+        return {
+            'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
 
     def get_api_url(self):
         """ Generates the general API url
@@ -86,7 +89,11 @@ class APIManager(object):
         return self.__hostname + '/oauth/token?grant_type=client_credentials'
 
     def validate_response(self, response):
-        if response.status_code == 400:
+        """ Raises a ValueError instead of a HTTPError in case of a 400 or 409
+
+        This allows easier development and consistency with client-side checks
+        """
+        if response.status_code in (400, 409):
             raise ValueError(response.content)
         response.raise_for_status()
 
@@ -94,7 +101,8 @@ class APIManager(object):
     def get(self, route, params={}):
         """ Build and send a get request authenticated
 
-        :param route: which resource to access via the REST API
+        :param route: JSON body to be included in the HTTP request
+        :param params: (optional) additional parameters for the request string
         """
 
         url = self.get_api_url() + route
@@ -109,8 +117,8 @@ class APIManager(object):
     def post(self, route, body={}):
         """ Build and send a post request authenticated
 
-        :param route: which resource to access via the REST API
-        :param body: body to be appended to the HTTP request
+        :param route: resource path (not including the API root)
+        :param body: JSON body to be included in the HTTP request
         """
 
         url = self.get_api_url() + route
@@ -123,11 +131,10 @@ class APIManager(object):
 
     @authenticate
     def put(self, route, body={}):
-        """ Build and send a put request authenticated
+        """ Build and send an authenticated put request
 
-        :param route: which resource to access via the REST API
-        :param body: body to be appended to the HTTP request
-        :param json_encoded: send the request using json body
+        :param route: resource path (not including the API root)
+        :param body: JSON body to be included in the HTTP request
         """
 
         url = self.get_api_url() + route

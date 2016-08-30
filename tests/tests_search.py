@@ -50,6 +50,9 @@ class TestOwnersService(unittest.TestCase):
             # only validating the first row
             break
 
+        self.assertEquals(resultset.get_column_index("COUNT(*)"), 1)
+        self.assertEquals(resultset.get_column_type("COUNT(*)"), "long")
+
         # test invalid access
         with self.assertRaises(IndexError):
             _ = resultset[-1]
