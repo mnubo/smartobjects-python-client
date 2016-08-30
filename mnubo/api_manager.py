@@ -73,8 +73,7 @@ class APIManager(object):
     def get_authorization_header(self):
         """ Generates the authorization header used to access resources via mnubo's API
         """
-        return {
-            'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
+        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
 
     def get_api_url(self):
         """ Generates the general API url
@@ -86,7 +85,7 @@ class APIManager(object):
         """ Generates the url to fetch the access token
         """
 
-        return self.__hostname + '/oauth/token?grant_type=client_credentials'
+        return self.__hostname + '/oauth/token?grant_type=client_credentials&scope=ALL'
 
     def validate_response(self, response):
         """ Raises a ValueError instead of a HTTPError in case of a 400 or 409

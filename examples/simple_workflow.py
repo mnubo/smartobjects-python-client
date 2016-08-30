@@ -36,7 +36,7 @@ def main():
     # use the EventsService to publish new events
     # events can be sent by batches of up to 1000 events
     events = [
-        {"x_object": {"x_device_id": "cat_detector_kitchen"}, "x_event_type": "cat_detected", "type": "soft", "speed": i}
+        {"x_event_type": "cat_detected", "type": "soft", "speed": i}
         for i in range(10)
     ]
     event_results = client.events.send_from_device("cat_detector_kitchen", events)

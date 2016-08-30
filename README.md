@@ -19,11 +19,9 @@ Table of Content
 ---
 #<a name="section1"></a>1. Introduction
 
-This package provide a simple Python client to connect to mnubo's SmartObject platform. It gives access to the most 
-common features of mnubo's REST API, while relieving the user of the need to manage the authentication.
-
-All methods require proper authentication. The `MnuboClient` object handles authentication under the hood based on the
-`client_id` and `client_secret` arguments.
+This package provides a simple Python client to connect to mnubo's SmartObjects platform. 
+It gives access to the most common features of mnubo's REST API. All methods require proper authentication. 
+The MnuboClient object handles authentication under the hood based on the client_id and client_secret arguments.
 
 Methods such as `create()`, `delete()`, etc, do not return any value. However if anything is invalid or goes wrong, an
 exception will be thrown so you know what happened.
@@ -93,7 +91,7 @@ The environment argument can be `Environment.Sandbox` or `Environment.Production
 API URL. 
 
 ### Use the Owners service
-To create owners on the mnubo SmartObject platform, please refer to
+To create owners on the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the owner's data structure.
 
 #### Create an Owner
@@ -147,7 +145,7 @@ True
 
 
 ### Use the Smart Objects Service
-To create smart objects on the mnubo SmartObject platform, please refer to
+To create smart objects on the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the smart object's data structure.
 
 #### Create a Smart Object
@@ -179,7 +177,7 @@ client.objects.create_update([
 ```
 _Mandatory properties_: `x_device_id` (all objects), `x_object_type` (new objects)
 
-Returns a list of `Result` with the completion status of each operation (and reason of failure if any).
+Returns a list of `Result` objects with the completion status of each operation (and reason of failure if any).
 
 #### Delete a Smart Object
 ```python
@@ -198,7 +196,7 @@ True
 
 
 ### Use the Event Services
-To send events to the mnubo SmartObject platform, please refer to
+To send events to the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the event's data structure.
 
 #### Send an Event
@@ -211,7 +209,7 @@ results = client.events.send([
 
 _Optional arguments_:
   - `must_exist`: if `True`, an event referring an unknown object will be rejected (default to `False`)
-  - `report_results`: if `True`, a list of `EventResult` object will be return with the status of each operation. 
+  - `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation. 
     If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception 
     will be thrown if at least one fail. Default to `True`.
      
@@ -227,7 +225,7 @@ results = client.events.send_from_device("ramanujan1887", [
 ```
 
 _Optional arguments_:
-  - `report_results`: if `True`, a list of `EventResult` object will be return with the status of each operation. 
+  - `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation. 
     If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception 
     will be thrown if at least one fail. Default to `True`.
      
@@ -244,7 +242,7 @@ True
 
 
 ### Use the Search Services
-To send search queries to the mnubo SmartObject platform, please refer to
+To send search queries to the mnubo SmartObjects platform, please refer to
 the Search API documentation to format your queries correctly.
 
 #### Search Query
