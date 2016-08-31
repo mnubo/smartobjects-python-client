@@ -11,7 +11,7 @@ class TestsApiManager(unittest.TestCase):
     def setUpClass(cls):
         cls.server = LocalApiServer()
         cls.server.start()
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, False)
 
     @classmethod
     def tearDownClass(cls):
@@ -139,7 +139,7 @@ class TestsApiManager(unittest.TestCase):
         self.assertIn('Content-Type', r.request.headers)
         self.assertEquals('application/json', r.request.headers['Content-Type'])
 
-    def test_content_encoding(self):
+    def test_accept_encoding(self):
         r = self.api.get("api_manager")
         self.assertIn('Accept-Encoding', r.request.headers)
 
@@ -151,3 +151,39 @@ class TestsApiManager(unittest.TestCase):
 
         r = self.api.delete("api_manager")
         self.assertIn('Accept-Encoding', r.request.headers)
+
+    def test_compression_post(self):
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, True)
+        content = {
+            "some_property": "some_value",
+            "some_boolean": True
+        }
+
+        r = api.post("compresssion_enabled", content)
+
+        self.assertIn('Content-Encoding', r.request.headers)
+        self.assertEquals('deflate', r.request.headers['Content-Encoding'])
+
+        self.assertIn('Content-Encoding', r.headers)
+        self.assertEquals('deflate', r.headers['Content-Encoding'])
+
+        # content already decompressed by python-requests
+        self.assertEquals(content, r.json())
+
+    def test_compression_put(self):
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, True)
+        content = {
+            "some_property": "some_value",
+            "some_boolean": True
+        }
+
+        r = api.put("compresssion_enabled", content)
+
+        self.assertIn('Content-Encoding', r.request.headers)
+        self.assertEquals('deflate', r.request.headers['Content-Encoding'])
+
+        self.assertIn('Content-Encoding', r.headers)
+        self.assertEquals('deflate', r.headers['Content-Encoding'])
+
+        # content already decompressed by python-requests
+        self.assertEquals(content, r.json())

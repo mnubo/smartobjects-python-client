@@ -1,5 +1,7 @@
 import uuid
 from datetime import datetime
+import zlib
+import json
 
 from .routes import route
 
@@ -301,3 +303,30 @@ class MockMnuboBackend(object):
     def delete_api_manager(self, body, params):
         return 200, (params, body)
 
+    @route('POST', '^/compresssion_enabled$')
+    def post_compression_enabled(self, body, params):
+        try:
+            decoded = zlib.decompress(body)
+        except Exception:
+            return 500, {"error": "failed to decompress body"}
+
+        try:
+            obj = json.loads(decoded)
+        except Exception:
+            return 500, {"error": "failed to load JSON"}
+
+        return 200, zlib.compress(json.dumps(obj))
+
+    @route('PUT', '^/compresssion_enabled$')
+    def put_compression_enabled(self, body, params):
+        try:
+            decoded = zlib.decompress(body)
+        except Exception:
+            return 500, {"error": "failed to decompress body"}
+
+        try:
+            obj = json.loads(decoded)
+        except Exception:
+            return 500, {"error": "failed to load JSON"}
+
+        return 200, zlib.compress(json.dumps(obj))

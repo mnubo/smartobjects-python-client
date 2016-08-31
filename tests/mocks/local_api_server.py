@@ -30,19 +30,29 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
             self.send_error(404)
             return
 
+        compress = path.startswith("/compress")
+
         if method == 'GET':
             code, resp_content = handler(self.server.backend, matches)
         else:
             length = int(self.headers['content-length'])
             body = self.rfile.read(length) if length else "{}"
-            code, resp_content = handler(self.server.backend, json.loads(body), matches)
+
+            if not compress:
+                body = json.loads(body)
+
+            code, resp_content = handler(self.server.backend, body, matches)
 
         self.send_response(code)
         if code < 300:
             self.send_header('Content-type', 'application/json')
+            if compress:
+                self.send_header('Content-encoding', 'deflate')
             self.end_headers()
             if resp_content is not None:
-                self.wfile.write(json.dumps(resp_content))
+                if not compress:
+                    resp_content = json.dumps(resp_content)
+                self.wfile.write(resp_content)
         else:
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
@@ -63,6 +73,7 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_response(200)
+
 
 class LocalApiServer(object):
     def __init__(self):
