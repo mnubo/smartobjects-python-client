@@ -13,7 +13,6 @@ def authenticate(func):
 
 
 class APIManager(object):
-
     def __init__(self, client_id, client_secret, hostname):
         """ Initializes the API Manager which is responsible for authenticating every request.
 
@@ -22,9 +21,22 @@ class APIManager(object):
         :param hostname: the hostname to send the requests (sandbox or production)
         """
 
+        if not client_id:
+            raise ValueError("client_id cannot be null or empty.")
+
+        if not client_secret:
+            raise ValueError("client_secret cannot be null or empty.")
+
+
+        try:
+            requests.head(hostname)
+        except requests.exceptions.ConnectionError:
+            raise ValueError("Host at {} is not reachable".format(hostname))
+
         self.__client_id = client_id
         self.__client_secret = client_secret
         self.__hostname = hostname
+        self.__session = requests.Session()
         self.access_token = self.fetch_access_token()
 
     def fetch_access_token(self):
@@ -33,12 +45,15 @@ class APIManager(object):
 
         requested_at = datetime.datetime.now()
 
-        r = requests.post(self.get_auth_url(), headers=self.get_token_authorization_header())
-        json_response = json.loads(r.content)
+        r = self.__session.post(self.get_auth_url(), headers=self.get_token_authorization_header())
+        json_response = r.json()
+        r.raise_for_status()
 
-        token = {'access_token': json_response['access_token'], 'expires_in': datetime.timedelta(0, json_response['expires_in']), 'requested_at': requested_at}
-
-        return token
+        return {
+            'access_token': json_response['access_token'],
+            'expires_in': datetime.timedelta(0, json_response['expires_in']),
+            'requested_at': requested_at
+        }
 
     def is_access_token_valid(self):
         """ Validates if the token is still valid
@@ -46,18 +61,18 @@ class APIManager(object):
         :return: True of the token is still valid, False if it is expired
         """
 
-        return self.access_token['requested_at'] + self.access_token['expires_in'] > datetime.datetime.now()
+        return (self.access_token['requested_at'] + self.access_token['expires_in']) > datetime.datetime.now()
 
     def get_token_authorization_header(self):
         """ Generates the authorization header used while requesting an access token
         """
 
-        return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic " + base64.b64encode(self.__client_id + ":" + self.__client_secret)}
+        encoded = base64.b64encode("{0}:{1}".format(self.__client_id, self.__client_secret))
+        return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic {}".format(encoded)}
 
     def get_authorization_header(self):
         """ Generates the authorization header used to access resources via mnubo's API
         """
-
         return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
 
     def get_api_url(self):
@@ -70,47 +85,64 @@ class APIManager(object):
         """ Generates the url to fetch the access token
         """
 
-        return self.__hostname + '/oauth/token?grant_type=client_credentials'
+        return self.__hostname + '/oauth/token?grant_type=client_credentials&scope=ALL'
+
+    def validate_response(self, response):
+        """ Raises a ValueError instead of a HTTPError in case of a 400 or 409
+
+        This allows easier development and consistency with client-side checks
+        """
+        if response.status_code in (400, 409):
+            raise ValueError(response.content)
+        response.raise_for_status()
 
     @authenticate
     def get(self, route, params={}):
         """ Build and send a get request authenticated
 
-        :param route: which resource to access via the REST API
+        :param route: JSON body to be included in the HTTP request
+        :param params: (optional) additional parameters for the request string
         """
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.get(url, params=params, headers=headers)
+
+        response = self.__session.get(url, params=params, headers=headers)
+        self.validate_response(response)
+
+        return response
 
     @authenticate
     def post(self, route, body={}):
         """ Build and send a post request authenticated
 
-        :param route: which resource to access via the REST API
-        :param body: body to be appended to the HTTP request
+        :param route: resource path (not including the API root)
+        :param body: JSON body to be included in the HTTP request
         """
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.post(url, data=body, headers=headers)
+
+        response = self.__session.post(url, json=body, headers=headers)
+        self.validate_response(response)
+
+        return response
 
     @authenticate
-    def put(self, route, body={}, json_encoded=True):
-        """ Build and send a put request authenticated
+    def put(self, route, body={}):
+        """ Build and send an authenticated put request
 
-        :param route: which resource to access via the REST API
-        :param body: body to be appended to the HTTP request
-        :param json_encoded: send the request using json body
+        :param route: resource path (not including the API root)
+        :param body: JSON body to be included in the HTTP request
         """
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
 
-        if json_encoded:
-            return requests.put(url, json=body, headers=headers)
-        else:
-            return requests.put(url, data=body, headers=headers)
+        response = self.__session.put(url, json=body, headers=headers)
+        self.validate_response(response)
+
+        return response
 
     @authenticate
     def delete(self, route):
@@ -121,4 +153,8 @@ class APIManager(object):
 
         url = self.get_api_url() + route
         headers = self.get_authorization_header()
-        return requests.delete(url, headers=headers)
+
+        response = self.__session.delete(url, headers=headers)
+        self.validate_response(response)
+
+        return response

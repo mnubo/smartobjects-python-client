@@ -1,181 +1,306 @@
-# mnubo Python SDK
+# mnubo SmartObjects Python client
 
 Table of Content
 ================
 
 [1. Introduction](#section1)
 
-[2. Architecture](#section2)
+[2. At a glance](#section2)
 
-[3. Pre-requisites](#section3)
+[3. Requirements](#section3)
 
 [4. Installation & Configuration](#section4)
 
 [5. Usage](#section5)
 
-[6. Important notes](#section6)
+[6. Need help?](#section6)
 
-[7. Source code](#section7)
-
-[8. Known limitations](#section8)
-
-[9. References](#section9)
 
 ---
 #<a name="section1"></a>1. Introduction
 
-To connect your Python application to our API use the mnubo Python SDK.
+This package provides a simple Python client to connect to mnubo's SmartObjects platform. 
+It gives access to the most common features of mnubo's REST API. All methods require proper authentication. 
+The MnuboClient object handles authentication under the hood based on the client_id and client_secret arguments.
+
+Methods such as `create()`, `delete()`, etc, do not return any value. However if anything is invalid or goes wrong, an
+exception will be thrown so you know what happened.
+
+
+#<a name="section3"></a>2. At a glance
+
+_(optional arguments omitted)_
+
+| Service | Method                                   | Summary                                                               | Example             |
+| ------- | ---------------------------------------- | --------------------------------------------------------------------- | ------------------- |
+| Owners  | `create(owner)                      `    | create a new owner                                                    | [simple_workflow.py](examples/simple_workflow.py)                    |
+|         | `update(username, owner)            `    | update an existing owner                                              |                     |
+|         | `claim(username, device_id)         `    | link an existing object to an existing owner                          | [simple_workflow.py](examples/simple_workflow.py)                   |
+|         | `create_update(owners)              `    | create or update a batch or owners                                    |                     |
+|         | `delete(username)                   `    | delete an owner                                                       |                     |
+|         | `owner_exists(username)             `    | check if an owner exists                                              | [simple_workflow.py](examples/simple_workflow.py)                    |
+|         | `owners_exist(usernames)            `    | check if a list of owners exist                                       |                     |
+| Objects | `create(object)                     `    | create a new smart object                                             | [simple_workflow.py](examples/simple_workflow.py)                    |
+|         | `update(device_id, object)          `    | update an existing object                                             |                     |
+|         | `create_update(objects)             `    | create or update a batch of objects                                   |                     |
+|         | `delete(device_id)                  `    | delete an object                                                      |                     |
+|         | `object_exists(device_id)           `    | check if an object exists                                             | [simple_workflow.py](examples/simple_workflow.py)                    |
+|         | `objects_exist(device_ids)          `    | check if a list of objects exist                                      |                     |
+| Events  | `send(events)                       `    | send a batch of events tagged with multiple devices                   |                     |
+|         | `send_from_device(device_id, events)`    | send an event tagged with a specific device                           | [simple_workflow.py](examples/simple_workflow.py)                    |
+|         | `event_exists(event_id)             `    | check if an event exists                                              |                     |
+|         | `events_exist(event_ids)            `    | check if list of events exist                                         |                     |
+| Search  | `search(query)                      `    | performs a search in the platform with the provided JSON query (MQL)  | [simple_workflow.py](examples/simple_workflow.py)  |
+|         | `validate_query(query)              `    | validates an MQL query                                                | [simple_workflow.py](examples/simple_workflow.py)  |
+|         | `get_datasets()                     `    | retrieves the list of datasets available for this account             | [simple_workflow.py](examples/simple_workflow.py)  |
+
+
 
 ---
-#<a name="section3"></a>2. Architecture
-
-
-* `OwnerServices`
-  - `create`
-  - `claim`
-  - `update`
-  - `delete`
-
-* `ObjectServices`
-  - `create`
-  - `update`
-  - `delete`
-
-* `EventServices`
-  - `send`
-  
-* `SearchServices`
-  - `search`
-  - `search_datasets`
-  
-* `BatchServices`
-  - `owners`
-  - `objects`
-  - `events`
-
-
----
-#<a name="section3"></a>3. Pre-requisites
+#<a name="section3"></a>3. Requirements
 
 - Python 2.7
+- libraries: `requests`, `six`
 
 
 ---
 #<a name="section4"></a>4. Installation & Configuration
 
-    pip install mnubo
+From [PyPI](https://pypi.python.org/pypi/mnubo/):
+
+    $ pip install mnubo
+
+From the sources: 
+
+    $ git clone https://github.com/mnubo/smartobjects-python-client.git
+    $ cd smartobjects-python-client
+    $ python setup.py install
 
 ---
 #<a name="section5"></a>5. Usage
 
 ### Initialize the MnuboClient
-
+                                  
 ```python
-from mnubo.mnubo_client import MnuboClient
+from mnubo import MnuboClient
 
-mnubo = MnuboClient('CLIENT_ID', 'CLIENT_SECRET', 'HOSTNAME')
+client = MnuboClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environment.Production)
 ```
 
-### Use the Owner Services
-To create owners on the mnubo SmartObject platform, please refer to
+The environment argument can be `Environment.Sandbox` or `Environment.Production` and automatically resolves to the right
+API URL. 
+
+### Use the Owners service
+To create owners on the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the owner's data structure.
 
 #### Create an Owner
 ```python
-response = mnubo.owner_services.create('OWNER_IN_JSON')
+client.owners.create({
+    "username": "sheldon.cooper@caltech.edu",
+    "x_password": "****************",
+    "zip_code": "91125"
+})
 ```
+
+_Mandatory properties_: `username`, `x_password`
 
 #### Claim a Smart Object for an Owner
 ```python
-response = mnubo.owner_services.claim('USERNAME', 'DEVICE_ID')
+client.owners.claim('sheldon.cooper@caltech.edu', 'fermat1901')
 ```
 
 #### Update an Owner
 ```python
-response = mnubo.owner_services.update('OWNER_IN_JSON')
+client.owners.update('sheldon.cooper@caltech.edu', {
+    "zip_code": "94305",    # update of an existing property
+    "service_type": "phd"   # creation of a new property
+})
 ```
+#### Create or update owners in batch
+```python
+results = client.owners.create_update([
+    {"username": "sheldon.cooper@caltech.edu", "service_type": "prof"},
+    {"username": "leonard.hofstadter@caltech.edu", "x_password": "*******"}   
+])
+```
+_Mandatory properties_: `x_username_id` (all owners), `x_x_password_type` (new owners)
+
+Returns a list of `Result` with the completion status of each operation (and reason of failure if any).
 
 #### Delete an Owner
 ```python
-response = mnubo.owner_services.delete('USERNAME')
+client.owners.delete('sheldon.cooper@caltech.edu')
 ```
 
-### Use the Smart Objects Services
-To create smart objects on the mnubo SmartObject platform, please refer to
+#### Check if an owner exists
+
+```python
+>>> client.owners.owner_exists('sheldon.cooper@caltech.edu')
+True
+
+>>> client.owners.owners_exist(['sheldon.cooper@caltech.edu', 'hwolowitz.phd@caltech.edu'])
+{'sheldon.cooper@caltech.edu': True, 'hwolowitz.phd@caltech.edu': False}
+```
+
+
+### Use the Smart Objects Service
+To create smart objects on the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the smart object's data structure.
 
 #### Create a Smart Object
 ```python
-response = mnubo.smart_object_services.create('OBJECT_IN_JSON')
+client.objects.create({
+    "x_device_id": "fermat1901",
+    "x_object_type": "calculator",
+    "precision": "infinite"
+})
 ```
+_Mandatory properties_: `x_device_id`, `x_object_type`
 
 #### Update a Smart Object
 ```python
-response = mnubo.smart_object_services.update('OBJECT_IN_JSON')
+client.objects.update("fermat1901", {
+    "is_valid": True
+})
 ```
+
+#### Create or update objects in batch
+
+If an object doesn't exist, it will be created, otherwise it will be updated.
+
+```python
+client.objects.create_update([
+    {"x_device_id": "fermat1901", "is_valid": False},
+    {"x_device_id": "ramanujan1887", "x_object_type": "pie"}
+])
+```
+_Mandatory properties_: `x_device_id` (all objects), `x_object_type` (new objects)
+
+Returns a list of `Result` objects with the completion status of each operation (and reason of failure if any).
 
 #### Delete a Smart Object
 ```python
-response = mnubo.smart_object_services.delete('DEVICE_ID')
+client.objects.delete("fermat1901")
 ```
 
+#### Check if an object exists
+
+```python
+>>> client.objects.object_exists('fermat1901')
+True
+
+>>> client.objects.objects_exist(['fermat1901', 'teleporter'])
+{'fermat1901': True, 'teleporter': False}
+```
+
+
 ### Use the Event Services
-To send events to the mnubo SmartObject platform, please refer to
+To send events to the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the event's data structure.
 
 #### Send an Event
 ```python
-response = mnubo.event_services.send('EVENT_IN_JSON')
+results = client.events.send([
+    {"x_object": {"x_device_id": "fermat1901"}, "status": "running"},
+    {"x_object": {"x_device_id": "ramanujan1887"}, "ratio": 3.1415}
+])
 ```
 
+_Optional arguments_:
+  - `must_exist`: if `True`, an event referring an unknown object will be rejected (default to `False`)
+  - `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation. 
+    If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception 
+    will be thrown if at least one fail. Default to `True`.
+     
+#### Send an event tagged with a device
+
+This method allows sending multiple events for a given device without the need of setting the target in the payload.
+
+```python
+results = client.events.send_from_device("ramanujan1887", [
+    {"ratio": 3.1414},
+    {"ratio": 3.1413}
+])
+```
+
+_Optional arguments_:
+  - `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation. 
+    If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception 
+    will be thrown if at least one fail. Default to `True`.
+     
+     
+#### Check if an event already exists
+
+```python
+>>> client.events.event_exists(UUID("1ff58794-f0da-4738-8444-68a592de6746"))
+True
+
+>>> client.events.events_exist([UUID("1ff58794-f0da-4738-8444-68a592de6746"), uuid.uuid4()])
+{UUID("1ff58794-f0da-4738-8444-68a592de6746"): True, UUID("e399afda-3c8b-4a6d-bf9c-c51b846c214d"): False}
+```
+
+
 ### Use the Search Services
-To send search queries to the mnubo SmartObject platform, please refer to
+To send search queries to the mnubo SmartObjects platform, please refer to
 the Search API documentation to format your queries correctly.
 
 #### Search Query
 ```python
-response = mnubo.search_services.search('QUERY')
+resultset = client.search.search({
+    "from": "owner",
+    "limit": 100,
+    "select": [
+        {"value": "username"}
+    ]
+})
 ```
 
-#### Search Datasets Query
+This method returns a `ResultSet` containing the result of the search (columns and rows).
+
 ```python
-response = mnubo.search_services.search_datasets('QUERY')
+>>> "Got {} results!".format(len(resultset))
+Got 2 results!
+>>> [row.get("username") for row in resultset]
+["sheldon.cooper@caltech.edu", "leonard.hofstadter@caltech.edu"]
 ```
 
-### Use the Batch Services
-To create or update owners or objects in batch, please refer to the Batch section
-of either the SmartObject or the Owners in the API documentation to format the data correctly.
+#### Validate a search query
 
-#### Batch Owners
+For complex queries, it is recommended to use this feature to reduce errors.
+
 ```python
-response = mnubo.batch_services.owners('OWNERS_IN_JSON')
+validation_result = client.search.validate_query({
+    "fro": "owner",
+    "limit": 100,
+    "select": [
+        {"value": "username"}
+    ]
+})
 ```
 
-#### Batch Objects
+This method returns a `QueryValidationResult` object with the status of the validation and list of errors if any:
+
 ```python
-response = mnubo.batch_services.objects('OBJECTS_IN_JSON')
+>>> validation_result.is_valid
+False
+>>> validation_result.validation_errors
+["a query must have a 'from' field"]
 ```
 
-#### Batch Events
-'REPORT_RESULTS': is a boolean that specify if a body with the result of each individual event should be returned.
+
+#### Retrieve namespace datasets
+
+This method allows to retrieve the different datasets available for querying. Result is a map of `DataSet` objects 
+indexed by the dataset name (`owner`, `object`, `event`, `session`).
+
 ```python
-response = mnubo.batch_services.events('EVENTS_IN_JSON', 'REPORT_RESULTS')
+>>> datasets = client.search.get_datasets()
+>>> [event.key for event in datasets['event'].fields]
+["event_id", "x_object.x_device_id", "timestamp", ...]
 ```
 
----
-#<a name="section6"></a>6. Important notes
 
+#<a name="section6"></a>6. Need help?
 
-
----
-#<a name="section7"></a>7. Source code
-
-
-
----
-#<a name="section8"></a>8. Known limitations
-
-
-
----
-#<a name="section9"></a>9. References
+Reach us at support@mnubo.com
