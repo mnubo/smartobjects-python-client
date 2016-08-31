@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from mnubo import __version__, __author__, __email__
 
 with open('requirements.txt') as f:
     requirements = [line.strip() for line in f.readlines()]
 
+VERSION = "2.0{tag}"
+try:
+    with open('build_version.txt') as f:
+        tag = f.readline().strip()
+        version = VERSION.format(tag="."+tag)
+except IOError:
+    version = VERSION.format(tag="-dev")
+
 setup(
     name="mnubo",
-    version=__version__,
+    version=version,
     description="Python client to access mnubo ingestion and restitution APIs",
-    author=__author__,
-    author_email=__email__,
+    author="mnubo, inc.",
+    author_email="support@mnubo.com",
     url="https://github.com/mnubo/smartobjects-python-client",
     packages=["mnubo"],
     install_requires=requirements,
