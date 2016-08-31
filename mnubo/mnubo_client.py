@@ -15,7 +15,7 @@ class MnuboClient(object):
     """ Initializes the mnubo client which contains the API manager as well as the available resource services
     """
 
-    def __init__(self, client_id, client_secret, environment):
+    def __init__(self, client_id, client_secret, environment, compression_enabled=True):
         """ Initialization of the mnubo client
 
         The client exposes the Events, Objects, Owners and Search services.
@@ -33,7 +33,7 @@ class MnuboClient(object):
         if environment not in (Environments.Sandbox, Environments.Production):
             raise ValueError("Invalid 'environment' argument, must be one of: Environments.Sandbox, Environments.Production")
 
-        self._api_manager = APIManager(client_id, client_secret, environment)
+        self._api_manager = APIManager(client_id, client_secret, environment, compression_enabled)
         self.owners = OwnersService(self._api_manager)
         self.events = EventsService(self._api_manager)
         self.objects = ObjectsService(self._api_manager)

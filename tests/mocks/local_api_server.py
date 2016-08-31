@@ -47,7 +47,7 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
         if code < 300:
             self.send_header('Content-type', 'application/json')
             if compress:
-                self.send_header('Content-encoding', 'deflate')
+                self.send_header('Content-encoding', 'gzip')
             self.end_headers()
             if resp_content is not None:
                 if not compress:

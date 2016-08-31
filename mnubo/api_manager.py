@@ -2,7 +2,8 @@ import requests
 import json
 import base64
 import datetime
-import zlib
+import gzip
+import StringIO
 
 def authenticate(func):
     def authenticate_and_call(*args):
@@ -99,6 +100,13 @@ class APIManager(object):
             raise ValueError(response.content)
         response.raise_for_status()
 
+    def _gzip_encode(self, data):
+        out = StringIO.StringIO()
+        f = gzip.GzipFile(mode='wb', fileobj=out)
+        f.write(data)
+        f.close()
+        return out.getvalue()
+
     @authenticate
     def get(self, route, params={}):
         """ Build and send a get request authenticated
@@ -127,8 +135,8 @@ class APIManager(object):
         headers = self.get_authorization_header()
 
         if self.compression_enabled:
-            headers.update({"content-encoding": "deflate"})
-            encoded = zlib.compress(json.dumps(body))
+            headers.update({"content-encoding": "gzip"})
+            encoded = self._gzip_encode(json.dumps(body))
             response = self.__session.post(url, data=encoded, headers=headers)
         else:
             response = self.__session.post(url, json=body, headers=headers)
@@ -149,8 +157,8 @@ class APIManager(object):
         headers = self.get_authorization_header()
 
         if self.compression_enabled:
-            headers.update({"content-encoding": "deflate"})
-            encoded = zlib.compress(json.dumps(body))
+            headers.update({"content-encoding": "gzip"})
+            encoded = self._gzip_encode(json.dumps(body))
             response = self.__session.put(url, data=encoded, headers=headers)
         else:
             response = self.__session.put(url, json=body, headers=headers)

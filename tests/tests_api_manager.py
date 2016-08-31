@@ -159,13 +159,13 @@ class TestsApiManager(unittest.TestCase):
             "some_boolean": True
         }
 
-        r = api.post("compresssion_enabled", content)
+        r = api.post("compression_enabled", content)
 
         self.assertIn('Content-Encoding', r.request.headers)
-        self.assertEquals('deflate', r.request.headers['Content-Encoding'])
+        self.assertEquals('gzip', r.request.headers['Content-Encoding'])
 
         self.assertIn('Content-Encoding', r.headers)
-        self.assertEquals('deflate', r.headers['Content-Encoding'])
+        self.assertEquals('gzip', r.headers['Content-Encoding'])
 
         # content already decompressed by python-requests
         self.assertEquals(content, r.json())
@@ -177,13 +177,13 @@ class TestsApiManager(unittest.TestCase):
             "some_boolean": True
         }
 
-        r = api.put("compresssion_enabled", content)
+        r = api.put("compression_enabled", content)
 
         self.assertIn('Content-Encoding', r.request.headers)
-        self.assertEquals('deflate', r.request.headers['Content-Encoding'])
+        self.assertEquals('gzip', r.request.headers['Content-Encoding'])
 
         self.assertIn('Content-Encoding', r.headers)
-        self.assertEquals('deflate', r.headers['Content-Encoding'])
+        self.assertEquals('gzip', r.headers['Content-Encoding'])
 
         # content already decompressed by python-requests
         self.assertEquals(content, r.json())

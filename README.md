@@ -90,6 +90,10 @@ client = MnuboClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environment.Production)
 The environment argument can be `Environment.Sandbox` or `Environment.Production` and automatically resolves to the right
 API URL. 
 
+_Optional arguments_:
+
+  - compression_enabled: if `True`, data sent to the platform is compressed using _gzip_ format. Default: `True`
+
 ### Use the Owners service
 To create owners on the mnubo SmartObjects platform, please refer to
 the data modeling guide to format correctly the owner's data structure.
