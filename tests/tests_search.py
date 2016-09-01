@@ -17,7 +17,7 @@ class TestOwnersService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, False)
         cls.search = SearchService(cls.api)
 
     @classmethod

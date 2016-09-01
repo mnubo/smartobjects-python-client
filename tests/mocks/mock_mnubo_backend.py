@@ -1,5 +1,9 @@
 import uuid
 from datetime import datetime
+import gzip
+import zlib
+import StringIO
+import json
 
 from .routes import route
 
@@ -12,6 +16,13 @@ class MockMnuboBackend(object):
         self.events = {}
         self.owners = {}
         self.objects = {}
+
+    def _gzip_encode(self, data):
+        out = StringIO.StringIO()
+        f = gzip.GzipFile(mode='wb', fileobj=out)
+        f.write(data)
+        f.close()
+        return out.getvalue()
 
     @route('POST', '^/oauth/.*')
     def auth(self, body, params):
@@ -301,3 +312,30 @@ class MockMnuboBackend(object):
     def delete_api_manager(self, body, params):
         return 200, (params, body)
 
+    @route('POST', '^/compression_enabled$')
+    def post_compression_enabled(self, body, params):
+        try:
+            decoded = zlib.decompress(body, 16+zlib.MAX_WBITS)
+        except Exception:
+            return 500, {"error": "failed to decompress body"}
+
+        try:
+            obj = json.loads(decoded)
+        except Exception:
+            return 500, {"error": "failed to load JSON"}
+
+        return 200, self._gzip_encode(json.dumps(obj))
+
+    @route('PUT', '^/compression_enabled$')
+    def put_compression_enabled(self, body, params):
+        try:
+            decoded = zlib.decompress(body,  16+zlib.MAX_WBITS)
+        except Exception:
+            return 500, {"error": "failed to decompress body"}
+
+        try:
+            obj = json.loads(decoded)
+        except Exception:
+            return 500, {"error": "failed to load JSON"}
+
+        return 200, self._gzip_encode(json.dumps(obj))
