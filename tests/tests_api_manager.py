@@ -142,15 +142,19 @@ class TestsApiManager(unittest.TestCase):
     def test_accept_encoding(self):
         r = self.api.get("api_manager")
         self.assertIn('Accept-Encoding', r.request.headers)
+        self.assertIn('gzip', r.request.headers['Accept-Encoding'])
 
         r = self.api.post("api_manager", {})
         self.assertIn('Accept-Encoding', r.request.headers)
+        self.assertIn('gzip', r.request.headers['Accept-Encoding'])
 
         r = self.api.put("api_manager", {})
         self.assertIn('Accept-Encoding', r.request.headers)
+        self.assertIn('gzip', r.request.headers['Accept-Encoding'])
 
         r = self.api.delete("api_manager")
         self.assertIn('Accept-Encoding', r.request.headers)
+        self.assertIn('gzip', r.request.headers['Accept-Encoding'])
 
     def test_compression_post(self):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, True)
