@@ -25,6 +25,7 @@ class MnuboClient(object):
         :param client_secret (string): client_secret part of the OAuth 2.0 credentials (available in your dashboard)
         :param environment: either Environments.Sandbox or Environments.Production
             (note: client_id and client_secret are unique per environment)
+        :param compression_enabled: gzip compress the request body (default: True)
 
         :note: Do not expose publicly code containing your client_id and client_secret
         .. seealso:: examples/simple_workflow.py
