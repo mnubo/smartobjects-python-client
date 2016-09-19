@@ -1,86 +1,86 @@
 # mnubo SmartObjects Python client
 
+
 Table of Content
 ================
 
-[1. Introduction](#section1)
+[1. Introduction](#1-introduction)
 
-[2. At a glance](#section2)
+[2. At a glance](#2-at-a-glance)
 
-[3. Requirements](#section3)
+[3. Requirements](#3-requirements)
 
-[4. Installation & Configuration](#section4)
+[4. Installation & Configuration](#4-installation--configuration)
 
-[5. Usage](#section5)
+[5. Usage](#5-usage)
 
-[6. Need help?](#section6)
-
+[6. Need help?](#6-need-help)
 
 ---
-#<a name="section1"></a>1. Introduction
+#1. Introduction
 
-This package provides a simple Python client to connect to mnubo's SmartObjects platform. 
-It gives access to the most common features of mnubo's REST API. All methods require proper authentication. 
+This package provides a simple Python client to connect to mnubo's SmartObjects platform.
+It gives access to the most common features of mnubo's REST API. All methods require proper authentication.
 The MnuboClient object handles authentication under the hood based on the client_id and client_secret arguments.
 
 Methods such as `create()`, `delete()`, etc, do not return any value. However if anything is invalid or goes wrong, an
 exception will be thrown so you know what happened.
 
 
-#<a name="section3"></a>2. At a glance
+#2. At a glance
 
 _(optional arguments omitted)_
 
-| Service | Method                                   | Summary                                                               | Example             |
-| ------- | ---------------------------------------- | --------------------------------------------------------------------- | ------------------- |
-| Owners  | `create(owner)                      `    | create a new owner                                                    | [simple_workflow.py](examples/simple_workflow.py)                    |
-|         | `update(username, owner)            `    | update an existing owner                                              |                     |
-|         | `claim(username, device_id)         `    | link an existing object to an existing owner                          | [simple_workflow.py](examples/simple_workflow.py)                   |
-|         | `create_update(owners)              `    | create or update a batch or owners                                    |                     |
-|         | `delete(username)                   `    | delete an owner                                                       |                     |
-|         | `owner_exists(username)             `    | check if an owner exists                                              | [simple_workflow.py](examples/simple_workflow.py)                    |
-|         | `owners_exist(usernames)            `    | check if a list of owners exist                                       |                     |
-| Objects | `create(object)                     `    | create a new smart object                                             | [simple_workflow.py](examples/simple_workflow.py)                    |
-|         | `update(device_id, object)          `    | update an existing object                                             |                     |
-|         | `create_update(objects)             `    | create or update a batch of objects                                   |                     |
-|         | `delete(device_id)                  `    | delete an object                                                      |                     |
-|         | `object_exists(device_id)           `    | check if an object exists                                             | [simple_workflow.py](examples/simple_workflow.py)                    |
-|         | `objects_exist(device_ids)          `    | check if a list of objects exist                                      |                     |
-| Events  | `send(events)                       `    | send a batch of events tagged with multiple devices                   |                     |
-|         | `send_from_device(device_id, events)`    | send an event tagged with a specific device                           | [simple_workflow.py](examples/simple_workflow.py)                    |
-|         | `event_exists(event_id)             `    | check if an event exists                                              |                     |
-|         | `events_exist(event_ids)            `    | check if list of events exist                                         |                     |
-| Search  | `search(query)                      `    | performs a search in the platform with the provided JSON query (MQL)  | [simple_workflow.py](examples/simple_workflow.py)  |
-|         | `validate_query(query)              `    | validates an MQL query                                                | [simple_workflow.py](examples/simple_workflow.py)  |
-|         | `get_datasets()                     `    | retrieves the list of datasets available for this account             | [simple_workflow.py](examples/simple_workflow.py)  |
+| Service | Method                                | Summary                                  | Example                                  |
+| ------- | ------------------------------------- | ---------------------------------------- | ---------------------------------------- |
+| Owners  | `create(owner)                      ` | create a new owner                       | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `update(username, owner)            ` | update an existing owner                 |                                          |
+|         | `claim(username, device_id)         ` | link an existing object to an existing owner | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `create_update(owners)              ` | create or update a batch or owners       |                                          |
+|         | `delete(username)                   ` | delete an owner                          |                                          |
+|         | `owner_exists(username)             ` | check if an owner exists                 | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `owners_exist(usernames)            ` | check if a list of owners exist          |                                          |
+| Objects | `create(object)                     ` | create a new smart object                | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `update(device_id, object)          ` | update an existing object                |                                          |
+|         | `create_update(objects)             ` | create or update a batch of objects      |                                          |
+|         | `delete(device_id)                  ` | delete an object                         |                                          |
+|         | `object_exists(device_id)           ` | check if an object exists                | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `objects_exist(device_ids)          ` | check if a list of objects exist         |                                          |
+| Events  | `send(events)                       ` | send a batch of events tagged with multiple devices |                                          |
+|         | `send_from_device(device_id, events)` | send an event tagged with a specific device | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `event_exists(event_id)             ` | check if an event exists                 |                                          |
+|         | `events_exist(event_ids)            ` | check if list of events exist            |                                          |
+| Search  | `search(query)                      ` | performs a search in the platform with the provided JSON query (MQL) | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `validate_query(query)              ` | validates an MQL query                   | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `get_datasets()                     ` | retrieves the list of datasets available for this account | [simple_workflow.py](examples/simple_workflow.py) |
 
 
 
 ---
-#<a name="section3"></a>3. Requirements
+#3. Requirements
 
 - Python 2.7
 - libraries: `requests`, `six`
 
 
 ---
-#<a name="section4"></a>4. Installation & Configuration
+#4. Installation & Configuration
 
 From [PyPI](https://pypi.python.org/pypi/mnubo/):
 
     $ pip install mnubo
 
-From the sources: 
+From the sources:
 
     $ git clone https://github.com/mnubo/smartobjects-python-client.git
     $ cd smartobjects-python-client
     $ python setup.py install
 
 ---
-#<a name="section5"></a>5. Usage
+#5. Usage
 
 ### Initialize the MnuboClient
-                                  
+
 ```python
 from mnubo import MnuboClient
 
@@ -88,11 +88,11 @@ client = MnuboClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environment.Production)
 ```
 
 The environment argument can be `Environment.Sandbox` or `Environment.Production` and automatically resolves to the right
-API URL. 
+API URL.
 
 _Optional arguments_:
 
-  - compression_enabled: if `True`, data sent to the platform is compressed using _gzip_ format. Default: `True`
+- compression_enabled: if `True`, data sent to the platform is compressed using _gzip_ format. Default: `True`
 
 ### Use the Owners service
 To create owners on the mnubo SmartObjects platform, please refer to
@@ -212,11 +212,11 @@ results = client.events.send([
 ```
 
 _Optional arguments_:
-  - `must_exist`: if `True`, an event referring an unknown object will be rejected (default to `False`)
-  - `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation. 
-    If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception 
-    will be thrown if at least one fail. Default to `True`.
-     
+- `must_exist`: if `True`, an event referring an unknown object will be rejected (default to `False`)
+- `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation.
+      If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception
+      will be thrown if at least one fail. Default to `True`.
+
 #### Send an event tagged with a device
 
 This method allows sending multiple events for a given device without the need of setting the target in the payload.
@@ -229,11 +229,11 @@ results = client.events.send_from_device("ramanujan1887", [
 ```
 
 _Optional arguments_:
-  - `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation. 
-    If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception 
+-   `report_results`: if `True`, a list of `EventResult` objects will be returned with the status of each operation.
+    If `False`, nothing will be returned when _all_ events are successfully ingested, but a `ValueError` exception
     will be thrown if at least one fail. Default to `True`.
-     
-     
+
+
 #### Check if an event already exists
 
 ```python
@@ -295,7 +295,7 @@ False
 
 #### Retrieve namespace datasets
 
-This method allows to retrieve the different datasets available for querying. Result is a map of `DataSet` objects 
+This method allows to retrieve the different datasets available for querying. Result is a map of `DataSet` objects
 indexed by the dataset name (`owner`, `object`, `event`, `session`).
 
 ```python
@@ -305,6 +305,6 @@ indexed by the dataset name (`owner`, `object`, `event`, `session`).
 ```
 
 
-#<a name="section6"></a>6. Need help?
+#6. Need help?
 
 Reach us at support@mnubo.com
