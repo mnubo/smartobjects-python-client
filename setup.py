@@ -16,7 +16,7 @@ except IOError:
 setup(
     name="mnubo",
     version=version,
-    description="Python client to access mnubo ingestion and restitution APIs",
+    description="Python client to access mnubo SmartObjects ingestion and restitution APIs",
     author="mnubo, inc.",
     author_email="support@mnubo.com",
     url="https://github.com/mnubo/smartobjects-python-client",

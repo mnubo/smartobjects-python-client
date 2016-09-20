@@ -1,6 +1,10 @@
 # mnubo SmartObjects Python client
 
 
+[![Build status](https://travis-ci.org/mnubo/smartobjects-python-client.svg?branch=master)](https://travis-ci.org/mnubo/smartobjects-python-client)
+[![PyPI](https://img.shields.io/pypi/v/mnubo.svg?maxAge=2592000)](https://pypi.python.org/pypi/mnubo/)
+
+
 Table of Content
 ================
 
@@ -84,10 +88,10 @@ From the sources:
 ```python
 from mnubo import MnuboClient
 
-client = MnuboClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environment.Production)
+client = MnuboClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
 ```
 
-The environment argument can be `Environment.Sandbox` or `Environment.Production` and automatically resolves to the right
+The environment argument can be `Environments.Sandbox` or `Environments.Production` and automatically resolves to the right
 API URL.
 
 _Optional arguments_:
