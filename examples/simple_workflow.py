@@ -1,7 +1,7 @@
 from __future__ import print_function
 
-from mnubo import MnuboClient, Environments
-from mnubo.restitution.search import ResultSet
+from smartobjects import SmartObjectsClient, Environments
+from smartobjects.restitution.search import ResultSet
 
 CLIENT_ID = "<CLIENT_ID>"
 CLIENT_SECRET = "<CLIENT_SECRET>"
@@ -10,7 +10,7 @@ CLIENT_SECRET = "<CLIENT_SECRET>"
 def main():
     # initialize the client with your client_id and client_secret
     # (available in the "API Credential" section of your dashboard)
-    client = MnuboClient(CLIENT_ID, CLIENT_SECRET, Environments.Production)
+    client = SmartObjectsClient(CLIENT_ID, CLIENT_SECRET, Environments.Production)
 
     # use the OwnersService to find if an owner already exists or to create it
     if not client.owners.owner_exists("support@mnubo.com"):

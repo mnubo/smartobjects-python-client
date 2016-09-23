@@ -1,4 +1,4 @@
-from mnubo.restitution import QueryValidationResult, ResultSet, DataSet
+from smartobjects.restitution import QueryValidationResult, ResultSet, DataSet
 
 
 class SearchService(object):

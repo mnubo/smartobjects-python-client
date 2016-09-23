@@ -1,5 +1,5 @@
 import uuid
-from mnubo.ingestion import EventResult
+from smartobjects.ingestion import EventResult
 from six import iteritems
 
 
@@ -11,7 +11,7 @@ class EventsService(object):
         self.api_manager = api_manager
 
     def send(self, events, must_exist=False, report_results=True):
-        """ Sends list of events to mnubo
+        """ Sends list of events to smartobjects
 
         https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-events-batch
 

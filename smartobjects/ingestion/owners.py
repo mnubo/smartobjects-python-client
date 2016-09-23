@@ -1,4 +1,4 @@
-from mnubo.ingestion import Result
+from smartobjects.ingestion import Result
 
 
 class OwnersService(object):
@@ -38,7 +38,7 @@ class OwnersService(object):
         self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
 
     def update(self, username, owner):
-        """ Updates an owner from mnubo
+        """ Updates an owner from smartobjects
 
         :param owner: the owner with the updated properties
         """

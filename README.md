@@ -72,7 +72,7 @@ _(optional arguments omitted)_
 
 From [PyPI](https://pypi.python.org/pypi/mnubo/):
 
-    $ pip install mnubo
+    $ pip install smartobjects
 
 From the sources:
 
@@ -86,9 +86,9 @@ From the sources:
 ### Initialize the MnuboClient
 
 ```python
-from mnubo import MnuboClient
+from smartobjects import SmartObjectsClient
 
-client = MnuboClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
+client = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
 ```
 
 The environment argument can be `Environments.Sandbox` or `Environments.Production` and automatically resolves to the right

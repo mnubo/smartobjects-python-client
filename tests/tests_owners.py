@@ -1,7 +1,7 @@
 import unittest
 
-from mnubo.api_manager import APIManager
-from mnubo.ingestion.owners import OwnersService
+from smartobjects.api_manager import APIManager
+from smartobjects.ingestion.owners import OwnersService
 
 from tests.mocks.local_api_server import LocalApiServer
 
