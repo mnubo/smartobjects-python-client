@@ -1,9 +1,9 @@
 
-from mnubo.ingestion.events import EventsService
-from mnubo.ingestion.owners import OwnersService
-from mnubo.ingestion.objects import ObjectsService
-from mnubo.restitution.search import SearchService
-from mnubo.api_manager import APIManager
+from smartobjects.ingestion.events import EventsService
+from smartobjects.ingestion.owners import OwnersService
+from smartobjects.ingestion.objects import ObjectsService
+from smartobjects.restitution.search import SearchService
+from smartobjects.api_manager import APIManager
 
 
 class Environments:
@@ -11,12 +11,12 @@ class Environments:
     Production = "https://rest.api.mnubo.com"
 
 
-class MnuboClient(object):
-    """ Initializes the mnubo client which contains the API manager as well as the available resource services
+class SmartObjectsClient(object):
+    """ Initializes the smartobjects client which contains the API manager as well as the available resource services
     """
 
     def __init__(self, client_id, client_secret, environment, compression_enabled=True):
-        """ Initialization of the mnubo client
+        """ Initialization of the smartobjects client
 
         The client exposes the Events, Objects, Owners and Search services.
         Initialization will fetch an API token with the id and secret provided.

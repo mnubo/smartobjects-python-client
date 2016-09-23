@@ -1,8 +1,8 @@
 import unittest
 
-from mnubo.api_manager import APIManager
-from mnubo.restitution import *
-from mnubo.restitution.search import SearchService
+from smartobjects.api_manager import APIManager
+from smartobjects.restitution import *
+from smartobjects.restitution.search import SearchService
 
 from tests.mocks.local_api_server import LocalApiServer
 

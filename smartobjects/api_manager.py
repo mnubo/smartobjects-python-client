@@ -44,7 +44,7 @@ class APIManager(object):
         self.access_token = self.fetch_access_token()
 
     def fetch_access_token(self):
-        """ Requests the access token necessary to communicate with the mnubo plateform
+        """ Requests the access token necessary to communicate with the smartobjects plateform
         """
 
         requested_at = datetime.datetime.now()
@@ -75,7 +75,7 @@ class APIManager(object):
         return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic {}".format(encoded)}
 
     def get_authorization_header(self):
-        """ Generates the authorization header used to access resources via mnubo's API
+        """ Generates the authorization header used to access resources via smartobjects's API
         """
         return {'content-type': 'application/json', 'Authorization': 'Bearer ' + self.access_token['access_token']}
 
