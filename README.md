@@ -2,7 +2,7 @@
 
 
 [![Build status](https://travis-ci.org/mnubo/smartobjects-python-client.svg?branch=master)](https://travis-ci.org/mnubo/smartobjects-python-client)
-[![PyPI](https://img.shields.io/pypi/v/mnubo.svg?maxAge=2592000)](https://pypi.python.org/pypi/mnubo/)
+[![PyPI](https://img.shields.io/pypi/v/smartobjects.svg?maxAge=2592000)](https://pypi.python.org/pypi/smartobjects/)
 
 
 Table of Content
