@@ -91,7 +91,7 @@ class EventsService(object):
         assert all(isinstance(id, uuid.UUID) for id in event_ids)
 
         r = self.api_manager.post('events/exists', [str(id) for id in event_ids])
-        return {uuid.UUID(key): value for key, value in iteritems(r.json())}
+        return {uuid.UUID(key): value for entry in r.json() for key, value in entry.items()}
 
     def _validate_event(self, event):
         if 'x_object' not in event or 'x_device_id' not in event['x_object'] or not event['x_object']['x_device_id']:

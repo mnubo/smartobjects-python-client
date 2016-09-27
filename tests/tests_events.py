@@ -179,3 +179,25 @@ class TestEventsService(unittest.TestCase):
                 {'event_id': event_id, 'x_event_type': 'door_closed'}
             ])
         self.assertEquals(ctx.exception.message, "The event_id [{}] is duplicated in the list".format(event_id))
+
+    def test_event_exists(self):
+        event_id = uuid.uuid4()
+        self.events.send([{'event_id': event_id, 'x_object': {'x_device_id': 'kitchen_door'}, 'x_event_type': 'door_open'}])
+
+        self.assertEquals(self.events.event_exists(event_id), True)
+        self.assertEquals(self.events.event_exists(uuid.uuid4()), False)
+
+    def test_events_exist(self):
+        ids_sent = [uuid.uuid4(), uuid.uuid4()]
+        ids_not_sent = [uuid.uuid4(), uuid.uuid4()]
+
+        events = [{'event_id': event_id, 'x_object': {'x_device_id': 'kitchen_door'}, 'x_event_type': 'door_open'} for event_id in ids_sent]
+        self.events.send(events)
+
+        resp = self.events.events_exist(ids_sent + ids_not_sent)
+
+        self.assertDictContainsSubset({event_id: True for event_id in ids_sent}, resp)
+        self.assertDictContainsSubset({event_id: False for event_id in ids_not_sent}, resp)
+
+
+
