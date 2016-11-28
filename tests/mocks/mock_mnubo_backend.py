@@ -224,6 +224,19 @@ class MockMnuboBackend(object):
         self.objects[device_id]['x_owner'] = username
         return 200, None
 
+    @route('POST', '^/owners/(.+)/objects/(.+)/unclaim$')
+    def post_owners_unclaim(self, _, params):
+        username, device_id = params
+
+        if username not in self.owners:
+            return 400, "Owner '{}' not found.".format(username)
+
+        if device_id not in self.objects:
+            return 400, "Object with x_device_id '{}' not found.".format(device_id)
+
+        self.objects[device_id]['x_owner'] = None
+        return 200, None
+
     @route('POST', '^/owners/(.+)/password$')
     def put_owners_password(self, body, params):
         username = params[0]
