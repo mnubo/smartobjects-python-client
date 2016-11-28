@@ -64,12 +64,12 @@ class TestOwnersService(unittest.TestCase):
     def test_claim_device_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim("owner_1", None)
-        self.assertEquals(ctx.exception.message, "deviceId cannot be null or empty.")
+        self.assertEquals(ctx.exception.message, "device_id cannot be null or empty.")
 
     def test_claim_device_id_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim("owner_1", "")
-        self.assertEquals(ctx.exception.message, "deviceId cannot be null or empty.")
+        self.assertEquals(ctx.exception.message, "device_id cannot be null or empty.")
 
     def test_claim_device_id_not_found(self):
         self.owners.create({'username': 'owner_1'})
@@ -83,6 +83,48 @@ class TestOwnersService(unittest.TestCase):
 
         with self.assertRaises(ValueError) as ctx:
             self.owners.claim("owner_1", "my_device")
+        self.assertEquals(ctx.exception.message, "Owner 'owner_1' not found.")
+
+    def test_unclaim_ok(self):
+        self.server.server.backend.objects['my_device'] = {'x_device_id': 'my_device', 'x_owner': 'owner_1'}
+        self.owners.create({'username': 'owner_1'})
+
+        self.owners.unclaim('owner_1', 'my_device')
+
+        self.assertEquals(self.server.server.backend.objects['my_device']['x_owner'], None)
+
+    def test_unclaim_username_null(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.unclaim(None, "my_device")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
+
+    def test_unclaim_username_empty(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.unclaim("", "my_device")
+        self.assertEquals(ctx.exception.message, "username cannot be null or empty.")
+
+    def test_unclaim_device_id_null(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.unclaim("owner_1", None)
+        self.assertEquals(ctx.exception.message, "device_id cannot be null or empty.")
+
+    def test_unclaim_device_id_empty(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.unclaim("owner_1", "")
+        self.assertEquals(ctx.exception.message, "device_id cannot be null or empty.")
+
+    def test_unclaim_device_id_not_found(self):
+        self.owners.create({'username': 'owner_1'})
+
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.unclaim("owner_1", "my_device")
+        self.assertEquals(ctx.exception.message, "Object with x_device_id 'my_device' not found.")
+
+    def test_unclaim_username_not_found(self):
+        self.server.server.backend.objects['my_device'] = {'x_device_id': 'my_device'}
+
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.unclaim("owner_1", "my_device")
         self.assertEquals(ctx.exception.message, "Owner 'owner_1' not found.")
 
     def test_delete_ok(self):

@@ -35,28 +35,29 @@ exception will be thrown so you know what happened.
 
 _(optional arguments omitted)_
 
-| Service | Method                                | Summary                                  | Example                                  |
-| ------- | ------------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| Owners  | `create(owner)                      ` | create a new owner                       | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `update(username, owner)            ` | update an existing owner                 |                                          |
-|         | `claim(username, device_id)         ` | link an existing object to an existing owner | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `create_update(owners)              ` | create or update a batch or owners       |                                          |
-|         | `delete(username)                   ` | delete an owner                          |                                          |
-|         | `owner_exists(username)             ` | check if an owner exists                 | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `owners_exist(usernames)            ` | check if a list of owners exist          |                                          |
-| Objects | `create(object)                     ` | create a new smart object                | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `update(device_id, object)          ` | update an existing object                |                                          |
-|         | `create_update(objects)             ` | create or update a batch of objects      |                                          |
-|         | `delete(device_id)                  ` | delete an object                         |                                          |
-|         | `object_exists(device_id)           ` | check if an object exists                | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `objects_exist(device_ids)          ` | check if a list of objects exist         |                                          |
-| Events  | `send(events)                       ` | send a batch of events tagged with multiple devices |                                          |
-|         | `send_from_device(device_id, events)` | send an event tagged with a specific device | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `event_exists(event_id)             ` | check if an event exists                 |                                          |
-|         | `events_exist(event_ids)            ` | check if list of events exist            |                                          |
-| Search  | `search(query)                      ` | performs a search in the platform with the provided JSON query (MQL) | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `validate_query(query)              ` | validates an MQL query                   | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `get_datasets()                     ` | retrieves the list of datasets available for this account | [simple_workflow.py](examples/simple_workflow.py) |
+| Service | Method                                | Summary                                                                 | Example                                           |
+| ------- | ------------------------------------- | ------------------------------------------------------------------------| ----------------------------------------          |
+| Owners  | `create(owner)                      ` | create a new owner                                                      | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `update(username, owner)            ` | update an existing owner                                                |                                                   |
+|         | `claim(username, device_id)         ` | link an existing object to an existing owner                            | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `unclaim(username, device_id)       ` | unlink an existing object from an existing owner                        | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `create_update(owners)              ` | create or update a batch or owners                                      |                                                   |
+|         | `delete(username)                   ` | delete an owner                                                         |                                                   |
+|         | `owner_exists(username)             ` | check if an owner exists                                                | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `owners_exist(usernames)            ` | check if a list of owners exist                                         |                                                   |
+| Objects | `create(object)                     ` | create a new smart object                                               | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `update(device_id, object)          ` | update an existing object                                               |                                                   |
+|         | `create_update(objects)             ` | create or update a batch of objects                                     |                                                   |
+|         | `delete(device_id)                  ` | delete an object                                                        |                                                   |
+|         | `object_exists(device_id)           ` | check if an object exists                                               | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `objects_exist(device_ids)          ` | check if a list of objects exist                                        |                                                   |
+| Events  | `send(events)                       ` | send a batch of events tagged with multiple devices                     |                                                   |
+|         | `send_from_device(device_id, events)` | send an event tagged with a specific device                             | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `event_exists(event_id)             ` | check if an event exists                                                |                                                   |
+|         | `events_exist(event_ids)            ` | check if list of events exist                                           |                                                   |
+| Search  | `search(query)                      ` | performs a search in the platform with the provided JSON query (MQL)    | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `validate_query(query)              ` | validates an MQL query                                                  | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `get_datasets()                     ` | retrieves the list of datasets available for this account               | [simple_workflow.py](examples/simple_workflow.py) |
 
 
 
@@ -87,6 +88,7 @@ From the sources:
 
 ```python
 from smartobjects import SmartObjectsClient
+from smartobjects import Environments
 
 client = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
 ```
@@ -279,7 +281,7 @@ For complex queries, it is recommended to use this feature to reduce errors.
 
 ```python
 validation_result = client.search.validate_query({
-    "fro": "owner",
+    "from": "owner",
     "limit": 100,
     "select": [
         {"value": "username"}

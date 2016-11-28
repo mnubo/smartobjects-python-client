@@ -34,8 +34,22 @@ class OwnersService(object):
         if not username:
             raise ValueError("username cannot be null or empty.")
         if not device_id:
-            raise ValueError("deviceId cannot be null or empty.")
+            raise ValueError("device_id cannot be null or empty.")
         self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
+
+    def unclaim(self, username, device_id):
+        """ Owner unclaims an object
+
+        https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-owners-username-objects-x-device-id-unclaim
+
+        :param username: the username of the owner whom owns the object
+        :param device_id: the device_id of the object being unclaimed
+        """
+        if not username:
+            raise ValueError("username cannot be null or empty.")
+        if not device_id:
+            raise ValueError("device_id cannot be null or empty.")
+        self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id))
 
     def update(self, username, owner):
         """ Updates an owner from smartobjects
