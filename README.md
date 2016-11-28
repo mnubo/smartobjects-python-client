@@ -88,6 +88,7 @@ From the sources:
 
 ```python
 from smartobjects import SmartObjectsClient
+from smartobjects import Environments
 
 client = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
 ```
