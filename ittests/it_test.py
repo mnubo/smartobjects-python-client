@@ -12,7 +12,7 @@ class TestHelper(object):
     @staticmethod
     def getClient():
         Config = ConfigParser.ConfigParser()
-        Config.read("ittests/resources/creds.ini")
+        Config.read("ittests/creds.ini")
         key = Config.get("Credentials", "key")
         secret = Config.get("Credentials", "secret")
         return SmartObjectsClient(key, secret, Environments.Sandbox)
