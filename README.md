@@ -281,7 +281,7 @@ For complex queries, it is recommended to use this feature to reduce errors.
 
 ```python
 validation_result = client.search.validate_query({
-    "fro": "owner",
+    "from": "owner",
     "limit": 100,
     "select": [
         {"value": "username"}
