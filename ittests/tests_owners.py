@@ -71,7 +71,7 @@ class TestOwnersService(unittest.TestCase):
           for row in result:
             self.assertEqual(row.get("owner_text_attribute"), value)  
 
-      TestHelper.eventually_assert(searchOwnerCreated)
+      TestHelper.eventually_assert(search_owner_created)
 
       self.client.owners.update(username, {
           "owner_text_attribute": "newvalue"
