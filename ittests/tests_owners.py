@@ -26,17 +26,17 @@ class TestOwnersService(unittest.TestCase):
           "x_password": "password-{}".format(currentUUID),
       })
 
-      def searchOwnerCreated():
-          result = self.client.search.search(TestHelper.searchOwnerQuery(usernameToDelete))
+      def search_owner_created():
+          result = self.client.search.search(TestHelper.search_owner_query(usernameToDelete))
           self.assertEqual(len(result), 1)
-      TestHelper.eventuallyAssert(searchOwnerCreated)
+      TestHelper.eventually_assert(search_owner_created)
 
       self.client.owners.delete(usernameToDelete)
 
-      def searchOwnerDeleted():
-          result = self.client.search.search(TestHelper.searchOwnerQuery(usernameToDelete))
+      def search_owner_deleted():
+          result = self.client.search.search(TestHelper.search_owner_query(usernameToDelete))
           self.assertEqual(len(result), 0)
-      TestHelper.eventuallyAssert(searchOwnerDeleted)
+      TestHelper.eventually_assert(search_owner_deleted)
 
     def test_basic_owners(self):
       currentUUID = uuid.uuid4()
@@ -65,25 +65,25 @@ class TestOwnersService(unittest.TestCase):
           username: True
       })
 
-      def searchOwnerCreated():
-          result = self.client.search.search(TestHelper.searchOwnerQuery(username))
+      def search_owner_created():
+          result = self.client.search.search(TestHelper.search_owner_query(username))
           self.assertEqual(len(result), 1)
           for row in result:
             self.assertEqual(row.get("owner_text_attribute"), value)  
 
-      TestHelper.eventuallyAssert(searchOwnerCreated)
+      TestHelper.eventually_assert(searchOwnerCreated)
 
       self.client.owners.update(username, {
           "owner_text_attribute": "newvalue"
       })
 
-      def searchOwnerUpdated():
-          result = self.client.search.search(TestHelper.searchOwnerQuery(username))
+      def search_owner_updated():
+          result = self.client.search.search(TestHelper.search_owner_query(username))
           self.assertEqual(len(result), 1)
           for row in result:
             self.assertEqual(row.get("owner_text_attribute"), "newvalue")  
 
-      TestHelper.eventuallyAssert(searchOwnerUpdated)
+      TestHelper.eventually_assert(search_owner_updated)
 
     def test_claim_unclaim(self):
       currentUUID = uuid.uuid4()
@@ -100,18 +100,18 @@ class TestOwnersService(unittest.TestCase):
 
       self.client.owners.claim(username, deviceId)
 
-      def searchClaimed():
-          result = self.client.search.search(TestHelper.searchObjectByOwnerQuery(username))
+      def search_claimed():
+          result = self.client.search.search(TestHelper.search_object_by_owner_query(username))
           self.assertEqual(len(result), 1)
           for row in result:
             self.assertEqual(row.get("x_device_id"), deviceId)
-      TestHelper.eventuallyAssert(searchClaimed)
+      TestHelper.eventually_assert(search_claimed)
 
 
       self.client.owners.unclaim(username, deviceId)
-      def searchUnclaimed():
-          result = self.client.search.search(TestHelper.searchObjectByOwnerQuery(username))
+      def search_unclaimed():
+          result = self.client.search.search(TestHelper.search_object_by_owner_query(username))
           self.assertEqual(len(result), 1)
           for row in result:
             self.assertEqual(row.get("x_device_id"), deviceId)
-      TestHelper.eventuallyAssert(searchUnclaimed)
+      TestHelper.eventually_assert(search_unclaimed)

@@ -1,6 +1,7 @@
 import unittest
 import ConfigParser
 import time
+import logging
 
 from smartobjects import SmartObjectsClient
 from smartobjects import Environments
@@ -18,7 +19,7 @@ class TestHelper(object):
         return SmartObjectsClient(key, secret, Environments.Sandbox)
 
     @staticmethod
-    def searchEventQuery(eventId):
+    def search_event_query(eventId):
         return {
           "from": "event",
           "select": [
@@ -37,7 +38,7 @@ class TestHelper(object):
         }
 
     @staticmethod
-    def searchObjectByOwnerQuery(username):
+    def search_object_by_owner_query(username):
         return {
           "from": "object",
           "select": [
@@ -56,7 +57,7 @@ class TestHelper(object):
         }
 
     @staticmethod
-    def searchOwnerQuery(username): 
+    def search_owner_query(username): 
         return {
             "from": "owner",
             "select": [
@@ -75,7 +76,7 @@ class TestHelper(object):
         }
 
     @staticmethod
-    def searchObjectQuery(deviceId): 
+    def search_object_query(deviceId): 
         return {
           "from": "object",
           "select": [
@@ -94,13 +95,13 @@ class TestHelper(object):
         }
 
     @staticmethod
-    def eventuallyAssert(myAssert):
-        TestHelper.eventuallyAssertWithDelay(myAssert, TestHelper.timeout, TestHelper.delay)
+    def eventually_assert(myAssert):
+        TestHelper.eventually_assert_with_delay(myAssert, TestHelper.timeout, TestHelper.delay)
 
     @staticmethod
-    def eventuallyAssertWithDelay(myAssert, timeout, delay):
+    def eventually_assert_with_delay(myAssert, timeout, delay):
         if (timeout < delay):
-            raise Exception("timeout should be bigger than delay")
+            raise ValueError("timeout should be bigger than delay")
 
         current_time = lambda: int(round(time.time()))
 
@@ -113,11 +114,11 @@ class TestHelper(object):
                 return
             except AssertionError as e:
                 lastAssertException = e
-                print "Assert failed: {}. Will retry".format(e)
+                logging.debug("Assert failed: {}. Will retry".format(e))
             except Exception as e:
                 raise e
             time.sleep(delay)
 
-        if lastAssertException != None:
-            print "Final tentative failed."
+        if not lastAssertException:
+            logging.debug("Final tentative failed.")
             raise lastAssertException
