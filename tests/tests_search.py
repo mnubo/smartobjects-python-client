@@ -9,7 +9,7 @@ from tests.mocks.local_api_server import LocalApiServer
 
 class TestOwnersService(unittest.TestCase):
     """
-    https://sop.mtl.mnubo.com/apps/doc/api.html#search-api
+    https://smartobjects.mnubo.com/apps/doc/api_search.html#search-api
     """
 
     @classmethod
@@ -25,7 +25,7 @@ class TestOwnersService(unittest.TestCase):
         cls.server.stop()
 
     def test_search_ok(self):
-        # resultset hard coded from: https://sop.mtl.mnubo.com/apps/doc/api.html#grouping-by-time-interval
+        # resultset hard coded from: https://smartobjects.mnubo.com/apps/doc/api_search.html#grouping-by-time-intervals
         resultset = self.search.search({"from": "hardcoded:grouping-by-time-interval"})
 
         self.assertTrue(isinstance(resultset, ResultSet))

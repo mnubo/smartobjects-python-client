@@ -8,7 +8,7 @@ from tests.mocks.local_api_server import LocalApiServer
 
 class TestObjectsService(unittest.TestCase):
     """
-    https://sop.mtl.mnubo.com/apps/doc/api.html#objects
+    https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#objects
     """
 
     @classmethod

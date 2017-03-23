@@ -12,7 +12,7 @@ class EventsService(object):
     def send(self, events, must_exist=False, report_results=True):
         """ Sends list of events to smartobjects
 
-        https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-events-batch
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-events-batch
 
         :param events: a list of dictionaries representing the events to be sent
         :param must_exist (bool): toggles checking that the device actually exist
@@ -20,7 +20,7 @@ class EventsService(object):
         :param report_results (bool): toggles if we should return a list of EventResult with the status of event
             sent (success, failure, conflict, notfound)
             if False, an exception will be raised if at least one event failed, None otherwise
-            see https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-events for more details
+            see https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-events for more details
         :return: list of EventResult or None (report_results=False)
         """
         self._validate_event_list(events)
@@ -41,7 +41,7 @@ class EventsService(object):
     def send_from_device(self, device_id, events, report_results=True):
         """ Sends a list of events directly associated with an object
 
-        https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-objects-x-device-id-events
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-objects-x-device-id-events
         With this version, it is no longer required to include x_object.x_device_id in each event.
 
         :param device_id: deviceId of the targeted object
@@ -49,7 +49,7 @@ class EventsService(object):
         :param report_results (bool): toggles if we should return a list of EventResult with the status of event
             sent (success, failure, conflict, notfound)
             if False, an exception will be raised if at least one event failed, None otherwise
-            see https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-events for more details
+            see https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-events for more details
         :return: list of EventResult or None (report_results=False)
         """
         self._validate_event_list(events)

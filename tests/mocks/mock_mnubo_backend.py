@@ -338,7 +338,7 @@ class MockMnuboBackend(object):
 
     @route('GET', '^/search/datasets$')
     def get_datasets(self, params):
-        # hardcoded dataset from https://sop.mtl.mnubo.com/apps/doc/api.html#get-api-v3-search-datasets
+        # hardcoded dataset from https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#get-api-v3-search-datasets
         dataset = [
             {"key": "object", "displayName": "Objects", "fields": [{"key": "x_device_id", "highLevelType": "TEXT", "description": "Reserved field", "containerType": "none", "primaryKey": False}, {"key": "x_collections.id", "highLevelType": "TEXT", "displayName": "Collection id", "description": "Collection unique identifier", "containerType": "none", "primaryKey": False}]},
             {"key": "owner", "displayName": "Owners", "fields": [{"key": "username", "highLevelType": "TEXT", "displayName": "Username", "description": "Owner unique identifier", "containerType": "none", "primaryKey": True}, {"key": "x_registration_date", "highLevelType": "DATETIME", "description": "Reserved field", "containerType": "none", "primaryKey": False}]},
