@@ -56,7 +56,7 @@ class EventResult(Result):
     def object_exists(self):
         """`True` if the object specified by x_object.x_device_id actually exists.
 
-        To prevent submiting events to non_existing object, use `must_exist=True` with `send()`
+        To prevent submitting events to non_existing object, use `must_exist=True` with `send()`
         """
         return self._object_exists
 

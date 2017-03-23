@@ -1,5 +1,4 @@
 from smartobjects.ingestion import Result
-from six import string_types
 
 class ObjectsService(object):
 
