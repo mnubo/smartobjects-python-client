@@ -41,6 +41,8 @@ _(optional arguments omitted)_
 |         | `update(username, owner)            ` | update an existing owner                                                |                                                   |
 |         | `claim(username, device_id)         ` | link an existing object to an existing owner                            | [simple_workflow.py](examples/simple_workflow.py) |
 |         | `unclaim(username, device_id)       ` | unlink an existing object from an existing owner                        | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `batch_claim(claims)                ` | claim a batch of object                                                 | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `batch_unclaim(unclaims)            ` | unclaim a batch of object                                               | [simple_workflow.py](examples/simple_workflow.py) |
 |         | `create_update(owners)              ` | create or update a batch or owners                                      |                                                   |
 |         | `delete(username)                   ` | delete an owner                                                         |                                                   |
 |         | `owner_exists(username)             ` | check if an owner exists                                                | [simple_workflow.py](examples/simple_workflow.py) |
@@ -71,7 +73,7 @@ _(optional arguments omitted)_
 ---
 #4. Installation & Configuration
 
-From [PyPI](https://pypi.python.org/pypi/mnubo/):
+From [PyPI](https://pypi.python.org/pypi/smartobjects/):
 
     $ pip install smartobjects
 
@@ -118,6 +120,14 @@ _Mandatory properties_: `username`, `x_password`
 #### Claim a Smart Object for an Owner
 ```python
 client.owners.claim('sheldon.cooper@caltech.edu', 'fermat1901')
+```
+
+As a batch:
+```python
+client.owners.batch_claim([
+    ('sheldon.cooper@caltech.edu', 'fermat1901'), 
+    ('leonard.hofstadter@caltech.edu', 'ramanujan1887')
+])
 ```
 
 #### Update an Owner

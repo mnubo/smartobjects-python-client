@@ -121,7 +121,7 @@ class ResultRow(object):
 
 class DataSet(object):
     """
-    https://sop.mtl.mnubo.com/apps/doc/api.html#get-api-v3-search-datasets
+    https://smartobjects.mnubo.com/apps/doc/api_search.html#get-api-v3-search-datasets
     """
     def __init__(self, json):
         self._source = json
@@ -133,7 +133,7 @@ class DataSet(object):
 
 class Field(object):
     """
-    https://sop.mtl.mnubo.com/apps/doc/api.html#get-api-v3-search-datasets
+    https://smartobjects.mnubo.com/apps/doc/api_search.html#get-api-v3-search-datasets
     """
     def __init__(self, json):
         self._source = json

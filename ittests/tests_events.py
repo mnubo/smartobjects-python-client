@@ -7,7 +7,7 @@ from ittests.it_test import TestHelper
 
 class TestEventsService(unittest.TestCase):
     """
-    https://sop.mtl.mnubo.com/apps/doc/api.html#objects
+    https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#events
     """
 
     @classmethod

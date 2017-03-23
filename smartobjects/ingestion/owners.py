@@ -34,7 +34,7 @@ class OwnersService(object):
     def claim(self, username, device_id):
         """ Owner claims an object
 
-        https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-owners-username-objects-x-device-id-claim
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-claim
 
         :param username: the username of the owner claiming the object
         :param device_id: the device_id of the object being claimed
@@ -48,7 +48,7 @@ class OwnersService(object):
     def unclaim(self, username, device_id):
         """ Owner unclaims an object
 
-        https://sop.mtl.mnubo.com/apps/doc/api.html#post-api-v3-owners-username-objects-x-device-id-unclaim
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-unclaim
 
         :param username: the username of the owner whom owns the object
         :param device_id: the device_id of the object being unclaimed
@@ -122,7 +122,7 @@ class OwnersService(object):
     def create_update(self, owners):
         """ Create or update a batch of owners at once
 
-        https://sop.mtl.mnubo.com/apps/doc/api.html#put-api-v3-owners-batch
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#put-api-v3-owners-batch
 
         :param owners: list of owners to be sent to the smartobjects platform. If the owner already exists, it will be
             updated with the new content, otherwise it will be created

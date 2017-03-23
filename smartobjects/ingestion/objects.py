@@ -42,7 +42,7 @@ class ObjectsService(object):
     def create_update(self, objects):
         """ create or update a batch of objects
 
-        https://sop.mtl.mnubo.com/apps/doc/api.html#put-api-v3-objects-batch
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#put-api-v3-objects-batch
         a single batch can contain up to 1000 objects.
 
         :param objects: list of objects to be sent to smartobjects. If the object already exists, it will be

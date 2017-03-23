@@ -8,7 +8,7 @@ from tests.mocks.local_api_server import LocalApiServer
 
 class TestOwnersService(unittest.TestCase):
     """
-    https://sop.mtl.mnubo.com/apps/doc/api.html#owners
+    https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#owners
     """
 
     @classmethod
