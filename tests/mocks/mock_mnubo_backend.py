@@ -237,6 +237,45 @@ class MockMnuboBackend(object):
         self.objects[device_id]['x_owner'] = None
         return 200, None
 
+    @route('POST', '^/owners/claim$')
+    def post_owners_batch_claim(self, body, _):
+        results = []
+        for claim in body:
+            username, device_id = claim['username'], claim['x_device_id']
+            if username not in self.owners:
+                results.append({"id": device_id, "result": "error", "message": "Owner '{}' not found.".format(username)})
+
+            elif device_id not in self.objects:
+                results.append({"id": device_id, "result": "error", "message": "Object with x_device_id '{}' not found.".format(device_id)})
+
+            else:
+                self.objects[device_id]['x_owner'] = username
+                results.append({"id": device_id, "result": "success"})
+
+        failed = filter(lambda r: 'result' in r and r['result'] == "error", results)
+        return 207 if failed else 200, results
+
+    @route('POST', '^/owners/unclaim$')
+    def post_owners_batch_unclaim(self, body, _):
+        results = []
+        for unclaim in body:
+            username, device_id = unclaim['username'], unclaim['x_device_id']
+            if username not in self.owners:
+                results.append({"id": device_id, "result": "error", "message": "Owner '{}' not found.".format(username)})
+
+            elif device_id not in self.objects:
+                results.append({"id": device_id, "result": "error", "message": "Object with x_device_id '{}' not found.".format(device_id)})
+
+            elif 'x_owner' not in self.objects[device_id] or self.objects[device_id]['x_owner'] != username:
+                results.append({"id": device_id, "result": "error", "message": "Object with x_device_id '{}' is not claimed by '{}'.".format(device_id, username)})
+
+            else:
+                self.objects[device_id]['x_owner'] = None
+                results.append({"id": device_id, "result": "success"})
+
+        failed = filter(lambda r: 'result' in r and r['result'] == "error", results)
+        return 207 if failed else 200, results
+
     @route('POST', '^/owners/(.+)/password$')
     def put_owners_password(self, body, params):
         username = params[0]

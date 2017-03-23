@@ -1,6 +1,5 @@
 import uuid
 from smartobjects.ingestion import EventResult
-from six import iteritems
 
 
 class EventsService(object):

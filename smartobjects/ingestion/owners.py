@@ -15,6 +15,14 @@ class OwnersService(object):
         if 'username' not in owner or not owner['username']:
             raise ValueError("username cannot be null or empty.")
 
+    def _validate_claim(self, claim):
+        if not claim:
+            raise ValueError("Claim (unclaim) body cannot be null")
+        if 'username' not in claim or not claim['username']:
+            raise ValueError("username cannot be null or empty.")
+        if 'x_device_id' not in claim or not claim['x_device_id']:
+            raise ValueError("x_device_id cannot be null or empty.")
+
     def create(self, owner):
         """ Creates a new owner in the smartobjects platform
 
@@ -50,6 +58,54 @@ class OwnersService(object):
         if not device_id:
             raise ValueError("device_id cannot be null or empty.")
         self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id))
+
+    def batch_claim(self, claims):
+        """ Batch claims of owner to object
+
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-claim-batch
+
+        :param claims:
+            the claims argument can either a fully constructed batch-claim object as specified in the documentation
+            or a list of pair (username, deviceId)
+        :return: list of Result objects with the status of each operation
+
+        Example:
+        >>> client.owners.claim([{ "x_device_id": "object1", "username": "usertest1", "x_timestamp": "2015-01-22T00:01:25-02:00" }, { "x_device_id": "object2", "username": "usertest2" }])
+        or
+        >>> client.owners.claim([("usertest1","object1"), ("usertest2", "object2")])
+        """
+        if isinstance(claims, list) and all([isinstance(claim, tuple) and len(claim) == 2 for claim in claims]):
+            # transform a list of (user, device) pair to a claim dictionary
+            claims = map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, claims)
+
+        [self._validate_claim(claim) for claim in claims]
+
+        r = self.api_manager.post('owners/claim', claims)
+        return [Result(**result) for result in r.json()]
+
+    def batch_unclaim(self, unclaims):
+        """ Batch unclaims of owner-object combination
+
+        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-unclaim-batch
+
+        :param unclaims:
+            the unclaims argument can either a fully constructed batch-unclaim object as specified in the documentation
+            or a list of pair (username, deviceId)
+        :return: list of Result objects with the status of each operation
+
+        Example:
+        >>> client.owners.unclaim([{ "x_device_id": "object1", "username": "usertest1", "x_timestamp": "2015-01-22T00:01:25-02:00" }, { "x_device_id": "object2", "username": "usertest2" }])
+        or
+        >>> client.owners.unclaim([("usertest1","object1"), ("usertest2", "object2")])
+        """
+        if isinstance(unclaims, list) and all([isinstance(unclaim, tuple) and len(unclaim) == 2 for unclaim in unclaims]):
+            # transform a list of (user, device) pair to a unclaim dictionary
+            unclaims = map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, unclaims)
+
+        [self._validate_claim(unclaim) for unclaim in unclaims]
+
+        r = self.api_manager.post('owners/unclaim', unclaims)
+        return [Result(**result) for result in r.json()]
 
     def update(self, username, owner):
         """ Updates an owner from smartobjects
