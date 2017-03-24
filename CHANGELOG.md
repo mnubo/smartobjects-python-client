@@ -1,3 +1,10 @@
+<a name='1.0.30'></a>
+
+# [1.0.30](https://github.com/mnubo/smartobjects-python-client/compare/1.0.29...1.0.30) (2017-03-24)
+
+
+- Added batch_claim and batch_unclaim to the "owners" service
+- Fixed doc links
 <a name='1.0.29'></a>
 
 # [1.0.29](https://github.com/mnubo/smartobjects-python-client/compare/1.0.28...1.0.29) (2017-01-31)
