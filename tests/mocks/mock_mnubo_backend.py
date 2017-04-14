@@ -347,6 +347,122 @@ class MockMnuboBackend(object):
         ]
         return 200, dataset
 
+
+    @route('GET', '^/model/export$')
+    def get_model(self, _):
+        return 200, {
+          "objectTypes": [
+            {
+              "key": "object_type1",
+              "description": "desc",
+              "objectAttributes": [
+                {
+                  "key": "object_text_attribute",
+                  "displayName": "dp object_text_attribute",
+                  "description": "desc object_text_attribute",
+                  "type": {
+                    "highLevelType": "TEXT",
+                    "containerType": "none"
+                  }
+                },
+                {
+                  "key": "object_int_attribute",
+                  "displayName": "dp object_int_attribute",
+                  "description": "desc object_int_attribute",
+                  "type": {
+                    "highLevelType": "INT",
+                    "containerType": "list"
+                  }
+                }
+              ]
+            }
+          ],
+          "eventTypes": [
+            {
+              "key": "event_type1",
+              "description": "desc",
+              "origin": "scheduled",
+              "timeseries": [
+                {
+                  "key": "ts_number_attribute",
+                  "displayName": "dp ts_number_attribute",
+                  "description": "desc ts_number_attribute",
+                  "type": {
+                    "highLevelType": "DOUBLE"
+                  }
+                },
+                {
+                  "key": "ts_text_attribute",
+                  "displayName": "dp ts_text_attribute",
+                  "description": "desc ts_text_attribute",
+                  "type": {
+                    "highLevelType": "TEXT"
+                  }
+                }
+              ]
+            },
+            {
+              "key": "event_type2",
+              "description": "desc",
+              "origin": "rule",
+              "timeseries": [
+                {
+                  "key": "ts_text_attribute",
+                  "displayName": "dp ts_text_attribute",
+                  "description": "desc ts_text_attribute",
+                  "type": {
+                    "highLevelType": "TEXT"
+                  }
+                }
+              ]
+            }
+          ],
+          "ownerAttributes": [
+            {
+              "key": "owner_text_attribute",
+              "displayName": "dp owner_text_attribute",
+              "description": "desc owner_text_attribute",
+              "type": {
+                "highLevelType": "TEXT",
+                "containerType": "none"
+              }
+            }
+          ],
+          "sessionizers": [
+            {
+              "key": "sessionizer",
+              "displayName": "dp sessionizer",
+              "description": "desc sessionizer",
+              "startEventTypeKey": "event_type1",
+              "endEventTypeKey": "event_type2"
+            }
+          ],
+          "orphans": {
+            "timeseries": [
+              {
+                "key": "orphan_ts",
+                "displayName": "dp orphan_ts",
+                "description": "desc orphan_ts",
+                "type": {
+                  "highLevelType": "ACCELERATION"
+                }
+              }
+            ],
+            "objectAttributes": [
+              {
+                "key": "orphan_object",
+                "displayName": "dp orphan_object",
+                "description": "desc orphan_object",
+                "type": {
+                  "highLevelType": "EMAIL",
+                  "containerType": "none"
+                }
+              }
+            ]
+          }
+        }
+
+
     # for tests on API manager itself
     @route('GET', '^/api_manager\??(.*)$')
     def get_api_manager(self, params):
