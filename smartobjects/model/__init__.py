@@ -40,9 +40,9 @@ class EventType(object):
         self._key = self._source.get('key')
         self._description = self._source.get('description')
         raw_timeseries_keys = self._source.get('timeseries', [])
-        self._timerseries_keys = []
+        self._timeseries_keys = []
         for rawts in raw_timeseries_keys:
-                self._timerseries_keys.append(rawts.get("key"))
+                self._timeseries_keys.append(rawts.get("key"))
 
     @property
     def key(self):
@@ -57,7 +57,7 @@ class EventType(object):
     @property
     def timeseries_keys(self):
             """ keys of all the timeseries bound to the event type """
-            return self._timerseries_keys
+            return self._timeseries_keys
 
 class Timeseries(object):
     def __init__(self, *args):

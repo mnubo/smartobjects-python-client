@@ -10,7 +10,7 @@ class ModelService(object):
     def export(self):
         """ Export the model in the current environment 
 
-        see https://sop-dev.mtl.mnubo.com/apps/doc/api_model.html for more details.
+        see https://smartobjects.mnubo.com/apps/doc/api_model.html for more details.
         :returns: Model
 
         Example:
