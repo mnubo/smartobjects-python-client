@@ -5,6 +5,9 @@
 *.egg-info
 
 /builds
+/build
 /dist
 /venv
 *creds.ini
+
+.DS_Store

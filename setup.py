@@ -20,7 +20,7 @@ setup(
     author="mnubo, inc.",
     author_email="support@mnubo.com",
     url="https://github.com/mnubo/smartobjects-python-client",
-    packages=["smartobjects", "smartobjects.ingestion", "smartobjects.restitution", "smartobjects.helpers"],
+    packages=["smartobjects", "smartobjects.ingestion", "smartobjects.restitution", "smartobjects.helpers", "smartobjects.model"],
     install_requires=requirements,
     keywords=['mnubo', 'api', 'sdk', 'iot', 'smartobjects'],
     classifiers=[
