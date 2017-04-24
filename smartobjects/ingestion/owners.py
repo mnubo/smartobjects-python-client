@@ -31,33 +31,51 @@ class OwnersService(object):
         self._validate_owner(owner)
         self.api_manager.post('owners', owner)
 
-    def claim(self, username, device_id):
+    def claim(self, username, device_id, optionalBody = None):
         """ Owner claims an object
 
         https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-claim
 
         :param username: the username of the owner claiming the object
         :param device_id: the device_id of the object being claimed
+        :param optionalBody: 
+            an optional dictionnary that is serilaized as json. this can be used
+            to set some values. eg: the timestamp => { "x_timestamp": "2017-04-24T16:13:11+00:00"}
         """
         if not username:
             raise ValueError("username cannot be null or empty.")
         if not device_id:
             raise ValueError("device_id cannot be null or empty.")
-        self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
+        if optionalBody and not isinstance(optionalBody, dict):
+            raise ValueError("if optionalBody is given, it must be a dictionnary")
 
-    def unclaim(self, username, device_id):
+        if optionalBody and len(optionalBody) > 0:
+            self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id), optionalBody)
+        else:
+            self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
+
+    def unclaim(self, username, device_id, optionalBody = None):
         """ Owner unclaims an object
 
         https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-unclaim
 
         :param username: the username of the owner whom owns the object
         :param device_id: the device_id of the object being unclaimed
+        :param optionalBody: 
+            an optional dictionnary that is serilaized as json. this can be used
+            to set some values. eg: the timestamp => { "x_timestamp": "2017-04-24T16:13:11+00:00"}
         """
         if not username:
             raise ValueError("username cannot be null or empty.")
         if not device_id:
             raise ValueError("device_id cannot be null or empty.")
-        self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id))
+        if optionalBody and not isinstance(optionalBody, dict):
+            raise ValueError("if optionalBody is given, it must be a dictionnary")
+
+        if optionalBody and len(optionalBody) > 0:
+            self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id), optionalBody)
+        else:
+            self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id))
 
     def batch_claim(self, claims):
         """ Batch claims of owner to object
