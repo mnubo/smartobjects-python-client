@@ -1,3 +1,20 @@
+<a name='1.0.31'></a>
+
+# [1.0.31](https://github.com/mnubo/smartobjects-python-client/compare/1.0.30...1.0.31) (2017-04-24)
+
+
+- Added model service to get the data model
+
+The model exposes all of the following:
+
+- Event types
+- Timeseries
+- Object types
+- Object attributes
+- Owner attributes
+- Sessionizers
+
+The returned model contains everything that is applied the zone (sandbox or production) your are currently working with. By definition, everything that is available in the production view is also available in the sandbox view. The opposite is not true.
 <a name='1.0.30'></a>
 
 # [1.0.30](https://github.com/mnubo/smartobjects-python-client/compare/1.0.29...1.0.30) (2017-03-24)
