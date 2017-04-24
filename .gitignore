@@ -7,3 +7,4 @@
 /builds
 /dist
 /venv
+*creds.ini

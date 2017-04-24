@@ -7,7 +7,7 @@ from smartobjects.restitution.search import SearchService
 from tests.mocks.local_api_server import LocalApiServer
 
 
-class TestOwnersService(unittest.TestCase):
+class TestSearchService(unittest.TestCase):
     """
     https://smartobjects.mnubo.com/apps/doc/api_search.html#search-api
     """

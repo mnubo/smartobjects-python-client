@@ -3,6 +3,7 @@ from smartobjects.ingestion.events import EventsService
 from smartobjects.ingestion.owners import OwnersService
 from smartobjects.ingestion.objects import ObjectsService
 from smartobjects.restitution.search import SearchService
+from smartobjects.model.model import ModelService
 from smartobjects.api_manager import APIManager
 
 
@@ -39,3 +40,4 @@ class SmartObjectsClient(object):
         self.events = EventsService(self._api_manager)
         self.objects = ObjectsService(self._api_manager)
         self.search = SearchService(self._api_manager)
+        self.model = ModelService(self._api_manager)
