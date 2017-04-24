@@ -1,3 +1,9 @@
+<a name='1.0.32'></a>
+
+# [1.0.32](https://github.com/mnubo/smartobjects-python-client/compare/1.0.31...1.0.32) (2017-04-24)
+
+
+Fix packaging options to expose smartobjects.model
 <a name='1.0.31'></a>
 
 # [1.0.31](https://github.com/mnubo/smartobjects-python-client/compare/1.0.30...1.0.31) (2017-04-24)
