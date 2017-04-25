@@ -85,6 +85,19 @@ class TestOwnersService(unittest.TestCase):
 
       TestHelper.eventually_assert(search_owner_updated)
 
+
+    def search_claimed(self, username, deviceId):
+      result = self.client.search.search(TestHelper.search_object_by_owner_query(username))
+      self.assertEqual(len(result), 1)
+      for row in result:
+        self.assertEqual(row.get("x_device_id"), deviceId)
+
+    def search_unclaimed(self, username, deviceId):   
+      result = self.client.search.search(TestHelper.search_object_by_owner_query(username))
+      self.assertEqual(len(result), 1)
+      for row in result:
+        self.assertEqual(row.get("x_device_id"), deviceId)
+
     def test_claim_unclaim(self):
       currentUUID = uuid.uuid4()
       username = "username-{}".format(currentUUID)
@@ -99,19 +112,26 @@ class TestOwnersService(unittest.TestCase):
       })
 
       self.client.owners.claim(username, deviceId)
-
-      def search_claimed():
-          result = self.client.search.search(TestHelper.search_object_by_owner_query(username))
-          self.assertEqual(len(result), 1)
-          for row in result:
-            self.assertEqual(row.get("x_device_id"), deviceId)
-      TestHelper.eventually_assert(search_claimed)
-
+      TestHelper.eventually_assert(lambda: self.search_claimed(username, deviceId))
 
       self.client.owners.unclaim(username, deviceId)
-      def search_unclaimed():
-          result = self.client.search.search(TestHelper.search_object_by_owner_query(username))
-          self.assertEqual(len(result), 1)
-          for row in result:
-            self.assertEqual(row.get("x_device_id"), deviceId)
-      TestHelper.eventually_assert(search_unclaimed)
+      TestHelper.eventually_assert(lambda: self.search_unclaimed(username, deviceId))
+
+    def test_claim_unclaim_with_body(self):
+      currentUUID = uuid.uuid4()
+      username = "username-{}".format(currentUUID)
+      deviceId = "deviceId-{}".format(currentUUID)
+      self.client.owners.create({
+          "username": username,
+          "x_password": "password-{}".format(currentUUID),
+      })
+      self.client.objects.create({
+          "x_device_id": deviceId,
+          "x_object_type": "object_type1",
+      })
+
+      self.client.owners.claim(username, deviceId, { "x_timestamp": "2017-04-24T16:13:11+00:00"})
+      TestHelper.eventually_assert(lambda: self.search_claimed(username, deviceId))
+
+      self.client.owners.unclaim(username, deviceId, { "x_timestamp": "2017-04-24T16:13:11+00:00"})
+      TestHelper.eventually_assert(lambda: self.search_unclaimed(username, deviceId))
