@@ -1,3 +1,9 @@
+<a name='1.0.33'></a>
+
+# [1.0.33](https://github.com/mnubo/smartobjects-python-client/compare/1.0.32...1.0.33) (2017-04-25)
+
+
+- Added support for a body on claim/unclaim
 <a name='1.0.32'></a>
 
 # [1.0.32](https://github.com/mnubo/smartobjects-python-client/compare/1.0.31...1.0.32) (2017-04-24)
