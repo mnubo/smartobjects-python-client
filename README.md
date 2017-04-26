@@ -21,7 +21,8 @@ Table of Content
 [6. Need help?](#6-need-help)
 
 ---
-#1. Introduction
+
+# 1. Introduction
 
 This package provides a simple Python client to connect to mnubo's SmartObjects platform.
 It gives access to the most common features of mnubo's REST API. All methods require proper authentication.
@@ -31,47 +32,48 @@ Methods such as `create()`, `delete()`, etc, do not return any value. However if
 exception will be thrown so you know what happened.
 
 
-#2. At a glance
+# 2. At a glance
 
 _(optional arguments omitted)_
 
-| Service | Method                                | Summary                                                                 | Example                                           |
-| ------- | ------------------------------------- | ------------------------------------------------------------------------| ----------------------------------------          |
-| Owners  | `create(owner)                      ` | create a new owner                                                      | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `update(username, owner)            ` | update an existing owner                                                |                                                   |
-|         | `claim(username, device_id)         ` | link an existing object to an existing owner                            | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `unclaim(username, device_id)       ` | unlink an existing object from an existing owner                        | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `batch_claim(claims)                ` | claim a batch of object                                                 | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `batch_unclaim(unclaims)            ` | unclaim a batch of object                                               | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `create_update(owners)              ` | create or update a batch or owners                                      |                                                   |
-|         | `delete(username)                   ` | delete an owner                                                         |                                                   |
-|         | `owner_exists(username)             ` | check if an owner exists                                                | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `owners_exist(usernames)            ` | check if a list of owners exist                                         |                                                   |
-| Objects | `create(object)                     ` | create a new smart object                                               | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `update(device_id, object)          ` | update an existing object                                               |                                                   |
-|         | `create_update(objects)             ` | create or update a batch of objects                                     |                                                   |
-|         | `delete(device_id)                  ` | delete an object                                                        |                                                   |
-|         | `object_exists(device_id)           ` | check if an object exists                                               | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `objects_exist(device_ids)          ` | check if a list of objects exist                                        |                                                   |
-| Events  | `send(events)                       ` | send a batch of events tagged with multiple devices                     |                                                   |
-|         | `send_from_device(device_id, events)` | send an event tagged with a specific device                             | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `event_exists(event_id)             ` | check if an event exists                                                |                                                   |
-|         | `events_exist(event_ids)            ` | check if list of events exist                                           |                                                   |
-| Search  | `search(query)                      ` | performs a search in the platform with the provided JSON query (MQL)    | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `validate_query(query)              ` | validates an MQL query                                                  | [simple_workflow.py](examples/simple_workflow.py) |
-|         | `get_datasets()                     ` | retrieves the list of datasets available for this account               | [simple_workflow.py](examples/simple_workflow.py) |
+| Service | Method                                               | Summary                                                                 | Example                                           |
+| ------- | ---------------------------------------------------- | ------------------------------------------------------------------------| ----------------------------------------          |
+| Owners  | `create(owner)                                     ` | create a new owner                                                      | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `update(username, owner)                           ` | update an existing owner                                                |                                                   |
+|         | `claim(username, device_id, optional_body)         ` | link an existing object to an existing owner                            | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `unclaim(username, device_id, optional_body)       ` | unlink an existing object from an existing owner                        | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `batch_claim(claims)                               ` | claim a batch of objects                                                | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `batch_unclaim(unclaims)                           ` | unclaim a batch of objects                                              | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `create_update(owners)                             ` | create or update a batch of owners                                      |                                                   |
+|         | `delete(username)                                  ` | delete an owner                                                         |                                                   |
+|         | `owner_exists(username)                            ` | check if an owner exists                                                | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `owners_exist(usernames)                           ` | check if a list of owners exist                                         |                                                   |
+| Objects | `create(object)                                    ` | create a new smart object                                               | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `update(device_id, object)                         ` | update an existing object                                               |                                                   |
+|         | `create_update(objects)                            ` | create or update a batch of objects                                     |                                                   |
+|         | `delete(device_id)                                 ` | delete an object                                                        |                                                   |
+|         | `object_exists(device_id)                          ` | check if an object exists                                               | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `objects_exist(device_ids)                         ` | check if a list of objects exist                                        |                                                   |
+| Events  | `send(events)                                      ` | send a batch of events tagged with multiple devices                     |                                                   |
+|         | `send_from_device(device_id, events)               ` | send an event tagged with a specific device                             | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `event_exists(event_id)                            ` | check if an event exists                                                |                                                   |
+|         | `events_exist(event_ids)                           ` | check if list of events exist                                           |                                                   |
+| Search  | `search(query)                                     ` | performs a search in the platform with the provided JSON query (MQL)    | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `validate_query(query)                             ` | validates a MQL query                                                   | [simple_workflow.py](examples/simple_workflow.py) |
+|         | `get_datasets()                                    ` | retrieves the list of datasets available for this account               | [simple_workflow.py](examples/simple_workflow.py) |
+| Model   | `export()                                          ` | fetches the model in the current zone                                   | [simple_workflow.py](examples/simple_workflow.py) |
 
 
 
 ---
-#3. Requirements
+# 3. Requirements
 
 - Python 2.7
 - libraries: `requests`, `six`
 
 
 ---
-#4. Installation & Configuration
+# 4. Installation & Configuration
 
 From [PyPI](https://pypi.python.org/pypi/smartobjects/):
 
@@ -84,7 +86,7 @@ From the sources:
     $ python setup.py install
 
 ---
-#5. Usage
+# 5. Usage
 
 ### Initialize the MnuboClient
 
@@ -117,9 +119,20 @@ client.owners.create({
 
 _Mandatory properties_: `username`, `x_password`
 
-#### Claim a Smart Object for an Owner
+#### Claim or unclaim a Smart Object for an Owner
 ```python
 client.owners.claim('sheldon.cooper@caltech.edu', 'fermat1901')
+# if you want to override some values
+client.owners.claim('sheldon.cooper@caltech.edu', 'fermat1901', {
+    "x_timestamp": 2015-02-01T05:00:00.000Z"
+})
+
+
+client.owners.unclaim('sheldon.cooper@caltech.edu', 'fermat1901')
+# if you want to override some values
+client.owners.unclaim('sheldon.cooper@caltech.edu', 'fermat1901', {
+    "x_timestamp": 2015-02-01T05:00:00.000Z"
+})
 ```
 
 As a batch:
@@ -320,7 +333,18 @@ indexed by the dataset name (`owner`, `object`, `event`, `session`).
 ["event_id", "x_object.x_device_id", "timestamp", ...]
 ```
 
+### Use the Model Service
 
-#6. Need help?
+To retrieve the model as it is currently in the zone you are working (sandbox or production), you can use
+the ModelService:
+
+```python
+model = client.model.export()
+print(len(model.eventTypes)) # outputs: 2
+```
+
+
+
+# 6. Need help?
 
 Reach us at support@mnubo.com

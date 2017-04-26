@@ -39,6 +39,7 @@ class EventType(object):
 
         self._key = self._source.get('key')
         self._description = self._source.get('description')
+        self._origin = self._source.get('origin')
         raw_timeseries_keys = self._source.get('timeseries', [])
         self._timeseries_keys = []
         for rawts in raw_timeseries_keys:
@@ -53,6 +54,11 @@ class EventType(object):
     def description(self):
             """ description of the event type """
             return self._description
+
+    @property
+    def origin(self):
+            """ origin of the event type """
+            return self._origin
 
     @property
     def timeseries_keys(self):
