@@ -55,10 +55,12 @@ class TestModelService(unittest.TestCase):
         et = value.event_types[0]
         self.assertEqual(et.key, "event_type1")
         self.assertEqual(et.description, "desc")
+        self.assertEqual(et.origin, "scheduled")
         self.assertEqual(et.timeseries_keys, ["ts_number_attribute", "ts_text_attribute"])
         et2 = value.event_types[1]
         self.assertEqual(et2.key, "event_type2")
         self.assertEqual(et2.description, "desc")
+        self.assertEqual(et2.origin, "rule")
         self.assertEqual(et2.timeseries_keys, ["ts_text_attribute"])
 
         self.assertEqual(len(value.object_attributes), 2)
