@@ -71,6 +71,29 @@ class ResultSet(object):
         """
         return self._rows
 
+    @property
+    def df(self):
+        """Returns the result set as a Pandas DataFrame if pandas is present. Otherwise return None.
+
+        Example:
+            >>> resultset.df
+                             year  COUNT(*)
+            0 2016-01-01 05:00:00      2155
+            1 2017-01-01 05:00:00      1232
+        """
+        try:
+            import pandas
+            dataframe = pandas.io.json.json_normalize(self._source, 'rows')
+            dataframe.columns = [col['label'] for col in self._columns]
+            for column in self._columns:
+                if column['type'] == 'datetime':
+                    id_col = column['label']
+                    dataframe[id_col] = pandas.to_datetime(dataframe[id_col])
+            return dataframe
+        except ImportError:
+            raise ImportError('The "pandas" package is required to use this feature')
+
+
     # type conversion utils
     @staticmethod
     def ToDatetime(date): return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")

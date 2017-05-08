@@ -79,6 +79,10 @@ From [PyPI](https://pypi.python.org/pypi/smartobjects/):
 
     $ pip install smartobjects
 
+Alternatively, if you want to use the client from a data science perspective you can install with `pandas` extra (see [Search Services](###use-the-search-services):
+
+    $ pip install smartobjects[pandas]
+
 From the sources:
 
     $ git clone https://github.com/mnubo/smartobjects-python-client.git
@@ -296,6 +300,25 @@ This method returns a `ResultSet` containing the result of the search (columns a
 Got 2 results!
 >>> [row.get("username") for row in resultset]
 ["sheldon.cooper@caltech.edu", "leonard.hofstadter@caltech.edu"]
+```
+
+Optionally, if you are using the SDK with [pandas](http://pandas.pydata.org/pandas-docs/stable/index.html), you can use the propery `df` of the `resultset`. It will return a DataFrame version of the results, with `datetime` columns converted to a [datetime](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.to_datetime.html#pandas.to_datetime) structure.
+
+```python
+resultset = client.search.search({
+    "from": "event",
+    "select": [
+        {"count": "*"}
+    ],
+    "groupByTime": {
+        "interval": "year",
+        "field": "x_timestamp"
+    }
+})
+
+resultset.df
+#                   year  COUNT(*)
+# 0 2017-01-01 05:00:00      1232
 ```
 
 #### Validate a search query
