@@ -1,3 +1,9 @@
+<a name='1.0.36'></a>
+
+# [1.0.36](https://github.com/mnubo/smartobjects-python-client/compare/1.0.35...1.0.36) (2017-05-09)
+
+
+- Bugfixes with dataframe
 <a name='1.0.35'></a>
 
 # [1.0.35](https://github.com/mnubo/smartobjects-python-client/compare/1.0.34...1.0.35) (2017-05-09)
