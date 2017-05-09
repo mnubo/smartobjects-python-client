@@ -88,7 +88,7 @@ class ResultSet(object):
             for column in self._columns:
                 id_col = column['label']
                 if column['type'] == 'datetime':
-                    dataframe[id_col] = pandas.to_datetime(dataframe[id_col])
+                    dataframe[id_col] = pandas.to_datetime(dataframe[id_col], utc=True)
 
             return dataframe
         except ImportError:
