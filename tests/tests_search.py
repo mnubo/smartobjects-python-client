@@ -63,6 +63,17 @@ class TestSearchService(unittest.TestCase):
         with self.assertRaises(IndexError):
             resultset[2].get(5)
 
+    def test_search_with_pandas(self):
+        resultset = self.search.search({"from": "hardcoded:grouping-by-time-interval"})
+
+        self.assertTrue(isinstance(resultset, ResultSet))
+
+        try:
+            import pandas
+            self.assertTrue(isinstance(resultset.df, pandas.DataFrame))
+        except ImportError:
+            self.assertRaises(ImportError)
+
     def test_search_no_result(self):
         resultset = self.search.search({"from": "empty"})
 

@@ -22,6 +22,9 @@ setup(
     url="https://github.com/mnubo/smartobjects-python-client",
     packages=["smartobjects", "smartobjects.ingestion", "smartobjects.restitution", "smartobjects.helpers", "smartobjects.model"],
     install_requires=requirements,
+    extras_require = {
+        "pandas":  ["pandas"]
+    },
     keywords=['mnubo', 'api', 'sdk', 'iot', 'smartobjects'],
     classifiers=[
         'Operating System :: OS Independent',
