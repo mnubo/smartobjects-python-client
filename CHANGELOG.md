@@ -1,3 +1,9 @@
+<a name='1.0.35'></a>
+
+# [1.0.35](https://github.com/mnubo/smartobjects-python-client/compare/1.0.34...1.0.35) (2017-05-09)
+
+
+- Added support for dataframe if pandas is installed
 <a name='1.0.34'></a>
 
 # [1.0.34](https://github.com/mnubo/smartobjects-python-client/compare/1.0.33...1.0.34) (2017-04-26)
