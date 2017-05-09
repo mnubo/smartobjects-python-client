@@ -83,12 +83,13 @@ class ResultSet(object):
         """
         try:
             import pandas
-            dataframe = pandas.io.json.json_normalize(self._source, 'rows')
-            dataframe.columns = [col['label'] for col in self._columns]
+            columns = [col['label'] for col in self._columns]
+            dataframe = pandas.DataFrame(self._rows, columns=columns)
             for column in self._columns:
+                id_col = column['label']
                 if column['type'] == 'datetime':
-                    id_col = column['label']
-                    dataframe[id_col] = pandas.to_datetime(dataframe[id_col])
+                    dataframe[id_col] = pandas.to_datetime(dataframe[id_col], utc=True)
+
             return dataframe
         except ImportError:
             raise ImportError('The "pandas" package is required to use this feature')
