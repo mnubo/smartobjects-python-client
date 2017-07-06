@@ -16,6 +16,7 @@ class MockMnuboBackend(object):
         self.events = {}
         self.owners = {}
         self.objects = {}
+        self.counter = 0
 
     def _gzip_encode(self, data):
         out = StringIO.StringIO()
@@ -33,6 +34,17 @@ class MockMnuboBackend(object):
             "scope": "ALL",
             "jti": str(uuid.uuid4())
         }
+
+    @route('GET', '^/unvailable/(.+)$')
+    def unavailable(self, params):
+        count = int(params[0])
+        self.counter = self.counter + 1
+        if self.counter > count:
+            return 200, {
+                "data": "ok"
+            }
+        else:
+            return 503, "Service Unavailable"
 
     # events
     def _process_event(self, event, must_exists):
