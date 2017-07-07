@@ -18,15 +18,20 @@ def authenticate(func):
 
 def backoff(func):
     def _backoff(*args):
+        """ *args here are the parameters of `func`, the method on which the decorator is
+            the first element is always `self`, using it, we can get the config and use
+            the retry function with parameters that are configurable
+        """
         if args.count > 0:
-            if args[0]._backoff_config is not None:
+            _self = args[0]
+            if _self._backoff_config is not None:
                 try:
                     from tenacity import retry, wait_exponential, wait_random, stop_after_attempt, retry_if_exception_type, before, before_nothing
 
-                    max_attempts = args[0]._backoff_config.number_of_attempts
-                    initial_delay = args[0]._backoff_config.initial_delay_in_seconds
-                    if args[0]._backoff_config.on_retry is not None:
-                        on_retry = args[0]._backoff_config.on_retry
+                    max_attempts = _self._backoff_config.number_of_attempts
+                    initial_delay = _self._backoff_config.initial_delay_in_seconds
+                    if _self._backoff_config.on_retry is not None:
+                        on_retry = _self._backoff_config.on_retry
                     else:
                         on_retry = before_nothing
                     def call():
