@@ -1,3 +1,9 @@
+<a name='1.1.0'></a>
+
+# [1.1.0](https://github.com/mnubo/smartobjects-python-client/compare/1.0.36...1.1.0) (2017-07-11)
+
+
+- Opt in exponential backoff for responses with 503 status code
 <a name='1.0.36'></a>
 
 # [1.0.36](https://github.com/mnubo/smartobjects-python-client/compare/1.0.35...1.0.36) (2017-05-09)
