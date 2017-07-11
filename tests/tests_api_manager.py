@@ -11,7 +11,7 @@ class TestsApiManager(unittest.TestCase):
     def setUpClass(cls):
         cls.server = LocalApiServer()
         cls.server.start()
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, False)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None)
 
     @classmethod
     def tearDownClass(cls):
@@ -22,21 +22,21 @@ class TestsApiManager(unittest.TestCase):
 
     def tests_host_non_reachable(self):
         with self.assertRaises(ValueError) as ctx:
-            APIManager("CLIENT_ID", "CLIENT_SECRET", "http://non-reachable.example.com")
+            APIManager("CLIENT_ID", "CLIENT_SECRET", "http://non-reachable.example.com", compression_enabled=False, backoff_config = None)
         self.assertEquals(ctx.exception.message, "Host at {} is not reachable".format("http://non-reachable.example.com"))
 
     def test_client_id_null(self):
         with self.assertRaises(ValueError) as ctx:
-            APIManager("", "CLIENT_SECRET", self.server.path)
+            APIManager("", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
         self.assertEquals(ctx.exception.message, "client_id cannot be null or empty.")
 
     def test_client_secret_null(self):
         with self.assertRaises(ValueError) as ctx:
-            APIManager("CLIENT_ID", "", self.server.path)
+            APIManager("CLIENT_ID", "", self.server.path, compression_enabled=False, backoff_config = None)
         self.assertEquals(ctx.exception.message, "client_secret cannot be null or empty.")
 
     def test_fetch_token_at_init(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
         self.assertIn("access_token", api.access_token)
         self.assertIn("expires_in", api.access_token)
         self.assertIn("requested_at", api.access_token)
@@ -46,16 +46,16 @@ class TestsApiManager(unittest.TestCase):
         self.assertEquals(url, "{}/api/v3/".format(self.server.path))
 
     def test_token_is_valid(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
         self.assertTrue(api.is_access_token_valid())
 
     def test_token_invalid(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
         api.access_token['requested_at'] = datetime.datetime.now() - datetime.timedelta(hours=2)
         self.assertFalse(api.is_access_token_valid())
 
     def test_refresh_token(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
         api.access_token['requested_at'] = datetime.datetime.now() - datetime.timedelta(hours=2)
         self.assertFalse(api.is_access_token_valid())
 
@@ -157,7 +157,7 @@ class TestsApiManager(unittest.TestCase):
         self.assertIn('gzip', r.request.headers['Accept-Encoding'])
 
     def test_compression_post(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, True)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=True, backoff_config = None)
         content = {
             "some_property": "some_value",
             "some_boolean": True
@@ -175,7 +175,7 @@ class TestsApiManager(unittest.TestCase):
         self.assertEquals(content, r.json())
 
     def test_compression_put(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, True)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=True, backoff_config = None)
         content = {
             "some_property": "some_value",
             "some_boolean": True

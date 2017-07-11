@@ -17,7 +17,7 @@ class TestSearchService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, False)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None)
         cls.search = SearchService(cls.api)
 
     @classmethod

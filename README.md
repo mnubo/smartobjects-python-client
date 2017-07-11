@@ -107,6 +107,9 @@ API URL.
 _Optional arguments_:
 
 - compression_enabled: if `True`, data sent to the platform is compressed using _gzip_ format. Default: `True`
+- backoff_config: if given, requests resulting in 503 will be retried. Default: `None`
+
+_Note:_ to use exponential backoff retries feature, you must `pip install tenacity` (4.2.0+)
 
 ### Use the Owners service
 To create owners on the mnubo SmartObjects platform, please refer to
