@@ -5,11 +5,11 @@ from setuptools import setup
 with open('requirements.txt') as f:
     requirements = [line.strip() for line in f.readlines()]
 
-VERSION = "1.0{tag}"
+VERSION = "{tag}"
 try:
     with open('build_version.txt') as f:
         tag = f.readline().strip()
-        version = VERSION.format(tag="."+tag)
+        version = VERSION.format(tag=tag)
 except IOError:
     version = VERSION.format(tag="-dev")
 
