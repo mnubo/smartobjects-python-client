@@ -28,14 +28,12 @@ class TestOwnersService(unittest.TestCase):
       def search_owner_created():
           result = self.client.search.search(TestHelper.search_owner_query(usernameToDelete))
           self.assertEqual(len(result), 1)
-      TestHelper.eventually_assert(search_owner_created)
 
       self.client.owners.delete(usernameToDelete)
 
       def search_owner_deleted():
           result = self.client.search.search(TestHelper.search_owner_query(usernameToDelete))
           self.assertEqual(len(result), 0)
-      TestHelper.eventually_assert(search_owner_deleted)
 
     def test_basic_owners(self):
       currentUUID = uuid.uuid4()
@@ -70,8 +68,6 @@ class TestOwnersService(unittest.TestCase):
           for row in result:
             self.assertEqual(row.get("owner_text_attribute"), value)  
 
-      TestHelper.eventually_assert(search_owner_created)
-
       self.client.owners.update(username, {
           "owner_text_attribute": "newvalue"
       })
@@ -81,8 +77,6 @@ class TestOwnersService(unittest.TestCase):
           self.assertEqual(len(result), 1)
           for row in result:
             self.assertEqual(row.get("owner_text_attribute"), "newvalue")  
-
-      TestHelper.eventually_assert(search_owner_updated)
 
 
     def search_claimed(self, username, deviceId):
@@ -111,10 +105,8 @@ class TestOwnersService(unittest.TestCase):
       })
 
       self.client.owners.claim(username, deviceId)
-      TestHelper.eventually_assert(lambda: self.search_claimed(username, deviceId))
 
       self.client.owners.unclaim(username, deviceId)
-      TestHelper.eventually_assert(lambda: self.search_unclaimed(username, deviceId))
 
     def test_claim_unclaim_with_body(self):
       currentUUID = uuid.uuid4()
@@ -130,7 +122,5 @@ class TestOwnersService(unittest.TestCase):
       })
 
       self.client.owners.claim(username, deviceId, { "x_timestamp": "2017-04-24T16:13:11+00:00"})
-      TestHelper.eventually_assert(lambda: self.search_claimed(username, deviceId))
 
       self.client.owners.unclaim(username, deviceId, { "x_timestamp": "2017-04-24T16:13:11+00:00"})
-      TestHelper.eventually_assert(lambda: self.search_unclaimed(username, deviceId))

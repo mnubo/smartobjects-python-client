@@ -40,16 +40,3 @@ class TestEventsService(unittest.TestCase):
           "event_id": currentUUID,
           "ts_text_attribute": value,
       })
-
-      def search_events():
-          result = self.client.search.search(TestHelper.search_event_query(currentUUID))
-          self.assertEqual(len(result), 1)
-          for row in result:
-            self.assertEqual(row.get("ts_text_attribute"), value)  
-
-          result2 = self.client.search.search(TestHelper.search_event_query(currentUUID2))
-          self.assertEqual(len(result2), 1)
-          for row in result2:
-            self.assertEqual(row.get("ts_text_attribute"), value2)  
-
-      TestHelper.eventually_assert(search_events)
