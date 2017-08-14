@@ -3,7 +3,38 @@ import json
 import base64
 import datetime
 import gzip
-import StringIO
+from io import BytesIO
+
+import sys
+PY3 = sys.version_info[0] >= 3
+
+def py2_b64encode(input_str):
+    return base64.b64encode(input_str)
+
+def py3_b64encode(input_str):
+    input_bytes = input_str.encode('utf8')
+    encoded = base64.b64encode(input_bytes)
+    return encoded.decode('utf8')
+
+def py2_gzip_encode(data):
+    out = BytesIO()
+    f = gzip.GzipFile(mode='wb', fileobj=out)
+    f.write(data)
+    f.close()
+    return out.getvalue()
+
+def py3_gzip_encode(data):
+    out = BytesIO()
+    f = gzip.GzipFile(mode='wb', fileobj=out)
+    f.write(data.encode('utf8'))
+    f.close()
+    return out.getvalue()
+
+def py2_response_decode(data):
+    return data
+
+def py3_response_decode(data):
+    return data.decode('utf8')
 
 class ServiceUnavailable(Exception):
     """ Exception used when status code is 503"""
@@ -22,7 +53,7 @@ def backoff(func):
             the first element is always `self`, using it, we can get the config and use
             the retry function with parameters that are configurable
         """
-        if args.count > 0:
+        if len(args) > 0:
             _self = args[0]
             if _self._backoff_config is not None:
                 try:
@@ -36,7 +67,7 @@ def backoff(func):
                         on_retry = before_nothing
                     def call():
                         return func(*args)
-                    return apply(retry(stop=stop_after_attempt(max_attempts), wait=wait_exponential(multiplier=initial_delay) + wait_random(min=0.01, max=0.05), retry=retry_if_exception_type(exception_types=ServiceUnavailable), before=on_retry, reraise=True)(call))
+                    return retry(stop=stop_after_attempt(max_attempts), wait=wait_exponential(multiplier=initial_delay) + wait_random(min=0.01, max=0.05), retry=retry_if_exception_type(exception_types=ServiceUnavailable), before=on_retry, reraise=True)(call)()
                 except ImportError:
                     raise ImportError('The "tenacity" package is required to use this feature')
             else:
@@ -62,11 +93,18 @@ class APIManager(object):
         if not client_secret:
             raise ValueError("client_secret cannot be null or empty.")
 
-
         try:
             requests.head(hostname)
         except requests.exceptions.ConnectionError:
             raise ValueError("Host at {} is not reachable".format(hostname))
+
+        self.__hybridb64 = py2_b64encode
+        self.__gzip_encode = py2_gzip_encode
+        self.__response_decode = py2_response_decode
+        if PY3:
+            self.__hybridb64 = py3_b64encode
+            self.__gzip_encode = py3_gzip_encode
+            self.__response_decode = py3_response_decode
 
         self.__client_id = client_id
         self.__client_secret = client_secret
@@ -106,7 +144,7 @@ class APIManager(object):
         """ Generates the authorization header used while requesting an access token
         """
 
-        encoded = base64.b64encode("{0}:{1}".format(self.__client_id, self.__client_secret))
+        encoded = self.__hybridb64("{0}:{1}".format(self.__client_id, self.__client_secret))
         return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic {}".format(encoded)}
 
     def get_authorization_header(self):
@@ -136,13 +174,6 @@ class APIManager(object):
         if response.status_code == 503:
             raise ServiceUnavailable
         response.raise_for_status()
-
-    def _gzip_encode(self, data):
-        out = StringIO.StringIO()
-        f = gzip.GzipFile(mode='wb', fileobj=out)
-        f.write(data)
-        f.close()
-        return out.getvalue()
 
     @authenticate
     @backoff
@@ -175,7 +206,7 @@ class APIManager(object):
 
         if self.compression_enabled:
             headers.update({"content-encoding": "gzip"})
-            encoded = self._gzip_encode(json.dumps(body))
+            encoded = self.__gzip_encode(json.dumps(body))
             response = self.__session.post(url, data=encoded, headers=headers)
         else:
             response = self.__session.post(url, json=body, headers=headers)
@@ -198,7 +229,7 @@ class APIManager(object):
 
         if self.compression_enabled:
             headers.update({"content-encoding": "gzip"})
-            encoded = self._gzip_encode(json.dumps(body))
+            encoded = self.__gzip_encode(json.dumps(body))
             response = self.__session.put(url, data=encoded, headers=headers)
         else:
             response = self.__session.put(url, json=body, headers=headers)

@@ -1,4 +1,5 @@
 from smartobjects.ingestion import Result
+from builtins import map
 
 
 class OwnersService(object):
@@ -94,7 +95,7 @@ class OwnersService(object):
         """
         if isinstance(claims, list) and all([isinstance(claim, tuple) and len(claim) == 2 for claim in claims]):
             # transform a list of (user, device) pair to a claim dictionary
-            claims = map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, claims)
+            claims = list(map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, claims))
 
         [self._validate_claim(claim) for claim in claims]
 
@@ -118,7 +119,7 @@ class OwnersService(object):
         """
         if isinstance(unclaims, list) and all([isinstance(unclaim, tuple) and len(unclaim) == 2 for unclaim in unclaims]):
             # transform a list of (user, device) pair to a unclaim dictionary
-            unclaims = map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, unclaims)
+            unclaims = list(map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, unclaims))
 
         [self._validate_claim(unclaim) for unclaim in unclaims]
 

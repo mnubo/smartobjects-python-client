@@ -24,6 +24,8 @@ class ResultSet(object):
         return len(self._rows)
 
     def __getitem__(self, item):
+        if not isinstance(item, int):
+            raise IndexError("item must be an integer")
         if not 0 <= item < len(self._rows):
             raise IndexError("Invalid index: must be in the range [{}, {})".format(0, len(self._rows)))
         return ResultRow(self._rows[item], self)
