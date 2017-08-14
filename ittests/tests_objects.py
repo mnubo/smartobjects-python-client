@@ -1,5 +1,4 @@
 import unittest
-import ConfigParser
 import uuid
 import time
 
@@ -81,6 +80,4 @@ class TestObjectsService(unittest.TestCase):
           result = self.client.search.search(TestHelper.search_object_query(deviceId))
           self.assertEqual(len(result), 1)
           for row in result:
-            self.assertEqual(row.get("object_text_attribute"), "newvalue")  
-
-      TestHelper.eventually_assert(search_object_updated)
+            self.assertEqual(row.get("object_text_attribute"), "newvalue")

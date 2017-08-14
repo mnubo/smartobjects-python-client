@@ -1,5 +1,4 @@
 import unittest
-import ConfigParser
 import uuid
 import time
 

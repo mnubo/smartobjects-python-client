@@ -2,10 +2,14 @@ import uuid
 from datetime import datetime
 import gzip
 import zlib
-import StringIO
+from io import BytesIO
 import json
 
 from .routes import route
+
+from builtins import filter
+import sys
+PY3 = sys.version_info[0] >= 3
 
 
 class MockMnuboBackend(object):
@@ -19,9 +23,12 @@ class MockMnuboBackend(object):
         self.counter = 0
 
     def _gzip_encode(self, data):
-        out = StringIO.StringIO()
+        out = BytesIO()
         f = gzip.GzipFile(mode='wb', fileobj=out)
-        f.write(data)
+        if PY3:
+            f.write(data.encode('utf8'))
+        else:
+            f.write(data)
         f.close()
         return out.getvalue()
 
@@ -76,7 +83,7 @@ class MockMnuboBackend(object):
                 report_result = p.endswith('true')
 
         result = [self._process_event(event, must_exists) for event in body]
-        failed = filter(lambda r: r['result'] != "success", result)
+        failed = list(filter(lambda r: r['result'] != "success", result))
 
         if report_result:
             return 207 if failed else 200, result
@@ -396,19 +403,19 @@ class MockMnuboBackend(object):
               "origin": "scheduled",
               "timeseries": [
                 {
-                  "key": "ts_number_attribute",
-                  "displayName": "dp ts_number_attribute",
-                  "description": "desc ts_number_attribute",
-                  "type": {
-                    "highLevelType": "DOUBLE"
-                  }
-                },
-                {
                   "key": "ts_text_attribute",
                   "displayName": "dp ts_text_attribute",
                   "description": "desc ts_text_attribute",
                   "type": {
                     "highLevelType": "TEXT"
+                  }
+                },
+                {
+                  "key": "ts_number_attribute",
+                  "displayName": "dp ts_number_attribute",
+                  "description": "desc ts_number_attribute",
+                  "type": {
+                    "highLevelType": "DOUBLE"
                   }
                 }
               ]

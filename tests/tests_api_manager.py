@@ -23,17 +23,17 @@ class TestsApiManager(unittest.TestCase):
     def tests_host_non_reachable(self):
         with self.assertRaises(ValueError) as ctx:
             APIManager("CLIENT_ID", "CLIENT_SECRET", "http://non-reachable.example.com", compression_enabled=False, backoff_config = None)
-        self.assertEquals(ctx.exception.message, "Host at {} is not reachable".format("http://non-reachable.example.com"))
+            self.assertEqual(ctx.exception.message, "Host at {} is not reachable".format("http://non-reachable.example.com"))
 
     def test_client_id_null(self):
         with self.assertRaises(ValueError) as ctx:
             APIManager("", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
-        self.assertEquals(ctx.exception.message, "client_id cannot be null or empty.")
+            self.assertEqual(ctx.exception.message, "client_id cannot be null or empty.")
 
     def test_client_secret_null(self):
         with self.assertRaises(ValueError) as ctx:
             APIManager("CLIENT_ID", "", self.server.path, compression_enabled=False, backoff_config = None)
-        self.assertEquals(ctx.exception.message, "client_secret cannot be null or empty.")
+            self.assertEqual(ctx.exception.message, "client_secret cannot be null or empty.")
 
     def test_fetch_token_at_init(self):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
@@ -43,7 +43,7 @@ class TestsApiManager(unittest.TestCase):
 
     def test_get_api_url(self):
         url = self.api.get_api_url()
-        self.assertEquals(url, "{}/api/v3/".format(self.server.path))
+        self.assertEqual(url, "{}/api/v3/".format(self.server.path))
 
     def test_token_is_valid(self):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
@@ -69,40 +69,40 @@ class TestsApiManager(unittest.TestCase):
 
         with self.assertRaises(ValueError) as ctx:
             self.api.validate_response(r)
-        self.assertEquals(ctx.exception.message, "error message")
+            self.assertEqual(ctx.exception.message, "error message")
 
     def test_get(self):
         r = self.api.get("api_manager?parameter")
 
-        self.assertEquals(r.status_code, 200)
-        self.assertEquals(r.request.method, 'GET')
-        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.request.method, 'GET')
+        self.assertEqual(r.request.path_url, '/api/v3/api_manager?parameter')
         self.assertIn('parameter', r.json())
 
     def test_post(self):
         r = self.api.post("api_manager?parameter", {"data": "value"})
 
-        self.assertEquals(r.status_code, 200)
-        self.assertEquals(r.request.method, 'POST')
-        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.request.method, 'POST')
+        self.assertEqual(r.request.path_url, '/api/v3/api_manager?parameter')
         self.assertIn('parameter', r.json()[0])
-        self.assertEquals({"data": "value"}, r.json()[1])
+        self.assertEqual({"data": "value"}, r.json()[1])
 
     def test_put(self):
         r = self.api.put("api_manager?parameter", {"data": "value"})
 
-        self.assertEquals(r.status_code, 200)
-        self.assertEquals(r.request.method, 'PUT')
-        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.request.method, 'PUT')
+        self.assertEqual(r.request.path_url, '/api/v3/api_manager?parameter')
         self.assertIn('parameter', r.json()[0])
-        self.assertEquals({"data": "value"}, r.json()[1])
+        self.assertEqual({"data": "value"}, r.json()[1])
 
     def test_delete(self):
         r = self.api.delete("api_manager?parameter")
 
-        self.assertEquals(r.status_code, 200)
-        self.assertEquals(r.request.method, 'DELETE')
-        self.assertEquals(r.request.path_url, '/api/v3/api_manager?parameter')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.request.method, 'DELETE')
+        self.assertEqual(r.request.path_url, '/api/v3/api_manager?parameter')
         self.assertIn('parameter', r.json()[0])
 
     def test_authorization_token(self):
@@ -125,19 +125,19 @@ class TestsApiManager(unittest.TestCase):
     def test_content_type(self):
         r = self.api.get("api_manager")
         self.assertIn('Content-Type', r.request.headers)
-        self.assertEquals('application/json', r.request.headers['Content-Type'])
+        self.assertEqual('application/json', r.request.headers['Content-Type'])
 
         r = self.api.post("api_manager", {})
         self.assertIn('Content-Type', r.request.headers)
-        self.assertEquals('application/json', r.request.headers['Content-Type'])
+        self.assertEqual('application/json', r.request.headers['Content-Type'])
 
         r = self.api.put("api_manager", {})
         self.assertIn('Content-Type', r.request.headers)
-        self.assertEquals('application/json', r.request.headers['Content-Type'])
+        self.assertEqual('application/json', r.request.headers['Content-Type'])
 
         r = self.api.delete("api_manager")
         self.assertIn('Content-Type', r.request.headers)
-        self.assertEquals('application/json', r.request.headers['Content-Type'])
+        self.assertEqual('application/json', r.request.headers['Content-Type'])
 
     def test_accept_encoding(self):
         r = self.api.get("api_manager")
@@ -166,13 +166,13 @@ class TestsApiManager(unittest.TestCase):
         r = api.post("compression_enabled", content)
 
         self.assertIn('Content-Encoding', r.request.headers)
-        self.assertEquals('gzip', r.request.headers['Content-Encoding'])
+        self.assertEqual('gzip', r.request.headers['Content-Encoding'])
 
         self.assertIn('Content-Encoding', r.headers)
-        self.assertEquals('gzip', r.headers['Content-Encoding'])
+        self.assertEqual('gzip', r.headers['Content-Encoding'])
 
         # content already decompressed by python-requests
-        self.assertEquals(content, r.json())
+        self.assertEqual(content, r.json())
 
     def test_compression_put(self):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=True, backoff_config = None)
@@ -184,10 +184,10 @@ class TestsApiManager(unittest.TestCase):
         r = api.put("compression_enabled", content)
 
         self.assertIn('Content-Encoding', r.request.headers)
-        self.assertEquals('gzip', r.request.headers['Content-Encoding'])
+        self.assertEqual('gzip', r.request.headers['Content-Encoding'])
 
         self.assertIn('Content-Encoding', r.headers)
-        self.assertEquals('gzip', r.headers['Content-Encoding'])
+        self.assertEqual('gzip', r.headers['Content-Encoding'])
 
         # content already decompressed by python-requests
-        self.assertEquals(content, r.json())
+        self.assertEqual(content, r.json())

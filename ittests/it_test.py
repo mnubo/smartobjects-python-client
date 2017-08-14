@@ -1,10 +1,12 @@
 import unittest
-import ConfigParser
 import time
 import logging
 
 from smartobjects import SmartObjectsClient
 from smartobjects import Environments
+
+import sys
+PY3 = sys.version_info[0] >= 3
 
 class TestHelper(object):
     timeout = 240
@@ -12,10 +14,15 @@ class TestHelper(object):
 
     @staticmethod
     def getClient():
-        Config = ConfigParser.ConfigParser()
-        Config.read("ittests/creds.ini")
-        key = Config.get("Credentials", "key")
-        secret = Config.get("Credentials", "secret")
+        if PY3:
+          from configparser import ConfigParser
+        else:
+          from ConfigParser import ConfigParser
+
+        myconfig = ConfigParser()
+        myconfig.read("ittests/creds.ini")
+        key = myconfig.get("Credentials", "key")
+        secret = myconfig.get("Credentials", "secret")
         return SmartObjectsClient(key, secret, Environments.Sandbox)
 
     @staticmethod
