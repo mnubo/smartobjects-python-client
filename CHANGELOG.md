@@ -1,3 +1,9 @@
+<a name='1.1.1'></a>
+
+# [1.1.1](https://github.com/mnubo/smartobjects-python-client/compare/1.1.0...1.1.1) (2017-08-16)
+
+
+* Support for python3
 <a name='1.1.0'></a>
 
 # [1.1.0](https://github.com/mnubo/smartobjects-python-client/compare/1.0.36...1.1.0) (2017-07-11)
