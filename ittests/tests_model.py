@@ -1,5 +1,4 @@
 import unittest
-import ConfigParser
 
 from ittests.it_test import TestHelper
 

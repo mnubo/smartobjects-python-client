@@ -1,19 +1,26 @@
 from __future__ import print_function
-from six import iteritems, PY3
 
 import re
 import json
 
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 
 from .mock_mnubo_backend import MockMnuboBackend
 from .routes import ROUTES
 
+import sys
+PY3 = sys.version_info[0] >= 3
 
 class LocalApiRequestHandler(BaseHTTPRequestHandler):
+    def _send_response(self, body):
+        if PY3 and isinstance(body, str):
+            self.wfile.write(body.encode('utf8'))
+        else:
+            self.wfile.write(body)
+
     def _get_route(self, method, path):
-        for route, handler in ROUTES[method].iteritems():
+        for route, handler in ROUTES[method].items():
             matches = re.search(route, path)
             if matches:
                 return handler, matches.groups()
@@ -36,9 +43,10 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
             code, resp_content = handler(self.server.backend, matches)
         else:
             length = int(self.headers['content-length'])
+            content_type = self.headers['content-type']
             body = self.rfile.read(length) if length else "{}"
 
-            if not compress:
+            if not compress and content_type == 'application/json':
                 body = json.loads(body)
 
             code, resp_content = handler(self.server.backend, body, matches)
@@ -51,13 +59,13 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             if resp_content is not None:
                 if not compress:
-                    resp_content = json.dumps(resp_content)
-                self.wfile.write(resp_content)
+                        resp_content = json.dumps(resp_content)
+                self._send_response(resp_content)
         else:
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             if resp_content is not None:
-                self.wfile.write(resp_content)
+                self._send_response(resp_content)
 
     def do_GET(self):
         self._handle('GET', self.path)
@@ -73,6 +81,7 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_response(200)
+        self.end_headers()
 
 
 class LocalApiServer(object):

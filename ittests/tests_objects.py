@@ -1,5 +1,4 @@
 import unittest
-import ConfigParser
 import uuid
 import time
 
@@ -26,17 +25,7 @@ class TestObjectsService(unittest.TestCase):
           "x_object_type": "object_type1",
       })
 
-      def search_object_created():
-          result = self.client.search.search(TestHelper.search_object_query(deviceIdToDelete))
-          self.assertEqual(len(result), 1)
-      TestHelper.eventually_assert(search_object_created)
-
       self.client.objects.delete(deviceIdToDelete)
-
-      def search_object_deleted():
-          result = self.client.search.search(TestHelper.search_object_query(deviceIdToDelete))
-          self.assertEqual(len(result), 0)
-      TestHelper.eventually_assert(search_object_deleted)
 
     def test_basic_objects(self):
       currentUUID = uuid.uuid4()
@@ -71,8 +60,6 @@ class TestObjectsService(unittest.TestCase):
           for row in result:
             self.assertEqual(row.get("object_text_attribute"), value)  
 
-      TestHelper.eventually_assert(search_object_created)
-
       self.client.objects.update(deviceId, {
           "object_text_attribute": "newvalue"
       })
@@ -81,6 +68,4 @@ class TestObjectsService(unittest.TestCase):
           result = self.client.search.search(TestHelper.search_object_query(deviceId))
           self.assertEqual(len(result), 1)
           for row in result:
-            self.assertEqual(row.get("object_text_attribute"), "newvalue")  
-
-      TestHelper.eventually_assert(search_object_updated)
+            self.assertEqual(row.get("object_text_attribute"), "newvalue")

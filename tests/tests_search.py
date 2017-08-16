@@ -30,28 +30,28 @@ class TestSearchService(unittest.TestCase):
 
         self.assertTrue(isinstance(resultset, ResultSet))
 
-        self.assertEquals(len(resultset), 4)
+        self.assertEqual(len(resultset), 4)
 
         for row in resultset:
-            self.assertEquals(row.get("COUNT(*)"), 400)
-            self.assertEquals(row["COUNT(*)"], 400)
-            self.assertEquals(row[1], 400)
+            self.assertEqual(row.get("COUNT(*)"), 400)
+            self.assertEqual(row["COUNT(*)"], 400)
+            self.assertEqual(row[1], 400)
 
             # type conversion
-            self.assertEquals(row.get("COUNT(*)", str), "400")
-            self.assertEquals(row.get(1, float), 400.0)
+            self.assertEqual(row.get("COUNT(*)", str), "400")
+            self.assertEqual(row.get(1, float), 400.0)
 
-            self.assertEquals(row.get("month", lambda date: datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")), datetime(2015, 1, 1, 5))
-            self.assertEquals(row.get("month", ResultSet.ToDatetime), datetime(2015, 1, 1, 5))
+            self.assertEqual(row.get("month", lambda date: datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")), datetime(2015, 1, 1, 5))
+            self.assertEqual(row.get("month", ResultSet.ToDatetime), datetime(2015, 1, 1, 5))
 
             # full column as returned by platform
-            self.assertEquals(row.raw, ['2015-01-01T05:00:00.000Z', 400])
+            self.assertEqual(row.raw, ['2015-01-01T05:00:00.000Z', 400])
 
             # only validating the first row
             break
 
-        self.assertEquals(resultset.get_column_index("COUNT(*)"), 1)
-        self.assertEquals(resultset.get_column_type("COUNT(*)"), "long")
+        self.assertEqual(resultset.get_column_index("COUNT(*)"), 1)
+        self.assertEqual(resultset.get_column_type("COUNT(*)"), "long")
 
         # test invalid access
         with self.assertRaises(IndexError):
@@ -77,7 +77,7 @@ class TestSearchService(unittest.TestCase):
     def test_search_no_result(self):
         resultset = self.search.search({"from": "empty"})
 
-        self.assertEquals(len(resultset), 0)
+        self.assertEqual(len(resultset), 0)
         for _ in resultset:
             self.assertTrue(False)
 
@@ -102,9 +102,9 @@ class TestSearchService(unittest.TestCase):
             self.assertTrue(hasattr(field, 'container_type'))
             self.assertTrue(hasattr(field, 'primary_key'))
 
-        self.assertEquals(datasets['owner'].key, "owner")
-        self.assertEquals(datasets['session'].fields[1].description, "The date and time the event have been received by Mnubo")
-        self.assertEquals(datasets['session'].fields[1].high_level_type, "DATETIME")
+        self.assertEqual(datasets['owner'].key, "owner")
+        self.assertEqual(datasets['session'].fields[1].description, "The date and time the event have been received by Mnubo")
+        self.assertEqual(datasets['session'].fields[1].high_level_type, "DATETIME")
 
     def test_validate_query_ok(self):
         result = self.search.validate_query({
@@ -116,14 +116,14 @@ class TestSearchService(unittest.TestCase):
         })
 
         self.assertTrue(isinstance(result, QueryValidationResult))
-        self.assertEquals(result.is_valid, True)
-        self.assertEquals(result.validation_errors, [])
+        self.assertEqual(result.is_valid, True)
+        self.assertEqual(result.validation_errors, [])
 
     def test_validate_query_empty(self):
         result = self.search.validate_query({})
 
         self.assertTrue(isinstance(result, QueryValidationResult))
-        self.assertEquals(result.is_valid, False)
-        self.assertEquals(result.validation_errors, ["Query cannot be empty or null."])
+        self.assertEqual(result.is_valid, False)
+        self.assertEqual(result.validation_errors, ["Query cannot be empty or null."])
 
 

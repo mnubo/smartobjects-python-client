@@ -1,21 +1,25 @@
 import unittest
-import ConfigParser
 import time
 import logging
 
 from smartobjects import SmartObjectsClient
 from smartobjects import Environments
 
-class TestHelper(object):
-    timeout = 240
-    delay = 5
+import sys
+PY3 = sys.version_info[0] >= 3
 
+class TestHelper(object):
     @staticmethod
     def getClient():
-        Config = ConfigParser.ConfigParser()
-        Config.read("ittests/creds.ini")
-        key = Config.get("Credentials", "key")
-        secret = Config.get("Credentials", "secret")
+        if PY3:
+          from configparser import ConfigParser
+        else:
+          from ConfigParser import ConfigParser
+
+        myconfig = ConfigParser()
+        myconfig.read("ittests/creds.ini")
+        key = myconfig.get("Credentials", "key")
+        secret = myconfig.get("Credentials", "secret")
         return SmartObjectsClient(key, secret, Environments.Sandbox)
 
     @staticmethod
@@ -93,32 +97,3 @@ class TestHelper(object):
             }
           }
         }
-
-    @staticmethod
-    def eventually_assert(myAssert):
-        TestHelper.eventually_assert_with_delay(myAssert, TestHelper.timeout, TestHelper.delay)
-
-    @staticmethod
-    def eventually_assert_with_delay(myAssert, timeout, delay):
-        if (timeout < delay):
-            raise ValueError("timeout should be bigger than delay")
-
-        current_time = lambda: int(round(time.time()))
-
-        stopper = current_time() + timeout
-        lastAssertException = None
-
-        while current_time() < stopper:
-            try:
-                myAssert()
-                return
-            except AssertionError as e:
-                lastAssertException = e
-                logging.debug("Assert failed: {}. Will retry".format(e))
-            except Exception as e:
-                raise e
-            time.sleep(delay)
-
-        if not lastAssertException:
-            logging.debug("Final tentative failed.")
-            raise lastAssertException
