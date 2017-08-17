@@ -96,19 +96,30 @@ From the sources:
 
 ```python
 from smartobjects import SmartObjectsClient
-from smartobjects import Environments
-from smartobjects.smartobjects_client import ExponentialBackoffConfig
+from smartobjects import Environments, ExponentialBackoffConfig
 
 client = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
+client_with_backoff = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production, backoff_config=ExponentialBackoffConfig())
 ```
 
 The environment argument can be `Environments.Sandbox` or `Environments.Production` and automatically resolves to the right
 API URL.
 
+You can also initialize the client with a static token but this is not recommended for production because the token will eventually expires:
+
+```python
+from smartobjects import SmartObjectsClient
+from smartobjects import Environments, ExponentialBackoffConfig
+
+client = SmartObjectsClient.withToken('<YOUR_TOKEN>', Environments.Sandbox)
+client_with_backoff = SmartObjectsClient.withToken('<YOUR_TOKEN>', Environments.Sandbox, backoff_config=ExponentialBackoffConfig())
+```
+
 _Optional arguments_:
 
 - compression_enabled: if `True`, data sent to the platform is compressed using _gzip_ format. Default: `True`
 - backoff_config: if given, requests resulting in 503 will be retried. Default: `None`
+- token_override: if given, the OAuth2 dance is avoid and this token is always used. Default: `None`
 
 _Note:_ to use exponential backoff retries feature, you must `pip install tenacity` (4.2.0+)
 
