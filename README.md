@@ -97,6 +97,7 @@ From the sources:
 ```python
 from smartobjects import SmartObjectsClient
 from smartobjects import Environments
+from smartobjects.smartobjects_client import ExponentialBackoffConfig
 
 client = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production)
 ```
