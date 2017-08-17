@@ -28,7 +28,7 @@ class TestBackoff(unittest.TestCase):
 
     def test_retry_default(self):
         config = ExponentialBackoffConfig()
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = config)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = config, token_override=None)
         value = api.get('unvailable/1')
         self.assertEqual(value.json()['data'], "ok")
 
@@ -37,7 +37,7 @@ class TestBackoff(unittest.TestCase):
         def on_retry(func, trial_number):
             self.counter = self.counter + 1
         config = ExponentialBackoffConfig(5, 0.5, on_retry)
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = config)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = config, token_override=None)
         value = api.get('unvailable/3')
         self.assertEqual(self.counter, 4)
         self.assertEqual(value.json()['data'], "ok")
@@ -47,12 +47,12 @@ class TestBackoff(unittest.TestCase):
         def on_retry(func, trial_number):
             self.counter = self.counter + 1
         config = ExponentialBackoffConfig(5, 0.1, on_retry)
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = config)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = config, token_override=None)
         with self.assertRaises(ServiceUnavailable) as ctx:
             api.get('unvailable/100')
         self.assertEqual(self.counter, 5)
 
     def test_do_not_retry_if_success(self):
-        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None)
+        api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config = None, token_override=None)
         value = api.get('unvailable/0')
         self.assertEqual(value.json()['data'], "ok")
