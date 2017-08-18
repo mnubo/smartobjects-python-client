@@ -1,3 +1,9 @@
+<a name='1.2.0'></a>
+
+# [1.2.0](https://github.com/mnubo/smartobjects-python-client/compare/1.1.1...1.2.0) (2017-08-18)
+
+
+* Support initialization with a static access token
 <a name='1.1.1'></a>
 
 # [1.1.1](https://github.com/mnubo/smartobjects-python-client/compare/1.1.0...1.1.1) (2017-08-16)
