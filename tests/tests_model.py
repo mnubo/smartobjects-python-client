@@ -19,7 +19,7 @@ class TestModelService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None, token_override=None)
         cls.model = ModelService(cls.api)
 
     @classmethod
