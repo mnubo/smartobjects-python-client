@@ -8,6 +8,8 @@ from smartobjects.api_manager import APIManager
 
 
 class Environments:
+    """ Provide default URL if you don't have a specific one
+    """
     Sandbox = "https://rest.sandbox.mnubo.com"
     Production = "https://rest.api.mnubo.com"
 
@@ -37,7 +39,7 @@ class SmartObjectsClient(object):
 
         :param client_id (string): client_id part of the OAuth 2.0 credentials (available in your dashboard)
         :param client_secret (string): client_secret part of the OAuth 2.0 credentials (available in your dashboard)
-        :param environment: either Environments.Sandbox or Environments.Production
+        :param environment: a URL to the targeted environment (Environments.Sandbox or Environments.Production can be used)
             (note: client_id and client_secret are unique per environment)
         :param compression_enabled: gzip compress the request body (default: True)
         :param backoff_config: retry with exponential backoff (default: None)
@@ -47,9 +49,6 @@ class SmartObjectsClient(object):
         :note: Do not expose publicly code containing your client_id and client_secret
         .. seealso:: examples/simple_workflow.py
         """
-
-        if environment not in (Environments.Sandbox, Environments.Production):
-            raise ValueError("Invalid 'environment' argument, must be one of: Environments.Sandbox, Environments.Production")
 
         self._api_manager = APIManager(client_id, client_secret, environment, compression_enabled, backoff_config, token_override)
         self.owners = OwnersService(self._api_manager)
@@ -67,7 +66,7 @@ class SmartObjectsClient(object):
 
         :param client_id (string): client_id part of the OAuth 2.0 credentials (available in your dashboard)
         :param client_secret (string): client_secret part of the OAuth 2.0 credentials (available in your dashboard)
-        :param environment: either Environments.Sandbox or Environments.Production
+        :param environment: a URL to the targeted environment (Environments.Sandbox or Environments.Production can be used)
             (note: client_id and client_secret are unique per environment)
         :param compression_enabled: gzip compress the request body (default: True)
         :param backoff_config: retry with exponential backoff (default: None)

@@ -102,8 +102,7 @@ client = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Produ
 client_with_backoff = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Environments.Production, backoff_config=ExponentialBackoffConfig())
 ```
 
-The environment argument can be `Environments.Sandbox` or `Environments.Production` and automatically resolves to the right
-API URL.
+The environment argument can be `Environments.Sandbox` or `Environments.Production` or one of your custom urls to access the mnubo platform.
 
 You can also initialize the client with a static token but this is not recommended for production because the token will eventually expires:
 
