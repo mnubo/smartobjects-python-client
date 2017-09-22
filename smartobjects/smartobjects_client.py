@@ -50,6 +50,9 @@ class SmartObjectsClient(object):
         .. seealso:: examples/simple_workflow.py
         """
 
+        if not environment:
+            raise ValueError("environment cannot be null or empty.")
+
         self._api_manager = APIManager(client_id, client_secret, environment, compression_enabled, backoff_config, token_override)
         self.owners = OwnersService(self._api_manager)
         self.events = EventsService(self._api_manager)
