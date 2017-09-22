@@ -1,3 +1,9 @@
+<a name='1.2.1'></a>
+
+# [1.2.1](https://github.com/mnubo/smartobjects-python-client/compare/1.0.37...1.2.1) (2017-09-22)
+
+
+* Support initialization with a custom url
 <a name='1.0.37'></a>
 
 # [1.0.37](https://github.com/mnubo/smartobjects-python-client/compare/1.2.0...1.0.37) (2017-09-22)
