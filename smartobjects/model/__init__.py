@@ -28,6 +28,13 @@ class ObjectType(object):
         """ keys of all the object attributes bound to the object type """
         return self._object_attribute_keys
 
+    def asJson(self):
+        return {
+            'key': self.key,
+            'description': self.description,
+            'objectAttributesKeys': self.object_attribute_keys
+        }
+
 class EventType(object):
     def __init__(self, *args):
         """ One event type and the bound timeseries attribute keys """
@@ -64,6 +71,14 @@ class EventType(object):
     def timeseries_keys(self):
             """ keys of all the timeseries bound to the event type """
             return self._timeseries_keys
+
+    def asJson(self):
+        return {
+            'key': self.key,
+            'origin': self.origin,
+            'description': self.description,
+            'timeseriesKeys': self.timeseries_keys
+        }
 
 class Timeseries(object):
     def __init__(self, *args):
@@ -105,6 +120,17 @@ class Timeseries(object):
         """ high level type of the timeseries """
         return self._event_type_keys
 
+    def asJson(self):
+        return {
+            'key': self.key,
+            'displayName': self.display_name,
+            'description': self.description,
+            'type': {
+                'highLevelType': self.high_level_type
+            },
+            'eventTypeKeys': self.event_types_keys
+        }
+
 class ObjectAttribute(object):
     def __init__(self, *args):
         """ One object attribute """
@@ -140,16 +166,28 @@ class ObjectAttribute(object):
     def high_level_type(self):
         """ high level type of the object attribute """
         return self._high_level_type
-            
+
     @property
     def container_type(self):
         """ container type of the object attribute """
         return self._container_type
-            
+
     @property
     def object_type_keys(self):
         """ container type of the object attribute """
         return self._object_type_keys
+
+    def asJson(self):
+        return {
+            'key': self.key,
+            'displayName': self.display_name,
+            'description': self.description,
+            'type': {
+                'containerType': self.container_type,
+                'highLevelType': self.high_level_type
+            },
+            'objectTypeKeys': self.object_type_keys
+        }
 
 class OwnerAttribute(object):
     def __init__(self, *args):
@@ -185,11 +223,22 @@ class OwnerAttribute(object):
     def high_level_type(self):
         """ high leve type of the owner attribute """
         return self._high_level_type
-            
+
     @property
     def container_type(self):
         """ container type of the owner attribute """
         return self._container_type
+
+    def asJson(self):
+        return {
+            'key': self.key,
+            'displayName': self.display_name,
+            'description': self.description,
+            'type': {
+                'containerType': self.container_type,
+                'highLevelType': self.high_level_type
+            }
+        }
 
 class Sessionizer(object):
     def __init__(self, *args):
@@ -253,7 +302,7 @@ class Orphans(object):
 
 class Model(object):
     def __init__(self, *args):
-        """ Contains the result of a search query """
+        """ Contains the result of a model export """
 
         if len(args) == 1 and isinstance(args[0], dict):
             self._source = args[0]
