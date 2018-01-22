@@ -31,6 +31,8 @@ The MnuboClient object handles authentication under the hood based on the client
 Methods such as `create()`, `delete()`, etc, do not return any value. However if anything is invalid or goes wrong, an
 exception will be thrown so you know what happened.
 
+See the complete documentation [here](https://smartobjects.mnubo.com/documentation/).
+
 
 # 2. At a glance
 
@@ -61,14 +63,48 @@ _(optional arguments omitted)_
 | Search  | `search(query)                                     ` | performs a search in the platform with the provided JSON query (MQL)    | [simple_workflow.py](examples/simple_workflow.py) |
 |         | `validate_query(query)                             ` | validates a MQL query                                                   | [simple_workflow.py](examples/simple_workflow.py) |
 |         | `get_datasets()                                    ` | retrieves the list of datasets available for this account               | [simple_workflow.py](examples/simple_workflow.py) |
-| Model   | `export()                                          ` | fetches the model in the current zone                                   | [simple_workflow.py](examples/simple_workflow.py) |
+| Model   | `export()                                          ` | fetches the model in the current zone                                   | [model_workflow.py](examples/model_workflow.py)   |
+|         | `get_timeseries()                                  ` | fetches the timeseries in the current zone                              |                                                   |
+|         | `get_object_attributes()                           ` | fetches the object attributes in the current zone                       |                                                   |
+|         | `get_owner_attributes()                            ` | fetches the owner attributes in the current zone                        |                                                   |
+|         | `get_event_types()                                 ` | fetches the event types in the current zone                             |                                                   |
+|         | `get_object_types()                                ` | fetches the object typesin the current zone                             |                                                   |
 
+The API in sandbox and production is mostly the same. Only the modeler API is different in sandbox.
+Here are the sandbox only operations that are available on the modeler API:
+
+| Entity             |Method                                                           | Summary                                                                 | Example                                           |
+| -------------------|---------------------------------------------------------------- | ------------------------------------------------------------------------| --------------------------------------------------|
+| Timeseries         | `model.sandbox_ops.timeseries_ops.createOne                   ` | create one timeseries in sandbox                                        | [model_workflow.py](examples/model_workflow.py)   |
+|                    | `model.sandbox_ops.timeseries_ops.create                      ` | create multiple timeseries in sandbox                                   |                                                   |
+|                    | `model.sandbox_ops.timeseries_ops.update                      ` | update a sandbox timeseries                                             |                                                   |
+|                    | `model.sandbox_ops.timeseries_ops.deploy                      ` | deploy a sandbox timeseries in production                               | [model_workflow.py](examples/model_workflow.py)   |
+|                    |                                                                 |                                                                         | [model_workflow.py](examples/model_workflow.py)   |
+| Object Attributes  | `model.sandbox_ops.object_attributes_ops_ops.createOne        ` | create one object attribute in sandbox                                  |                                                   |
+|                    | `model.sandbox_ops.object_attributes_ops_ops.create           ` | create multiple object attributes in sandbox                            |                                                   |
+|                    | `model.sandbox_ops.object_attributes_ops_ops.update           ` | update a sandbox object attribute                                       |                                                   |
+|                    | `model.sandbox_ops.object_attributes_ops_ops.deploy           ` | deploy a sandbox object attribute in production                         | [model_workflow.py](examples/model_workflow.py)   |
+|                    |                                                                 |                                                                         | [model_workflow.py](examples/model_workflow.py)   |
+| Owner Attributes   | `model.sandbox_ops.owner_attributes_ops.createOne             ` | create one owner attribute in sandbox                                   |                                                   |
+|                    | `model.sandbox_ops.owner_attributes_ops.create                ` | create multiple owner attributes in sandbox                             |                                                   |
+|                    | `model.sandbox_ops.owner_attributes_ops.update                ` | update a sandbox owner attribute                                        |                                                   |
+|                    | `model.sandbox_ops.owner_attributes_ops.deploy                ` | deploy a sandbox owner attribute in production                          | [model_workflow.py](examples/model_workflow.py)   |
+|                    |                                                                 |                                                                         |                                                   |
+| Event Types        | `model.sandbox_ops.event_types_ops.createOne                  ` | create one event type                                                   | [model_workflow.py](examples/model_workflow.py)   |
+|                    | `model.sandbox_ops.event_types_ops.create                     ` | create multiple event types                                             |                                                   |
+|                    | `model.sandbox_ops.event_types_ops.update                     ` | update a event type                                                     |                                                   |
+|                    | `model.sandbox_ops.event_types_ops.delete                     ` | delete a sandbox event type                                             |                                                   |
+|                    |                                                                 |                                                                         |                                                   |
+| Object Types       | `model.sandbox_ops.object_types_ops.createOne                 ` | create one object type                                                  | [model_workflow.py](examples/model_workflow.py)   |
+|                    | `model.sandbox_ops.object_types_ops.create                    ` | create multiple object types                                            |                                                   |
+|                    | `model.sandbox_ops.object_types_ops.update                    ` | update a object type                                                    |                                                   |
+|                    | `model.sandbox_ops.object_types_ops.delete                    ` | delete a sandbox object type                                            |                                                   |
 
 
 ---
 # 3. Requirements
 
-- Python 2.7
+- Python 2.7 or Python 3.6
 - libraries: `requests`, `six`
 
 
@@ -156,7 +192,7 @@ client.owners.unclaim('sheldon.cooper@caltech.edu', 'fermat1901', {
 As a batch:
 ```python
 client.owners.batch_claim([
-    ('sheldon.cooper@caltech.edu', 'fermat1901'), 
+    ('sheldon.cooper@caltech.edu', 'fermat1901'),
     ('leonard.hofstadter@caltech.edu', 'ramanujan1887')
 ])
 ```
@@ -172,7 +208,7 @@ client.owners.update('sheldon.cooper@caltech.edu', {
 ```python
 results = client.owners.create_update([
     {"username": "sheldon.cooper@caltech.edu", "service_type": "prof"},
-    {"username": "leonard.hofstadter@caltech.edu", "x_password": "*******"}   
+    {"username": "leonard.hofstadter@caltech.edu", "x_password": "*******"}
 ])
 ```
 _Mandatory properties_: `x_username_id` (all owners), `x_x_password_type` (new owners)
@@ -372,6 +408,8 @@ indexed by the dataset name (`owner`, `object`, `event`, `session`).
 
 ### Use the Model Service
 
+#### Retrieve the model
+
 To retrieve the model as it is currently in the zone you are working (sandbox or production), you can use
 the ModelService:
 
@@ -380,6 +418,270 @@ model = client.model.export()
 print(len(model.eventTypes)) # outputs: 2
 ```
 
+#### Get Timeseries
+
+```python
+tss = client.model.get_timeseries()
+print("Number of Timeseries: {}", len(tss))
+```
+#### Get Object Attributes
+
+```python
+objs = client.model.get_object_attributes()
+print("Number of Object Attributes: {}", len(objs))
+```
+#### Get Owner Attributes
+
+```python
+owners = client.model.get_owner_attributes()
+print("Number of Owner Attributes: {}", len(owners))
+```
+#### Get Event Types
+
+```python
+ets = client.model.get_event_types()
+print("Number of Event Types: {}", len(ets))
+```
+#### Get Object Types
+
+```python
+ots = client.model.get_object_types()
+print("Number of Object Types: {}", len(ots))
+```
+
+#### Sandbox only operations
+
+##### Create multiple event types
+
+```python
+client.model.sandbox_ops.event_types_ops.create([{
+    'key': 'key',
+    'origin': 'scheduled',
+    'description': '',
+    'timeseriesKeys': []
+}])
+```
+
+##### Create one event type
+
+```python
+client.model.sandbox_ops.event_types_ops.createOne({
+    'key': 'key',
+    'origin': 'scheduled',
+    'description': '',
+    'timeseriesKeys': []
+})
+```
+
+##### Update an event type
+
+```python
+client.model.sandbox_ops.event_types_ops.update(key, {
+    'key': 'key',
+    'origin': 'unscheduled',
+    'description': 'new description',
+    'timeseriesKeys': []
+})
+```
+
+##### Delete an event type
+
+```python
+client.model.sandbox_ops.event_types_ops.delete(key)
+```
+
+
+
+
+##### Create multiple object types
+
+```python
+client.model.sandbox_ops.object_types_ops.create([{
+    'key': 'key',
+    'description': '',
+    'objectAttributesKeys': []
+}])
+```
+
+
+##### Create one object type
+
+```python
+client.model.sandbox_ops.object_types_ops.createOne({
+    'key': 'key',
+    'description': '',
+    'objectAttributesKeys': []
+})
+```
+
+
+##### Update an object type
+
+```python
+client.model.sandbox_ops.object_types_ops.update(key, {
+    'key': 'key',
+    'description': 'new description',
+    'timeseriesKeys': []
+})
+```
+
+
+##### Delete an object type
+
+```python
+client.model.sandbox_ops.object_types_ops.delete(key)
+```
+
+
+
+##### Create multiple timeseries
+
+```python
+client.model.sandbox_ops.timeseries_ops.create([{
+    'key': 'ts_key',
+    'displayName': '',
+    'description': '',
+    'type': {
+        'highLevelType': 'TEXT'
+    },
+    'eventTypeKeys': [key]
+}])
+```
+
+
+##### Create one timeseries
+
+```python
+client.model.sandbox_ops.timeseries_ops.createOne({
+    'key': 'ts_key',
+    'displayName': '',
+    'description': '',
+    'type': {
+        'highLevelType': 'TEXT'
+    },
+    'eventTypeKeys': [key]
+})
+```
+
+
+##### Update a timeseries
+
+```python
+client.model.sandbox_ops.timeseries_ops.update(
+    'ts_key',
+    {
+        'displayName': 'new desc',
+        'description': 'new dp',
+    }
+)
+```
+
+
+##### Deploy a timeseries in production
+
+```python
+client.model.sandbox_ops.timeseries_ops.deploy('ts_key')
+```
+
+
+##### Create multiple object attributes
+
+```python
+client.model.sandbox_ops.object_attributes_ops.create([{
+    'key': 'obj_key',
+    'displayName': '',
+    'description': '',
+    'type': {
+        'containerType': 'none',
+        'highLevelType': 'AREA'
+    },
+    'objectTypeKeys': [key]
+}])
+```
+
+
+##### Create one object attribute
+
+```python
+client.model.sandbox_ops.object_attributes_ops.createOne({
+    'key': 'obj_key',
+    'displayName': '',
+    'description': '',
+    'type': {
+        'containerType': 'none',
+        'highLevelType': 'AREA'
+    },
+    'objectTypeKeys': [key]
+})
+```
+
+
+##### Update one object attribute
+
+```python
+client.model.sandbox_ops.object_attributes_ops.update(
+    'obj_key',
+    {
+        'displayName': 'new desc',
+        'description': 'new dp',
+    }
+)
+```
+
+##### Deploy an object attribute in production
+
+```python
+client.model.sandbox_ops.object_attributes_ops.deploy('obj_key')
+```
+
+
+##### Create multiple owner attributes
+
+```python
+client.model.sandbox_ops.owner_attributes_ops.create([OwnerAttribute({
+    'key': 'owner_key',
+    'displayName': '',
+    'description': '',
+    'type': {
+        'containerType': 'none',
+        'highLevelType': 'FLOAT'
+    }
+})])
+```
+
+
+##### Create one owner attribute
+
+```python
+client.model.sandbox_ops.owner_attributes_ops.createOne(OwnerAttribute({
+    'key': 'owner_key',
+    'displayName': '',
+    'description': '',
+    'type': {
+        'containerType': 'none',
+        'highLevelType': 'FLOAT'
+    }
+}))
+```
+
+
+##### Update one owner attribute
+
+```python
+client.model.sandbox_ops.owner_attributes_ops.update(
+    'owner_key',
+    {
+        'displayName': 'new desc',
+        'description': 'new dp',
+    }
+)
+```
+
+##### Deploy an owner attribute in production
+
+```python
+client.model.sandbox_ops.owner_attributes_ops.deploy('owner_key')
+```
 
 
 # 6. Need help?
