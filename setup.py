@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 
+import os
+here = os.path.abspath(os.path.dirname(__file__))
+
 from setuptools import setup
+
+versiondict = {}
+try:
+    with open(os.path.join(here, 'smartobjects', '__version__.py'), mode='r') as f:
+        exec(f.read(), versiondict)
+except IOError:
+    versiondict['__version__'] = 'dev'
 
 with open('requirements.txt') as f:
     requirements = [line.strip() for line in f.readlines()]
 
-VERSION = "{tag}"
-try:
-    with open('build_version.txt') as f:
-        tag = f.readline().strip()
-        version = VERSION.format(tag=tag)
-except IOError:
-    version = VERSION.format(tag="-dev")
-
 setup(
     name="smartobjects",
-    version=version,
+    version=versiondict['__version__'],
     description="Python client to access mnubo's SmartObjects ingestion and restitution APIs",
     author="mnubo, inc.",
     author_email="support@mnubo.com",

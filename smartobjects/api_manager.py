@@ -3,6 +3,7 @@ import json
 import base64
 import datetime
 import gzip
+from .__version__ import __version__
 from io import BytesIO
 
 import sys
@@ -171,7 +172,11 @@ class APIManager(object):
             token = self.access_token['access_token']
         else:
             token = self.__static_token
-        return {'content-type': 'application/json', 'Authorization': 'Bearer ' + token}
+        return {
+            'content-type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            'X-MNUBO-SDK': 'python/' + __version__
+        }
 
     def get_api_url(self):
         """ Generates the general API url
