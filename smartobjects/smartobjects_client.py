@@ -4,6 +4,7 @@ from smartobjects.ingestion.owners import OwnersService
 from smartobjects.ingestion.objects import ObjectsService
 from smartobjects.restitution.search import SearchService
 from smartobjects.model.model import ModelService
+from smartobjects.bigdata.bigdata import BigDataService
 from smartobjects.api_manager import APIManager
 
 
@@ -59,6 +60,7 @@ class SmartObjectsClient(object):
         self.objects = ObjectsService(self._api_manager)
         self.search = SearchService(self._api_manager)
         self.model = ModelService(self._api_manager)
+        self.bigdata = BigDataService(self._api_manager)
 
     @classmethod
     def withToken(cls, token, environment, compression_enabled=True, backoff_config=None):
