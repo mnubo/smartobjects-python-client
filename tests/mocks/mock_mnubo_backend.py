@@ -526,3 +526,20 @@ class MockMnuboBackend(object):
             return 500, {"error": "failed to load JSON"}
 
         return 200, self._gzip_encode(json.dumps(obj))
+
+    @route('POST', '^/bigdata/startexport$')
+    def mock_start_export(self, body, params):
+        return 200, {
+            "streamsFirstPages": ["page_id_1"],
+            "columns": [{'label': 'ts_text_attribute', 'type': 'text'}]
+        }
+
+    @route('GET', '^/bigdata/streampage/(.+)$')
+    def mock_stream_page(self, params):
+        return 200, {
+            "nextPage": None,
+            "rows": [
+                ["one"],
+                ["two"]
+            ]
+        }
