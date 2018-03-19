@@ -5,6 +5,7 @@ import datetime
 import gzip
 from .__version__ import __version__
 from io import BytesIO
+import logging
 
 import sys
 PY3 = sys.version_info[0] >= 3
@@ -59,6 +60,17 @@ def backoff(func):
             the first element is always `self`, using it, we can get the config and use
             the retry function with parameters that are configurable
         """
+        def call():
+            try:
+                return func(*args)
+            except IOError as ie:
+                if ie.errno == 54: #connection reset
+                    logging.info("Connection reset by remote, acquiring new connection and retrying")
+                    _self.__session = requests.Session()
+                    return func(*args)
+                else:
+                    raise ie
+
         if len(args) > 0:
             _self = args[0]
             if _self._backoff_config is not None:
@@ -71,15 +83,14 @@ def backoff(func):
                         on_retry = _self._backoff_config.on_retry
                     else:
                         on_retry = before_nothing
-                    def call():
-                        return func(*args)
+
                     return retry(stop=stop_after_attempt(max_attempts), wait=wait_exponential(multiplier=initial_delay) + wait_random(min=0.01, max=0.05), retry=retry_if_exception_type(exception_types=ServiceUnavailable), before=on_retry, reraise=True)(call)()
                 except ImportError:
                     raise ImportError('The "tenacity" package is required to use this feature')
             else:
-                return func(*args)
+                return call()
         else:
-            return func(*args)
+            return call()
     return _backoff
 
 

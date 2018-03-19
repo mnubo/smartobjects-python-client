@@ -98,6 +98,7 @@ class LocalApiServer(object):
 
     def stop(self):
         self.server.shutdown()
+        self.server.server_close()
         self.thread.join()
         print("stopped local API")
 
