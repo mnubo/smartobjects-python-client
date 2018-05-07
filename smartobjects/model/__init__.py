@@ -13,6 +13,13 @@ class ObjectType(object):
         for rawoa in raw_object_attributes:
             self._object_attribute_keys.append(rawoa.get("key"))
 
+    @classmethod
+    def withKeys(cls, source):
+        if not isinstance(source, dict):
+            raise ValueError("Invalid arguments")
+        source['objectAttributes'] = [ { 'key': objKey } for objKey in source.get('objectAttributesKeys', [])]
+        return ObjectType(source)
+
     @property
     def key(self):
         """ key of the object type - the key is a unique identifier """
@@ -50,7 +57,14 @@ class EventType(object):
         raw_timeseries_keys = self._source.get('timeseries', [])
         self._timeseries_keys = []
         for rawts in raw_timeseries_keys:
-                self._timeseries_keys.append(rawts.get("key"))
+            self._timeseries_keys.append(rawts.get("key"))
+
+    @classmethod
+    def withKeys(cls, source):
+        if not isinstance(source, dict):
+            raise ValueError("Invalid arguments")
+        source['timeseries'] = [ { 'key': etKey } for etKey in source.get('timeseriesKeys', [])]
+        return EventType(source)
 
     @property
     def key(self):

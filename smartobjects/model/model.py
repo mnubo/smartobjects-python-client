@@ -304,7 +304,7 @@ class ModelService(object):
         :returns: [ObjectType]
         """
         _json = self.api_manager.get('model/objectTypes').json()
-        return [ObjectType(evt) for evt in _json]
+        return [ObjectType.withKeys(evt) for evt in _json]
 
     def get_event_types(self):
         """ All event types in the target environment.
@@ -312,4 +312,4 @@ class ModelService(object):
         :returns: [EventType]
         """
         _json = self.api_manager.get('model/eventTypes').json()
-        return [EventType(evt) for evt in _json]
+        return [EventType.withKeys(evt) for evt in _json]
