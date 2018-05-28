@@ -51,11 +51,14 @@ class TestModelService(unittest.TestCase):
             ets = self.client.model.get_event_types()
 
             self.assertTrue(len(ets) > 2)
+            not_empty = [et for et in ets if et.key == 'event_type1']
+            self.assertTrue(len(not_empty[0].timeseries_keys) > 0)
 
         def test_object_types(self):
             ots = self.client.model.get_object_types()
-
             self.assertTrue(len(ots) > 1)
+            not_empty = [ot for ot in ots if ot.key == 'object_type1']
+            self.assertTrue(len(not_empty[0].object_attribute_keys) > 0)
 
         def test_sandbox_ops(self):
             # we can't reset in it test, all sdk integration tests' use the same namespace
