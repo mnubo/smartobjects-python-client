@@ -1,3 +1,9 @@
+<a name='1.3.1'></a>
+
+# [1.3.1](https://github.com/mnubo/smartobjects-python-client/compare/1.3.0...1.3.1) (2018-05-28)
+
+
+* Fix the event types and object types parsing
 <a name='1.3.0'></a>
 
 # [1.3.0](https://github.com/mnubo/smartobjects-python-client/compare/1.2.1...1.3.0) (2018-01-22)
