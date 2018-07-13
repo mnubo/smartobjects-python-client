@@ -4,6 +4,45 @@
 [![Build status](https://travis-ci.org/mnubo/smartobjects-python-client.svg?branch=master)](https://travis-ci.org/mnubo/smartobjects-python-client)
 [![PyPI](https://img.shields.io/pypi/v/smartobjects.svg?maxAge=2592000)](https://pypi.python.org/pypi/smartobjects/)
 
+## Quickstart
+
+[comment]: # (Important: leave the HTML in this section)
+[comment]: # (quickstart-setup)
+
+<h3>Getting the client library</h3>
+<p>The client library is available on <a target="_blank" href="https://pypi.python.org/pypi/smartobjects">PyPy</a>.</p>
+
+<p>The client depends on other libraries:</p>
+<ul>
+    <li>requests</li>
+    <li>six</li>
+    <li>tenacity</li>
+</ul>
+
+<p>Below is an example of how you can install everything:</p>
+<pre>
+    <code>
+pip install smartobjects requests six tenacity
+    </code>
+</pre>
+
+<p>For more information, visit <a target="_blank" href="https://github.com/mnubo/smartobjects-python-client">GitHub</a>.</p>
+
+<h3>Create a client instance</h3>
+
+<p>The following python code can be used to create an instance:</p>
+
+<pre>
+    <code>
+key = "<%= clientKey %>"
+secret = "<%= clientSecret %>"
+url = "<%= url %>"
+SmartObjectsClient(key, secret, url)
+    </code>
+</pre>
+
+[comment]: # (quickstart-setup)
+
 
 Table of Content
 ================
