@@ -33,6 +33,11 @@ class TestOwnersService(unittest.TestCase):
         })
         self.assertIn('owner_1', self.server.server.backend.owners)
 
+    def test_create_array(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.owners.create([{'username': 'owner_1'}])
+            self.assertEqual(ctx.exception.message, "Expecting a dictionary.")
+
     def test_create_username_missing(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.create({'location': 'bedroom'})
