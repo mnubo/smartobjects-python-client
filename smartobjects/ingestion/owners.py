@@ -13,6 +13,8 @@ class OwnersService(object):
     def _validate_owner(self, owner):
         if not owner:
             raise ValueError("Owner body cannot be null")
+        if not isinstance(owner, dict):
+            raise ValueError('Expecting a dictionary.')
         if 'username' not in owner or not owner['username']:
             raise ValueError("username cannot be null or empty.")
 

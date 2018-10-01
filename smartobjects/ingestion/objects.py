@@ -12,6 +12,9 @@ class ObjectsService(object):
         if not object:
             raise ValueError('Object body cannot be null.')
 
+        if not isinstance(object, dict):
+            raise ValueError('Expecting a dictionary.')
+
         if 'x_device_id' not in object or not object['x_device_id']:
             raise ValueError('x_device_id cannot be null or empty.')
 

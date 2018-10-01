@@ -35,6 +35,11 @@ class TestObjectsService(unittest.TestCase):
         })
         self.assertIn('vin1234', self.server.server.backend.objects)
 
+    def test_create_array(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.objects.create([{"x_device_id": "vin12345", "x_object_type": "car"}])
+            self.assertEqual(ctx.exception.message, "Expecting a dictionary.")
+
     def test_create_duplicate(self):
         self.objects.create({"x_device_id": "duplicated_id", "x_object_type": "cow"})
         self.assertIn('duplicated_id', self.server.server.backend.objects)
