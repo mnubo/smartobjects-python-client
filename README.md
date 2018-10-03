@@ -17,12 +17,13 @@
     <li>requests</li>
     <li>six</li>
     <li>tenacity</li>
+    <li>pandas (optional)</li>
 </ul>
 
 <p>Below is an example of how you can install everything:</p>
 <pre>
     <code>
-pip install smartobjects requests six tenacity
+pip install smartobjects requests six tenacity pandas
     </code>
 </pre>
 
