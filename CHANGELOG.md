@@ -1,3 +1,9 @@
+<a name='1.3.2'></a>
+
+# [1.3.2](https://github.com/mnubo/smartobjects-python-client/compare/1.3.1...1.3.2) (2018-10-03)
+
+
+* Minor improvement regarding Objects.create and Owners.create
 <a name='1.3.1'></a>
 
 # [1.3.1](https://github.com/mnubo/smartobjects-python-client/compare/1.3.0...1.3.1) (2018-05-28)
