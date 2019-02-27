@@ -1,5 +1,5 @@
 import unittest
-from requests import Response
+from requests import Response, HTTPError
 import datetime
 
 from smartobjects import APIManager
@@ -40,6 +40,12 @@ class TestsApiManager(unittest.TestCase):
         self.assertIn("access_token", api.access_token)
         self.assertIn("expires_in", api.access_token)
         self.assertIn("requested_at", api.access_token)
+
+
+    def test_fetch_token_at_init_fail(self):
+        with self.assertRaises(HTTPError) as ctx:
+            api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path + '/fail', compression_enabled=False, backoff_config = None, token_override=None)
+            self.assertTrue(ctx.exception.message.startswith("502 Server Error: Bad Gateway for url: http:"))
 
     def test_get_api_url(self):
         url = self.api.get_api_url()
