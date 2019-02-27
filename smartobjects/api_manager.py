@@ -135,8 +135,8 @@ class APIManager(object):
         requested_at = datetime.datetime.now()
 
         r = self.__session.post(self.get_auth_url(), headers=self.get_token_authorization_header())
-        json_response = r.json()
         r.raise_for_status()
+        json_response = r.json()
 
         return {
             'access_token': json_response['access_token'],

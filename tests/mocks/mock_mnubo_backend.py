@@ -42,6 +42,10 @@ class MockMnuboBackend(object):
             "jti": str(uuid.uuid4())
         }
 
+    @route('POST', '^/fail/oauth/.*')
+    def auth(self, body, params):
+        return 502, '<h1ml>hey oh</html>'
+
     @route('GET', '^/unvailable/(.+)$')
     def unavailable(self, params):
         count = int(params[0])
