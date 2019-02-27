@@ -1,3 +1,9 @@
+<a name='1.3.3'></a>
+
+# [1.3.3](https://github.com/mnubo/smartobjects-python-client/compare/1.3.2...1.3.3) (2019-02-27)
+
+
+* Raise if the response status is an error before parsing the json when fetching a token
 <a name='1.3.2'></a>
 
 # [1.3.2](https://github.com/mnubo/smartobjects-python-client/compare/1.3.1...1.3.2) (2018-10-03)
