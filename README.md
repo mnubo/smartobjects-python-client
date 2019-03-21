@@ -218,14 +218,14 @@ _Mandatory properties_: `username`, `x_password`
 client.owners.claim('sheldon.cooper@caltech.edu', 'fermat1901')
 # if you want to override some values
 client.owners.claim('sheldon.cooper@caltech.edu', 'fermat1901', {
-    "x_timestamp": 2015-02-01T05:00:00.000Z"
+    "x_timestamp": "2015-02-01T05:00:00.000Z"
 })
 
 
 client.owners.unclaim('sheldon.cooper@caltech.edu', 'fermat1901')
 # if you want to override some values
 client.owners.unclaim('sheldon.cooper@caltech.edu', 'fermat1901', {
-    "x_timestamp": 2015-02-01T05:00:00.000Z"
+    "x_timestamp": "2015-02-01T05:00:00.000Z"
 })
 ```
 
