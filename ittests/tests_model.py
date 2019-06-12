@@ -104,6 +104,9 @@ class TestModelService(unittest.TestCase):
                 'eventTypeKeys': [key]
             })
 
+            self.client.model.sandbox_ops.event_types_ops.add_relation("event_type1", ts_key)
+            self.client.model.sandbox_ops.event_types_ops.remove_relation("event_type1", ts_key)
+
             self.client.model.sandbox_ops.timeseries_ops.update(
                 ts_key,
                 {
@@ -125,6 +128,9 @@ class TestModelService(unittest.TestCase):
                 },
                 'objectTypeKeys': [key]
             })
+
+            self.client.model.sandbox_ops.object_types_ops.add_relation("object_type1", obj_key)
+            self.client.model.sandbox_ops.object_types_ops.remove_relation("object_type1", obj_key)
 
             self.client.model.sandbox_ops.object_attributes_ops.update(
                 obj_key,

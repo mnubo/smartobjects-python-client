@@ -103,8 +103,10 @@ class TypeOps(object):
         self._class = cls
         if self._class == EventType:
             self._path = 'eventTypes'
+            self._entity_path = 'timeseries'
         elif self._class == ObjectType:
             self._path = 'objectTypes'
+            self._entity_path = 'objectAttributes'
         else:
             raise ValueError('Supported types are EventType and ObjectType')
 
@@ -147,6 +149,20 @@ class TypeOps(object):
         """ Delete the type with the matching key
         """
         full_path = "model/{}/{}".format(self._path, key)
+        self.api_manager.delete(full_path)
+
+    def add_relation(self, key, entity_key):
+        """ Add a relation from the type identified by `key` to
+            the entity identified by `entity_key`
+        """
+        full_path = "model/{}/{}/{}/{}".format(self._path, key, self._entity_path, entity_key)
+        self.api_manager.post(full_path)
+
+    def remove_relation(self, key, entity_key):
+        """ Remove a relation from the type identified by `typeKey` to
+            the entity identified by `entityKey`
+        """
+        full_path = "model/{}/{}/{}/{}".format(self._path, key, self._entity_path, entity_key)
         self.api_manager.delete(full_path)
 
 class ResetOps(object):
