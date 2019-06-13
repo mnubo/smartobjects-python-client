@@ -1,3 +1,9 @@
+<a name='1.4.0'></a>
+
+# [1.4.0](https://github.com/mnubo/smartobjects-python-client/compare/1.3.3...1.4.0) (2019-06-13)
+
+
+* Support for new model operations. add_relation / remove_relation
 <a name='1.3.3'></a>
 
 # [1.3.3](https://github.com/mnubo/smartobjects-python-client/compare/1.3.2...1.3.3) (2019-02-27)
