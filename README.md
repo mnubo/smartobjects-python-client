@@ -134,18 +134,22 @@ Here are the sandbox only operations that are available on the modeler API:
 |                    | `model.sandbox_ops.event_types_ops.create                     ` | create multiple event types                                             |                                                   |
 |                    | `model.sandbox_ops.event_types_ops.update                     ` | update a event type                                                     |                                                   |
 |                    | `model.sandbox_ops.event_types_ops.delete                     ` | delete a sandbox event type                                             |                                                   |
+|                    | `model.sandbox_ops.event_types_ops.add_relation               ` | add a relation to a timeseries                                          |                                                   |
+|                    | `model.sandbox_ops.event_types_ops.remove_relation            ` | delete a relation to a timeseries                                       |                                                   |
 |                    |                                                                 |                                                                         |                                                   |
 | Object Types       | `model.sandbox_ops.object_types_ops.createOne                 ` | create one object type                                                  | [model_workflow.py](examples/model_workflow.py)   |
 |                    | `model.sandbox_ops.object_types_ops.create                    ` | create multiple object types                                            |                                                   |
 |                    | `model.sandbox_ops.object_types_ops.update                    ` | update a object type                                                    |                                                   |
 |                    | `model.sandbox_ops.object_types_ops.delete                    ` | delete a sandbox object type                                            |                                                   |
+|                    | `model.sandbox_ops.object_types_ops.add_relation              ` | add a relation to an object attribute                                   |                                                   |
+|                    | `model.sandbox_ops.object_types_ops.remove_relation           ` | delete a relation to an object attribute                                |                                                   |
 
 
 ---
 # 3. Requirements
 
 - Python 2.7 or Python 3.6
-- libraries: `requests`, `six`
+- libraries: `requests`, `six`, `tenacity` (for exponential backoff)
 
 
 ---
