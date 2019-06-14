@@ -184,7 +184,9 @@ client_with_backoff = SmartObjectsClient('<CLIENT_ID>', '<CLIENT_SECRET>', Envir
 
 The environment argument can be `Environments.Sandbox` or `Environments.Production` or one of your custom urls to access the mnubo platform.
 
-You can also initialize the client with a static token but this is not recommended for production because the token will eventually expires:
+You can generate an App Token from the web application and use it with this SDK.
+
+Note: App Tokens can have restricted access to specific APIs and can be disabled by an administrator at any given time. This means that some API provided in this SDK may not work correctly.
 
 ```python
 from smartobjects import SmartObjectsClient
