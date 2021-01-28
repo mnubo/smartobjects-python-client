@@ -1,15 +1,13 @@
-import uuid
-from datetime import datetime
 import gzip
-import zlib
-from io import BytesIO
 import json
+import uuid
+from builtins import filter
+from datetime import datetime
+from io import BytesIO
+
+import zlib
 
 from .routes import route
-
-from builtins import filter
-import sys
-PY3 = sys.version_info[0] >= 3
 
 
 class MockMnuboBackend(object):
@@ -25,10 +23,9 @@ class MockMnuboBackend(object):
     def _gzip_encode(self, data):
         out = BytesIO()
         f = gzip.GzipFile(mode='wb', fileobj=out)
-        if PY3:
-            f.write(data.encode('utf8'))
-        else:
-            f.write(data)
+
+        f.write(data.encode('utf8'))
+
         f.close()
         return out.getvalue()
 
@@ -128,7 +125,8 @@ class MockMnuboBackend(object):
             if update:
                 self.objects[dev_id].update(obj)
             else:
-                return {"result": "error", "id": dev_id, "message": "Object with device id '{}' already exists.".format(dev_id)}
+                return {"result": "error", "id": dev_id,
+                        "message": "Object with device id '{}' already exists.".format(dev_id)}
         else:
             obj['x_registration_date'] = datetime.now().isoformat()
             self.objects[dev_id] = obj
@@ -190,7 +188,8 @@ class MockMnuboBackend(object):
             if update:
                 self.owners[username].update(owner)
             else:
-                return {"result": "error", "id": username, "message": "The username '{}' is already in use.".format(username)}
+                return {"result": "error", "id": username,
+                        "message": "The username '{}' is already in use.".format(username)}
         else:
             owner['x_registration_date'] = datetime.now().isoformat()
             self.owners[username] = owner
@@ -266,10 +265,12 @@ class MockMnuboBackend(object):
         for claim in body:
             username, device_id = claim['username'], claim['x_device_id']
             if username not in self.owners:
-                results.append({"id": device_id, "result": "error", "message": "Owner '{}' not found.".format(username)})
+                results.append(
+                    {"id": device_id, "result": "error", "message": "Owner '{}' not found.".format(username)})
 
             elif device_id not in self.objects:
-                results.append({"id": device_id, "result": "error", "message": "Object with x_device_id '{}' not found.".format(device_id)})
+                results.append({"id": device_id, "result": "error",
+                                "message": "Object with x_device_id '{}' not found.".format(device_id)})
 
             else:
                 self.objects[device_id]['x_owner'] = username
@@ -284,13 +285,17 @@ class MockMnuboBackend(object):
         for unclaim in body:
             username, device_id = unclaim['username'], unclaim['x_device_id']
             if username not in self.owners:
-                results.append({"id": device_id, "result": "error", "message": "Owner '{}' not found.".format(username)})
+                results.append(
+                    {"id": device_id, "result": "error", "message": "Owner '{}' not found.".format(username)})
 
             elif device_id not in self.objects:
-                results.append({"id": device_id, "result": "error", "message": "Object with x_device_id '{}' not found.".format(device_id)})
+                results.append({"id": device_id, "result": "error",
+                                "message": "Object with x_device_id '{}' not found.".format(device_id)})
 
             elif 'x_owner' not in self.objects[device_id] or self.objects[device_id]['x_owner'] != username:
-                results.append({"id": device_id, "result": "error", "message": "Object with x_device_id '{}' is not claimed by '{}'.".format(device_id, username)})
+                results.append({"id": device_id, "result": "error",
+                                "message": "Object with x_device_id '{}' is not claimed by '{}'.".format(device_id,
+                                                                                                         username)})
 
             else:
                 self.objects[device_id]['x_owner'] = None
@@ -345,7 +350,8 @@ class MockMnuboBackend(object):
         if query['from'] == 'hardcoded:grouping-by-time-interval':
             result = {
                 "columns": [{"label": "month", "type": "datetime"}, {"label": "COUNT(*)", "type": "long"}],
-                "rows": [["2015-01-01T05:00:00.000Z", 400], ["2015-02-01T05:00:00.000Z", 178185], ["2015-03-01T05:00:00.000Z", 246871], ["2015-04-01T05:00:00.000Z", 7234234]]
+                "rows": [["2015-01-01T05:00:00.000Z", 400], ["2015-02-01T05:00:00.000Z", 178185],
+                         ["2015-03-01T05:00:00.000Z", 246871], ["2015-04-01T05:00:00.000Z", 7234234]]
             }
 
         return 200, result
@@ -363,128 +369,145 @@ class MockMnuboBackend(object):
     def get_datasets(self, params):
         # hardcoded dataset from https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#get-api-v3-search-datasets
         dataset = [
-            {"key": "object", "displayName": "Objects", "fields": [{"key": "x_device_id", "highLevelType": "TEXT", "description": "Reserved field", "containerType": "none", "primaryKey": False}, {"key": "x_collections.id", "highLevelType": "TEXT", "displayName": "Collection id", "description": "Collection unique identifier", "containerType": "none", "primaryKey": False}]},
-            {"key": "owner", "displayName": "Owners", "fields": [{"key": "username", "highLevelType": "TEXT", "displayName": "Username", "description": "Owner unique identifier", "containerType": "none", "primaryKey": True}, {"key": "x_registration_date", "highLevelType": "DATETIME", "description": "Reserved field", "containerType": "none", "primaryKey": False}]},
-            {"key": "session", "displayName": "Sessions", "fields": [{"key": "x_start.x_timestamp", "highLevelType": "DATETIME", "displayName": "Event timestamp", "description": "The date and time the event happened", "containerType": "none", "primaryKey": False}, {"key": "x_start.x_received_timestamp", "highLevelType": "DATETIME", "displayName": "Event received timestamp", "description": "The date and time the event have been received by Mnubo", "containerType": "none", "primaryKey": False}]},
-            {"key": "event", "displayName": "Events", "fields": [{"key": "x_object.x_device_id", "highLevelType": "TEXT", "description": "Reserved field", "containerType": "none", "primaryKey": False}, {"key": "event_id", "highLevelType": "TEXT", "displayName": "Event id", "description": "The unique UUID identifier of the event", "containerType": "none", "primaryKey": True}]}
+            {"key": "object", "displayName": "Objects", "fields": [
+                {"key": "x_device_id", "highLevelType": "TEXT", "description": "Reserved field",
+                 "containerType": "none", "primaryKey": False},
+                {"key": "x_collections.id", "highLevelType": "TEXT", "displayName": "Collection id",
+                 "description": "Collection unique identifier", "containerType": "none", "primaryKey": False}]},
+            {"key": "owner", "displayName": "Owners", "fields": [
+                {"key": "username", "highLevelType": "TEXT", "displayName": "Username",
+                 "description": "Owner unique identifier", "containerType": "none", "primaryKey": True},
+                {"key": "x_registration_date", "highLevelType": "DATETIME", "description": "Reserved field",
+                 "containerType": "none", "primaryKey": False}]},
+            {"key": "session", "displayName": "Sessions", "fields": [
+                {"key": "x_start.x_timestamp", "highLevelType": "DATETIME", "displayName": "Event timestamp",
+                 "description": "The date and time the event happened", "containerType": "none", "primaryKey": False},
+                {"key": "x_start.x_received_timestamp", "highLevelType": "DATETIME",
+                 "displayName": "Event received timestamp",
+                 "description": "The date and time the event have been received by Mnubo", "containerType": "none",
+                 "primaryKey": False}]},
+            {"key": "event", "displayName": "Events", "fields": [
+                {"key": "x_object.x_device_id", "highLevelType": "TEXT", "description": "Reserved field",
+                 "containerType": "none", "primaryKey": False},
+                {"key": "event_id", "highLevelType": "TEXT", "displayName": "Event id",
+                 "description": "The unique UUID identifier of the event", "containerType": "none",
+                 "primaryKey": True}]}
         ]
         return 200, dataset
-
 
     @route('GET', '^/model/export$')
     def get_model(self, _):
         return 200, {
-          "objectTypes": [
-            {
-              "key": "object_type1",
-              "description": "desc",
-              "objectAttributes": [
+            "objectTypes": [
                 {
-                  "key": "object_text_attribute",
-                  "displayName": "dp object_text_attribute",
-                  "description": "desc object_text_attribute",
-                  "type": {
-                    "highLevelType": "TEXT",
-                    "containerType": "none"
-                  }
-                },
-                {
-                  "key": "object_int_attribute",
-                  "displayName": "dp object_int_attribute",
-                  "description": "desc object_int_attribute",
-                  "type": {
-                    "highLevelType": "INT",
-                    "containerType": "list"
-                  }
+                    "key": "object_type1",
+                    "description": "desc",
+                    "objectAttributes": [
+                        {
+                            "key": "object_text_attribute",
+                            "displayName": "dp object_text_attribute",
+                            "description": "desc object_text_attribute",
+                            "type": {
+                                "highLevelType": "TEXT",
+                                "containerType": "none"
+                            }
+                        },
+                        {
+                            "key": "object_int_attribute",
+                            "displayName": "dp object_int_attribute",
+                            "description": "desc object_int_attribute",
+                            "type": {
+                                "highLevelType": "INT",
+                                "containerType": "list"
+                            }
+                        }
+                    ]
                 }
-              ]
-            }
-          ],
-          "eventTypes": [
-            {
-              "key": "event_type1",
-              "description": "desc",
-              "origin": "scheduled",
-              "timeseries": [
-                {
-                  "key": "ts_text_attribute",
-                  "displayName": "dp ts_text_attribute",
-                  "description": "desc ts_text_attribute",
-                  "type": {
-                    "highLevelType": "TEXT"
-                  }
-                },
-                {
-                  "key": "ts_number_attribute",
-                  "displayName": "dp ts_number_attribute",
-                  "description": "desc ts_number_attribute",
-                  "type": {
-                    "highLevelType": "DOUBLE"
-                  }
-                }
-              ]
-            },
-            {
-              "key": "event_type2",
-              "description": "desc",
-              "origin": "rule",
-              "timeseries": [
-                {
-                  "key": "ts_text_attribute",
-                  "displayName": "dp ts_text_attribute",
-                  "description": "desc ts_text_attribute",
-                  "type": {
-                    "highLevelType": "TEXT"
-                  }
-                }
-              ]
-            }
-          ],
-          "ownerAttributes": [
-            {
-              "key": "owner_text_attribute",
-              "displayName": "dp owner_text_attribute",
-              "description": "desc owner_text_attribute",
-              "type": {
-                "highLevelType": "TEXT",
-                "containerType": "none"
-              }
-            }
-          ],
-          "sessionizers": [
-            {
-              "key": "sessionizer",
-              "displayName": "dp sessionizer",
-              "description": "desc sessionizer",
-              "startEventTypeKey": "event_type1",
-              "endEventTypeKey": "event_type2"
-            }
-          ],
-          "orphans": {
-            "timeseries": [
-              {
-                "key": "orphan_ts",
-                "displayName": "dp orphan_ts",
-                "description": "desc orphan_ts",
-                "type": {
-                  "highLevelType": "ACCELERATION"
-                }
-              }
             ],
-            "objectAttributes": [
-              {
-                "key": "orphan_object",
-                "displayName": "dp orphan_object",
-                "description": "desc orphan_object",
-                "type": {
-                  "highLevelType": "EMAIL",
-                  "containerType": "none"
+            "eventTypes": [
+                {
+                    "key": "event_type1",
+                    "description": "desc",
+                    "origin": "scheduled",
+                    "timeseries": [
+                        {
+                            "key": "ts_text_attribute",
+                            "displayName": "dp ts_text_attribute",
+                            "description": "desc ts_text_attribute",
+                            "type": {
+                                "highLevelType": "TEXT"
+                            }
+                        },
+                        {
+                            "key": "ts_number_attribute",
+                            "displayName": "dp ts_number_attribute",
+                            "description": "desc ts_number_attribute",
+                            "type": {
+                                "highLevelType": "DOUBLE"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "key": "event_type2",
+                    "description": "desc",
+                    "origin": "rule",
+                    "timeseries": [
+                        {
+                            "key": "ts_text_attribute",
+                            "displayName": "dp ts_text_attribute",
+                            "description": "desc ts_text_attribute",
+                            "type": {
+                                "highLevelType": "TEXT"
+                            }
+                        }
+                    ]
                 }
-              }
-            ]
-          }
+            ],
+            "ownerAttributes": [
+                {
+                    "key": "owner_text_attribute",
+                    "displayName": "dp owner_text_attribute",
+                    "description": "desc owner_text_attribute",
+                    "type": {
+                        "highLevelType": "TEXT",
+                        "containerType": "none"
+                    }
+                }
+            ],
+            "sessionizers": [
+                {
+                    "key": "sessionizer",
+                    "displayName": "dp sessionizer",
+                    "description": "desc sessionizer",
+                    "startEventTypeKey": "event_type1",
+                    "endEventTypeKey": "event_type2"
+                }
+            ],
+            "orphans": {
+                "timeseries": [
+                    {
+                        "key": "orphan_ts",
+                        "displayName": "dp orphan_ts",
+                        "description": "desc orphan_ts",
+                        "type": {
+                            "highLevelType": "ACCELERATION"
+                        }
+                    }
+                ],
+                "objectAttributes": [
+                    {
+                        "key": "orphan_object",
+                        "displayName": "dp orphan_object",
+                        "description": "desc orphan_object",
+                        "type": {
+                            "highLevelType": "EMAIL",
+                            "containerType": "none"
+                        }
+                    }
+                ]
+            }
         }
-
 
     # for tests on API manager itself
     @route('GET', '^/api_manager\??(.*)$')
@@ -506,7 +529,7 @@ class MockMnuboBackend(object):
     @route('POST', '^/compression_enabled$')
     def post_compression_enabled(self, body, params):
         try:
-            decoded = zlib.decompress(body, 16+zlib.MAX_WBITS)
+            decoded = zlib.decompress(body, 16 + zlib.MAX_WBITS)
         except Exception:
             return 500, {"error": "failed to decompress body"}
 
@@ -520,7 +543,7 @@ class MockMnuboBackend(object):
     @route('PUT', '^/compression_enabled$')
     def put_compression_enabled(self, body, params):
         try:
-            decoded = zlib.decompress(body,  16+zlib.MAX_WBITS)
+            decoded = zlib.decompress(body, 16 + zlib.MAX_WBITS)
         except Exception:
             return 500, {"error": "failed to decompress body"}
 

@@ -1,20 +1,11 @@
-import unittest
-import time
-import logging
-
-from smartobjects import SmartObjectsClient
 from smartobjects import Environments
+from smartobjects import SmartObjectsClient
 
-import sys
-PY3 = sys.version_info[0] >= 3
 
 class TestHelper(object):
     @staticmethod
     def getClient():
-        if PY3:
-          from configparser import ConfigParser
-        else:
-          from ConfigParser import ConfigParser
+        from configparser import ConfigParser
 
         myconfig = ConfigParser()
         myconfig.read("ittests/creds.ini")
@@ -22,78 +13,82 @@ class TestHelper(object):
         secret = myconfig.get("Credentials", "secret")
         return SmartObjectsClient(key, secret, Environments.Sandbox)
 
-    @staticmethod
-    def search_event_query(eventId):
-        return {
-          "from": "event",
-          "select": [
+
+@staticmethod
+def search_event_query(eventId):
+    return {
+        "from": "event",
+        "select": [
             {
-              "value": "event_id"
+                "value": "event_id"
             },
             {
-              "value": "ts_text_attribute"
+                "value": "ts_text_attribute"
             }
-          ],
-          "where": {
+        ],
+        "where": {
             "event_id": {
-              "eq": eventId.lower()
+                "eq": eventId.lower()
             }
-          }
         }
+    }
 
-    @staticmethod
-    def search_object_by_owner_query(username):
-        return {
-          "from": "object",
-          "select": [
+
+@staticmethod
+def search_object_by_owner_query(username):
+    return {
+        "from": "object",
+        "select": [
             {
-              "value": "x_device_id"
+                "value": "x_device_id"
             },
             {
-              "value": "object_text_attribute"
+                "value": "object_text_attribute"
             }
-          ],
-          "where": {
+        ],
+        "where": {
             "x_owner.username": {
-              "eq": username.lower()
-            }
-          }
-        }
-
-    @staticmethod
-    def search_owner_query(username): 
-        return {
-            "from": "owner",
-            "select": [
-                {
-                  "value": "username"
-                },
-                {
-                  "value": "owner_text_attribute"
-                }
-            ],
-            "where": {
-                "username": {
-                  "eq": username.lower()
-                }
+                "eq": username.lower()
             }
         }
+    }
 
-    @staticmethod
-    def search_object_query(deviceId): 
-        return {
-          "from": "object",
-          "select": [
+
+@staticmethod
+def search_owner_query(username):
+    return {
+        "from": "owner",
+        "select": [
             {
-              "value": "x_device_id"
+                "value": "username"
             },
             {
-              "value": "object_text_attribute"
+                "value": "owner_text_attribute"
             }
-          ],
-          "where": {
-            "x_device_id": {
-              "eq": deviceId
+        ],
+        "where": {
+            "username": {
+                "eq": username.lower()
             }
-          }
         }
+    }
+
+
+@staticmethod
+def search_object_query(deviceId):
+    return {
+        "from": "object",
+        "select": [
+            {
+                "value": "x_device_id"
+            },
+            {
+                "value": "object_text_attribute"
+            }
+        ],
+        "where": {
+            "x_device_id": {
+                "eq": deviceId
+            }
+        }
+    }

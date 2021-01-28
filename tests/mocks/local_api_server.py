@@ -1,21 +1,16 @@
-import re
 import json
-
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import re
 import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from .mock_mnubo_backend import MockMnuboBackend
 from .routes import ROUTES
 
-import sys
-PY3 = sys.version_info[0] >= 3
 
 class LocalApiRequestHandler(BaseHTTPRequestHandler):
     def _send_response(self, body):
-        if PY3 and isinstance(body, str):
-            self.wfile.write(body.encode('utf8'))
-        else:
-            self.wfile.write(body)
+
+        self.wfile.write(body.encode('utf8'))
 
     def _get_route(self, method, path):
         for route, handler in ROUTES[method].items():
@@ -57,7 +52,7 @@ class LocalApiRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             if resp_content is not None:
                 if not compress:
-                        resp_content = json.dumps(resp_content)
+                    resp_content = json.dumps(resp_content)
                 self._send_response(resp_content)
         else:
             self.send_header('Content-type', 'text/plain')
