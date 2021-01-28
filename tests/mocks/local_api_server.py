@@ -10,7 +10,10 @@ from .routes import ROUTES
 class LocalApiRequestHandler(BaseHTTPRequestHandler):
     def _send_response(self, body):
 
-        self.wfile.write(body.encode('utf8'))
+        if isinstance(body, str):
+            self.wfile.write(body.encode('utf8'))
+        else:
+            self.wfile.write(body)
 
     def _get_route(self, method, path):
         for route, handler in ROUTES[method].items():
