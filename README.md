@@ -147,7 +147,7 @@ Here are the sandbox only operations that are available on the modeler API:
 ---
 # 3. Requirements
 
-- Python 3.6, 3.7 or 3.8
+- Python 3.6, 3.7, 3.8 or 3.9
 - libraries: `requests`, `tenacity` (for exponential backoff)
 
 
