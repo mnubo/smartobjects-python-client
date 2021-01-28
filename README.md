@@ -1,7 +1,7 @@
 # mnubo SmartObjects Python client
 
 
-[![Build status](https://travis-ci.org/mnubo/smartobjects-python-client.svg?branch=master)](https://travis-ci.org/mnubo/smartobjects-python-client)
+[![Build status](https://travis-ci.com/mnubo/smartobjects-python-client.svg?branch=master)](https://travis-ci.com/mnubo/smartobjects-python-client)
 [![PyPI](https://img.shields.io/pypi/v/smartobjects.svg?maxAge=2592000)](https://pypi.python.org/pypi/smartobjects/)
 
 ## Quickstart
@@ -15,7 +15,6 @@
 <p>The client depends on other libraries:</p>
 <ul>
     <li>requests</li>
-    <li>six</li>
     <li>tenacity</li>
     <li>pandas (optional)</li>
 </ul>
@@ -23,7 +22,7 @@
 <p>Below is an example of how you can install everything:</p>
 <pre>
     <code>
-pip install smartobjects requests six tenacity pandas
+pip install smartobjects requests tenacity pandas
     </code>
 </pre>
 
@@ -148,8 +147,8 @@ Here are the sandbox only operations that are available on the modeler API:
 ---
 # 3. Requirements
 
-- Python 2.7 or Python 3.6
-- libraries: `requests`, `six`, `tenacity` (for exponential backoff)
+- Python 3.6, 3.7, 3.8 or 3.9
+- libraries: `requests`, `tenacity` (for exponential backoff)
 
 
 ---

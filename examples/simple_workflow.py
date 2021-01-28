@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from smartobjects import SmartObjectsClient, Environments
 from smartobjects.restitution.search import ResultSet
 

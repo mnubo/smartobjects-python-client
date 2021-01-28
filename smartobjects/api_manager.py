@@ -1,28 +1,19 @@
-import requests
-import json
 import base64
 import datetime
 import gzip
-from .__version__ import __version__
+import json
 from io import BytesIO
 
-import sys
-PY3 = sys.version_info[0] >= 3
+import requests
 
-def py2_b64encode(input_str):
-    return base64.b64encode(input_str)
+from .__version__ import __version__
+
 
 def py3_b64encode(input_str):
     input_bytes = input_str.encode('utf8')
     encoded = base64.b64encode(input_bytes)
     return encoded.decode('utf8')
 
-def py2_gzip_encode(data):
-    out = BytesIO()
-    f = gzip.GzipFile(mode='wb', fileobj=out)
-    f.write(data)
-    f.close()
-    return out.getvalue()
 
 def py3_gzip_encode(data):
     out = BytesIO()
@@ -31,15 +22,15 @@ def py3_gzip_encode(data):
     f.close()
     return out.getvalue()
 
-def py2_response_decode(data):
-    return data
 
 def py3_response_decode(data):
     return data.decode('utf8')
 
+
 class ServiceUnavailable(Exception):
     """ Exception used when status code is 503"""
     pass
+
 
 def authenticate(func):
     def authenticate_and_call(*args):
@@ -53,6 +44,7 @@ def authenticate(func):
 
     return authenticate_and_call
 
+
 def backoff(func):
     def _backoff(*args):
         """ *args here are the parameters of `func`, the method on which the decorator is
@@ -63,7 +55,8 @@ def backoff(func):
             _self = args[0]
             if _self._backoff_config is not None:
                 try:
-                    from tenacity import retry, wait_exponential, wait_random, stop_after_attempt, retry_if_exception_type, before, before_nothing
+                    from tenacity import retry, wait_exponential, wait_random, stop_after_attempt, \
+                        retry_if_exception_type, before, before_nothing
 
                     max_attempts = _self._backoff_config.number_of_attempts
                     initial_delay = _self._backoff_config.initial_delay_in_seconds
@@ -71,15 +64,21 @@ def backoff(func):
                         on_retry = _self._backoff_config.on_retry
                     else:
                         on_retry = before_nothing
+
                     def call():
                         return func(*args)
-                    return retry(stop=stop_after_attempt(max_attempts), wait=wait_exponential(multiplier=initial_delay) + wait_random(min=0.01, max=0.05), retry=retry_if_exception_type(exception_types=ServiceUnavailable), before=on_retry, reraise=True)(call)()
+
+                    return retry(stop=stop_after_attempt(max_attempts),
+                                 wait=wait_exponential(multiplier=initial_delay) + wait_random(min=0.01, max=0.05),
+                                 retry=retry_if_exception_type(exception_types=ServiceUnavailable), before=on_retry,
+                                 reraise=True)(call)()
                 except ImportError:
                     raise ImportError('The "tenacity" package is required to use this feature')
             else:
                 return func(*args)
         else:
             return func(*args)
+
     return _backoff
 
 
@@ -113,13 +112,9 @@ class APIManager(object):
             raise ValueError("Host at {} is not reachable".format(hostname))
         self.__hostname = hostname
 
-        self.__hybridb64 = py2_b64encode
-        self.__gzip_encode = py2_gzip_encode
-        self.__response_decode = py2_response_decode
-        if PY3:
-            self.__hybridb64 = py3_b64encode
-            self.__gzip_encode = py3_gzip_encode
-            self.__response_decode = py3_response_decode
+        self.__hybridb64 = py3_b64encode
+        self.__gzip_encode = py3_gzip_encode
+        self.__response_decode = py3_response_decode
 
         self.__session = requests.Session()
         self.compression_enabled = compression_enabled
