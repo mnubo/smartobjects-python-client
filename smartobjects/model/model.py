@@ -51,7 +51,7 @@ class EntityOps(object):
             else:
                 raise ValueError("'values' must contain dict or " + str(self._class))
 
-        self.api_manager.post("model/{}".format(self._path), payload)
+        self.api_manager.post(f"model/{self._path}", payload)
 
     def update(self, key: str, update_entity: Dict[str, str]):
         """ Update the entity with the matching key
@@ -65,7 +65,7 @@ class EntityOps(object):
         if not isinstance(update_entity, dict):
             raise ValueError("'update_entity' must be dict")
 
-        full_path = "model/{}/{}".format(self._path, key)
+        full_path = f"model/{self._path}/{key}"
         self.api_manager.put(full_path, update_entity)
 
     def generate_deploy_code(self, key: str) -> str:
@@ -74,7 +74,7 @@ class EntityOps(object):
 
         :return code as a string
         """
-        full_path = "model/{}/{}/deploy".format(self._path, key)
+        full_path = f"model/{self._path}/{key}/deploy"
         json = self.api_manager.post(full_path, None).json()
 
         if 'code' in json:
@@ -142,32 +142,32 @@ class TypeOps(object):
                 payload.append(v.asJson())
             else:
                 raise ValueError("'values' must contain dict or " + str(self._class))
-        self.api_manager.post("model/{}".format(self._path), payload)
+        self.api_manager.post(f"model/{self._path}", payload)
 
     def update(self, key: str, value: dict):
         """ Update the type with the matching key
         """
-        full_path = "model/{}/{}".format(self._path, key)
+        full_path = f"model/{self._path}/{key}"
         self.api_manager.put(full_path, value)
 
     def delete(self, key: str):
         """ Delete the type with the matching key
         """
-        full_path = "model/{}/{}".format(self._path, key)
+        full_path = f"model/{self._path}/{key}"
         self.api_manager.delete(full_path)
 
     def add_relation(self, key: str, entity_key: str):
         """ Add a relation from the type identified by `key` to
             the entity identified by `entity_key`
         """
-        full_path = "model/{}/{}/{}/{}".format(self._path, key, self._entity_path, entity_key)
+        full_path = f"model/{self._path}/{key}/{self._entity_path}/{entity_key}"
         self.api_manager.post(full_path)
 
     def remove_relation(self, key: str, entity_key: str):
         """ Remove a relation from the type identified by `typeKey` to
             the entity identified by `entityKey`
         """
-        full_path = "model/{}/{}/{}/{}".format(self._path, key, self._entity_path, entity_key)
+        full_path = f"model/{self._path}/{key}/{self._entity_path}/{entity_key}"
         self.api_manager.delete(full_path)
 
 
@@ -192,7 +192,7 @@ class ResetOps(object):
     def apply_reset_code(self, code: str):
         """Completes the reset process of the sandboxOps data model
         """
-        full_path = "model/reset/{}".format(code)
+        full_path = f"model/reset/{code}"
         self.api_manager.post(full_path, None)
 
     def reset(self):

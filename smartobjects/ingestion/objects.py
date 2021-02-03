@@ -44,7 +44,7 @@ class ObjectsService(object):
             raise ValueError("deviceId cannot be null or empty.")
         if not object:
             raise ValueError("Object body cannot be null or empty.")
-        self.api_manager.put('objects/{}'.format(device_id), object)
+        self.api_manager.put(f'objects/{device_id}', object)
 
     def create_update(self, objects: List[Dict[str, Any]]) -> List[Result]:
         """ create or update a batch of objects
@@ -67,7 +67,7 @@ class ObjectsService(object):
         """
         if not device_id:
             raise ValueError('x_device_id cannot be null or empty.')
-        self.api_manager.delete('objects/{}'.format(device_id))
+        self.api_manager.delete(f'objects/{device_id}')
 
     def object_exists(self, device_id: str) -> bool:
         """ Checks if an object with deviceId `uuid_id` exists in the platform
@@ -78,7 +78,7 @@ class ObjectsService(object):
 
         if not device_id:
             raise ValueError('deviceId cannot be null or empty.')
-        r = self.api_manager.get('objects/exists/{0}'.format(device_id))
+        r = self.api_manager.get(f'objects/exists/{device_id}')
         json = r.json()
         assert device_id in json
         return json[device_id]

@@ -114,7 +114,7 @@ class APIManager(object):
         try:
             requests.head(hostname)
         except requests.exceptions.ConnectionError:
-            raise ValueError("Host at {} is not reachable".format(hostname))
+            raise ValueError(f"Host at {hostname} is not reachable")
         self.__hostname = hostname
 
         self.__hybridb64 = py3_b64encode
@@ -162,8 +162,8 @@ class APIManager(object):
         """ Generates the authorization header used while requesting an access token
         """
 
-        encoded = self.__hybridb64("{0}:{1}".format(self.__client_id, self.__client_secret))
-        return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': "Basic {}".format(encoded)}
+        encoded = self.__hybridb64(f"{self.__client_id}:{self.__client_secret}")
+        return {'content-type': 'application/x-www-form-urlencoded', 'Authorization': f"Basic {encoded}"}
 
     def get_authorization_header(self) -> Dict[str, str]:
         """ Generates the authorization header used to access resources via smartobjects's API

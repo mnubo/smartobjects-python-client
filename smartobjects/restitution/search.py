@@ -19,7 +19,7 @@ class SearchService(object):
 
         Example:
         >>> resultset = client.search.search({"from": "event", "select": [{"value": "speed"}]})
-        >>> "Got {} results!".format(len(resultset))
+        >>> f"Got {len(resultset)} results!")
         Got 42 results!
         """
         r = self.api_manager.post('search/basic', query)

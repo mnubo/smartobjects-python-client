@@ -36,7 +36,7 @@ class EventsService(object):
         if report_results:
             params.append("report_results=true")
 
-        path = "events?{0}".format('&'.join(params)) if params else "events"
+        path = f"events?{'&'.join(params)}" if params else "events"
 
         r = self.api_manager.post(path, self._ensure_serializable(events))
 
@@ -63,7 +63,7 @@ class EventsService(object):
         if not all(['x_event_type' in event and event['x_event_type'] for event in events]):
             raise ValueError("x_event_type cannot be null or empty.")
 
-        path = "objects/{}/events".format(device_id)
+        path = f"objects/{device_id}/events"
         if report_results:
             path += "?report_results=true"
         r = self.api_manager.post(path, self._ensure_serializable(events))
@@ -79,7 +79,7 @@ class EventsService(object):
         assert isinstance(event_id, uuid.UUID)
         str_id = str(event_id)
 
-        r = self.api_manager.get('events/exists/{0}'.format(str_id))
+        r = self.api_manager.get(f'events/exists/{str_id}')
         json = r.json()
 
         assert str_id in json and isinstance(json[str_id], bool)
@@ -114,7 +114,7 @@ class EventsService(object):
         unique = set()
         for event in filter(lambda e: 'event_id' in e, events):
             if event['event_id'] in unique:
-                raise ValueError("The event_id [{}] is duplicated in the list".format(event['event_id']))
+                raise ValueError(f"The event_id [{event['event_id']}] is duplicated in the list")
             else:
                 unique.add(event['event_id'])
 
