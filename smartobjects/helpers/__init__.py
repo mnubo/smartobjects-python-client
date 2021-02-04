@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+from typing import Optional, Dict, Any
 
 
 class Owner(object):
@@ -15,7 +17,7 @@ class Owner(object):
         self._custom_attributes = dict()
 
     @property
-    def custom_attributes(self):
+    def custom_attributes(self) -> Dict[str, Any]:
         return self._custom_attributes
 
     @custom_attributes.setter
@@ -26,69 +28,69 @@ class Owner(object):
             raise ValueError('Custom attributes must be a dict.')
 
     @property
-    def username(self):
+    def username(self) -> str:
         return self._username
 
     @username.setter
-    def username(self, value):
+    def username(self, value: Optional[str]):
         if value is not None:
             self._username = value
 
     @property
-    def password(self):
+    def password(self) -> str:
         return self._password
 
     @password.setter
-    def password(self, value):
+    def password(self, value: Optional[str]):
         if value is not None:
             self._password = value
 
     @property
-    def last_update_timestamp(self):
+    def last_update_timestamp(self) -> datetime:
         return self._last_update_timestamp
 
     @last_update_timestamp.setter
-    def last_update_timestamp(self, value):
+    def last_update_timestamp(self, value: datetime):
         if value is not None:
             self._last_update_timestamp = value
 
     @property
-    def registration_date(self):
+    def registration_date(self) -> datetime:
         return self._registration_date
 
     @registration_date.setter
-    def registration_date(self, value):
+    def registration_date(self, value: datetime):
         if value is not None:
             self._registration_date = value
 
     @property
-    def registration_latitude(self):
+    def registration_latitude(self) -> float:
         return self._registration_latitude
 
     @registration_latitude.setter
-    def registration_latitude(self, value):
+    def registration_latitude(self, value: float):
         if value is not None:
             self._registration_latitude = value
 
     @property
-    def registration_longitude(self):
+    def registration_longitude(self) -> float:
         return self._registration_longitude
 
     @registration_longitude.setter
-    def registration_longitude(self, value):
+    def registration_longitude(self, value: float):
         if value is not None:
             self._registration_longitude = value
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> datetime:
         return self._timestamp
 
     @timestamp.setter
-    def timestamp(self, value):
+    def timestamp(self, value: datetime):
         if value is not None:
             self._timestamp = value
 
-    def build(self):
+    def build(self) -> Dict[str, Any]:
         """ Builds the owner data structure required by the SmartObjects event ingestion API.
         :return: a dict data structure with the owner data.
         """
@@ -142,7 +144,7 @@ class SmartObject(object):
         self._custom_attributes = dict()
 
     @property
-    def device_id(self):
+    def device_id(self) -> str:
         return self._device_id
 
     @device_id.setter
@@ -150,7 +152,7 @@ class SmartObject(object):
         self._device_id = value
 
     @property
-    def object_type(self):
+    def object_type(self) -> str:
         return self._object_type
 
     @object_type.setter
@@ -158,64 +160,64 @@ class SmartObject(object):
         self._object_type = value
 
     @property
-    def owner_username(self):
+    def owner_username(self) -> str:
         return self._owner_username
 
     @owner_username.setter
-    def owner_username(self, value):
+    def owner_username(self, value: str):
         self._owner_username = value
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> datetime:
         return self._timestamp
 
     @timestamp.setter
-    def timestamp(self, value):
+    def timestamp(self, value: datetime):
         self._timestamp = value
 
     @property
-    def registration_date(self):
+    def registration_date(self) -> datetime:
         return self._registration_date
 
     @registration_date.setter
-    def registration_date(self, value):
+    def registration_date(self, value: datetime):
         self._registration_date = value
 
     @property
-    def registration_latitude(self):
+    def registration_latitude(self) -> float:
         return self._registration_latitude
 
     @registration_latitude.setter
-    def registration_latitude(self, value):
+    def registration_latitude(self, value: float):
         self._registration_latitude = value
 
     @property
-    def registration_longitude(self):
+    def registration_longitude(self) -> float:
         return self._registration_longitude
 
     @registration_longitude.setter
-    def registration_longitude(self, value):
+    def registration_longitude(self, value: float):
         self._registration_longitude = value
 
     @property
-    def last_update_timestamp(self):
+    def last_update_timestamp(self) -> datetime:
         return self._last_update_timestamp
 
     @last_update_timestamp.setter
-    def last_update_timestamp(self, value):
+    def last_update_timestamp(self, value: datetime):
         self._last_update_timestamp = value
 
     @property
-    def custom_attributes(self):
+    def custom_attributes(self) -> Dict[str, Any]:
         return self._custom_attributes
 
     @custom_attributes.setter
-    def custom_attributes(self, value):
+    def custom_attributes(self, value: Dict[str, Any]):
         if not isinstance(value, dict):
             raise ValueError('Value must be a dictionary.')
         self._custom_attributes = value
 
-    def build(self):
+    def build(self) -> Dict[str, Any]:
         """ Builds the object data structure required by the SmartObjects event ingestion API.
         :return: a dict data structure with the object data.
         """
@@ -264,20 +266,20 @@ class Event(object):
         self._timestamp = None
 
     @property
-    def device_id(self):
+    def device_id(self) -> str:
         return self._device_id
 
     @device_id.setter
-    def device_id(self, value):
+    def device_id(self, value: str):
         if value is not None:
             self._device_id = value
 
     @property
-    def event_data(self):
+    def event_data(self) -> Dict[str, Any]:
         return self._event_data
 
     @event_data.setter
-    def event_data(self, value):
+    def event_data(self, value: Dict[str, Any]):
         if value is None:
             self._event_data = dict()
         if value is not None:
@@ -285,46 +287,46 @@ class Event(object):
         self._event_data = value
 
     @property
-    def event_id(self):
+    def event_id(self) -> str:
         return self._event_id
 
     @event_id.setter
-    def event_id(self, value):
+    def event_id(self, value: str):
         self._event_id = value
 
     @property
-    def event_type(self):
+    def event_type(self) -> str:
         return self._event_type
 
     @event_type.setter
-    def event_type(self, value):
+    def event_type(self, value: str):
         self._event_type = value
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> datetime:
         return self._timestamp
 
     @timestamp.setter
-    def timestamp(self, value):
+    def timestamp(self, value: datetime):
         self._timestamp = value
 
     @property
-    def latitude(self):
+    def latitude(self) -> float:
         return self._latitude
 
     @latitude.setter
-    def latitude(self, value):
+    def latitude(self, value: float):
         self._latitude = value
 
     @property
-    def longitude(self):
+    def longitude(self) -> float:
         return self._longitude
 
     @longitude.setter
-    def longitude(self, value):
+    def longitude(self, value: float):
         self._longitude = value
 
-    def build(self):
+    def build(self) -> Dict[str, Any]:
         """ Builds the event data structure required by the SmartObjects event ingestion API.
         :return: a dict data structure with the event data.
         """

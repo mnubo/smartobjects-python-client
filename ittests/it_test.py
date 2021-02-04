@@ -4,7 +4,7 @@ from smartobjects import SmartObjectsClient
 
 class TestHelper(object):
     @staticmethod
-    def getClient():
+    def getClient() -> SmartObjectsClient:
         from configparser import ConfigParser
 
         myconfig = ConfigParser()
@@ -14,8 +14,7 @@ class TestHelper(object):
         return SmartObjectsClient(key, secret, Environments.Sandbox)
 
 
-@staticmethod
-def search_event_query(eventId):
+def search_event_query(eventId: str):
     return {
         "from": "event",
         "select": [
@@ -34,8 +33,7 @@ def search_event_query(eventId):
     }
 
 
-@staticmethod
-def search_object_by_owner_query(username):
+def search_object_by_owner_query(username: str):
     return {
         "from": "object",
         "select": [
@@ -54,8 +52,7 @@ def search_object_by_owner_query(username):
     }
 
 
-@staticmethod
-def search_owner_query(username):
+def search_owner_query(username: str):
     return {
         "from": "owner",
         "select": [
@@ -74,8 +71,7 @@ def search_owner_query(username):
     }
 
 
-@staticmethod
-def search_object_query(deviceId):
+def search_object_query(deviceId: str):
     return {
         "from": "object",
         "select": [

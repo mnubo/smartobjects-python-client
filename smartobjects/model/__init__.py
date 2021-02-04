@@ -1,3 +1,6 @@
+from typing import List, Dict, Any, ValuesView
+
+
 class ObjectType(object):
     def __init__(self, *args):
         """ One object type and the bound object attribute keys """
@@ -14,33 +17,34 @@ class ObjectType(object):
             self._object_attribute_keys.append(rawoa.get("key"))
 
     @classmethod
-    def withKeys(cls, source):
+    def withKeys(cls, source) -> "ObjectType":
         if not isinstance(source, dict):
             raise ValueError("Invalid arguments")
-        source['objectAttributes'] = [ { 'key': objKey } for objKey in source.get('objectAttributesKeys', [])]
+        source['objectAttributes'] = [{'key': objKey} for objKey in source.get('objectAttributesKeys', [])]
         return ObjectType(source)
 
     @property
-    def key(self):
+    def key(self) -> str:
         """ key of the object type - the key is a unique identifier """
         return self._key
 
     @property
-    def description(self):
+    def description(self) -> str:
         """ description of the object type """
         return self._description
 
     @property
-    def object_attribute_keys(self):
+    def object_attribute_keys(self) -> list:
         """ keys of all the object attributes bound to the object type """
         return self._object_attribute_keys
 
-    def asJson(self):
+    def asJson(self) -> Dict[str, Any]:
         return {
             'key': self.key,
             'description': self.description,
             'objectAttributesKeys': self.object_attribute_keys
         }
+
 
 class EventType(object):
     def __init__(self, *args):
@@ -60,39 +64,40 @@ class EventType(object):
             self._timeseries_keys.append(rawts.get("key"))
 
     @classmethod
-    def withKeys(cls, source):
+    def withKeys(cls, source) -> "EventType":
         if not isinstance(source, dict):
             raise ValueError("Invalid arguments")
-        source['timeseries'] = [ { 'key': etKey } for etKey in source.get('timeseriesKeys', [])]
+        source['timeseries'] = [{'key': etKey} for etKey in source.get('timeseriesKeys', [])]
         return EventType(source)
 
     @property
-    def key(self):
-            """ key of the event type - the key is a unique identifier """
-            return self._key
+    def key(self) -> str:
+        """ key of the event type - the key is a unique identifier """
+        return self._key
 
     @property
-    def description(self):
-            """ description of the event type """
-            return self._description
+    def description(self) -> str:
+        """ description of the event type """
+        return self._description
 
     @property
-    def origin(self):
-            """ origin of the event type """
-            return self._origin
+    def origin(self) -> str:
+        """ origin of the event type """
+        return self._origin
 
     @property
-    def timeseries_keys(self):
-            """ keys of all the timeseries bound to the event type """
-            return self._timeseries_keys
+    def timeseries_keys(self) -> List[str]:
+        """ keys of all the timeseries bound to the event type """
+        return self._timeseries_keys
 
-    def asJson(self):
+    def asJson(self) -> Dict[str, Any]:
         return {
             'key': self.key,
             'origin': self.origin,
             'description': self.description,
             'timeseriesKeys': self.timeseries_keys
         }
+
 
 class Timeseries(object):
     def __init__(self, *args):
@@ -110,31 +115,31 @@ class Timeseries(object):
         self._high_level_type = self._source.get('type').get('highLevelType')
 
     @property
-    def key(self):
+    def key(self) -> str:
         """ key of the timeseries - the key is a unique identifier """
         return self._key
 
     @property
-    def display_name(self):
+    def display_name(self) -> str:
         """ display name of the timeseries """
         return self._display_name
 
     @property
-    def description(self):
+    def description(self) -> str:
         """ description of the timeseries """
         return self._description
 
     @property
-    def high_level_type(self):
+    def high_level_type(self) -> str:
         """ high level type of the timeseries """
         return self._high_level_type
 
     @property
-    def event_types_keys(self):
+    def event_types_keys(self) -> str:
         """ high level type of the timeseries """
         return self._event_type_keys
 
-    def asJson(self):
+    def asJson(self) -> Dict[str, Any]:
         return {
             'key': self.key,
             'displayName': self.display_name,
@@ -144,6 +149,7 @@ class Timeseries(object):
             },
             'eventTypeKeys': self.event_types_keys
         }
+
 
 class ObjectAttribute(object):
     def __init__(self, *args):
@@ -162,36 +168,36 @@ class ObjectAttribute(object):
         self._container_type = self._source.get('type').get('containerType')
 
     @property
-    def key(self):
+    def key(self) -> str:
         """ key of the object attribute - the key is a unique identifier """
         return self._key
 
     @property
-    def display_name(self):
+    def display_name(self) -> str:
         """ display name of the object attribute """
         return self._display_name
 
     @property
-    def description(self):
+    def description(self) -> str:
         """ description of the object attribute """
         return self._description
 
     @property
-    def high_level_type(self):
+    def high_level_type(self) -> str:
         """ high level type of the object attribute """
         return self._high_level_type
 
     @property
-    def container_type(self):
+    def container_type(self) -> str:
         """ container type of the object attribute """
         return self._container_type
 
     @property
-    def object_type_keys(self):
+    def object_type_keys(self) -> str:
         """ container type of the object attribute """
         return self._object_type_keys
 
-    def asJson(self):
+    def asJson(self) -> Dict[str, Any]:
         return {
             'key': self.key,
             'displayName': self.display_name,
@@ -202,6 +208,7 @@ class ObjectAttribute(object):
             },
             'objectTypeKeys': self.object_type_keys
         }
+
 
 class OwnerAttribute(object):
     def __init__(self, *args):
@@ -219,31 +226,31 @@ class OwnerAttribute(object):
         self._container_type = self._source.get('type').get('containerType')
 
     @property
-    def key(self):
+    def key(self) -> str:
         """ key of the owner attribute - the key is a unique identifier """
         return self._key
 
     @property
-    def display_name(self):
+    def display_name(self) -> str:
         """ display name of the owner attribute """
         return self._display_name
 
     @property
-    def description(self):
+    def description(self) -> str:
         """ description of the owner attribute """
         return self._description
 
     @property
-    def high_level_type(self):
+    def high_level_type(self) -> str:
         """ high leve type of the owner attribute """
         return self._high_level_type
 
     @property
-    def container_type(self):
+    def container_type(self) -> str:
         """ container type of the owner attribute """
         return self._container_type
 
-    def asJson(self):
+    def asJson(self) -> Dict[str, Any]:
         return {
             'key': self.key,
             'displayName': self.display_name,
@@ -253,6 +260,7 @@ class OwnerAttribute(object):
                 'highLevelType': self.high_level_type
             }
         }
+
 
 class Sessionizer(object):
     def __init__(self, *args):
@@ -270,29 +278,30 @@ class Sessionizer(object):
         self._end_event_type_key = self._source.get('endEventTypeKey')
 
     @property
-    def key(self):
+    def key(self) -> str:
         """ key of the sessionizer - the key is a unique identifier """
         return self._key
 
     @property
-    def display_name(self):
+    def display_name(self) -> str:
         """ display name of the sessionizer """
         return self._display_name
 
     @property
-    def description(self):
+    def description(self) -> str:
         """ description of the sessionizer """
         return self._description
 
     @property
-    def start_event_type_key(self):
+    def start_event_type_key(self) -> str:
         """ the start event type of the sessionizer """
         return self._start_event_type_key
 
     @property
-    def end_event_type_key(self):
+    def end_event_type_key(self) -> str:
         """ the end event type of the sessionizer """
         return self._end_event_type_key
+
 
 class Orphans(object):
     def __init__(self, *args):
@@ -305,14 +314,15 @@ class Orphans(object):
             raise ValueError("Invalid arguments")
 
     @property
-    def timeseries(self):
+    def timeseries(self) -> List[Timeseries]:
         """ array of all the timeseries in the model """
         return self._timeseries
 
     @property
-    def object_attributes(self):
+    def object_attributes(self) -> List[ObjectAttribute]:
         """ array of all the object attributes in the model """
         return self._object_attributes
+
 
 class Model(object):
     def __init__(self, *args):
@@ -345,7 +355,6 @@ class Model(object):
                 exists._object_type_keys.append(ot_key)
 
         self._object_attributes = obj_by_key.values()
-
 
         raw_event_types = self._source.get('eventTypes', [])
         self._event_types = []
@@ -396,42 +405,41 @@ class Model(object):
         self._orphans = Orphans(self.__orphans_ts, self.__orphans_obj)
 
     @property
-    def raw(self):
+    def raw(self) -> Dict[str, Any]:
         """raw JSON object as returned by the model API"""
         return self._source
 
     @property
-    def object_types(self):
+    def object_types(self) -> List[ObjectType]:
         """ array of all the object types in the model """
         return self._object_types
 
     @property
-    def event_types(self):
+    def event_types(self) -> List[EventType]:
         """ array of all the event types in the model """
         return self._event_types
 
     @property
-    def object_attributes(self):
+    def object_attributes(self) -> ValuesView[ObjectAttribute]:
         """ array of all the object attributes in the model """
         return self._object_attributes
 
     @property
-    def timeseries(self):
+    def timeseries(self) -> ValuesView[Timeseries]:
         """ array of all the timeseries in the model """
         return self._timeseries
 
-
     @property
-    def owner_attributes(self):
+    def owner_attributes(self) -> List[OwnerAttribute]:
         """ array of all the owner attributes in the model """
         return self._owner_attributes
 
     @property
-    def sessionizers(self):
+    def sessionizers(self) -> List[Sessionizer]:
         """ array of all the sessionizers in the model """
         return self._sessionizers
 
     @property
-    def orphans(self):
+    def orphans(self) -> Orphans:
         """ orphan timeseries and object attributes """
         return self._orphans

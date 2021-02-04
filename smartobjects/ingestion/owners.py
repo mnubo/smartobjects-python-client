@@ -1,16 +1,21 @@
-from smartobjects.ingestion import Result
 from builtins import map
+from typing import Dict, Any, Optional, List, Union, Tuple
+
+from requests.models import Response
+
+from smartobjects.api_manager import APIManager
+from smartobjects.ingestion import Result
 
 
 class OwnersService(object):
 
-    def __init__(self, api_manager):
+    def __init__(self, api_manager: APIManager):
         """ Initializes OwnerServices with the api manager
         """
 
         self.api_manager = api_manager
 
-    def _validate_owner(self, owner):
+    def _validate_owner(self, owner: Dict[str, Any]):
         if not owner:
             raise ValueError("Owner body cannot be null")
         if not isinstance(owner, dict):
@@ -18,7 +23,7 @@ class OwnersService(object):
         if 'username' not in owner or not owner['username']:
             raise ValueError("username cannot be null or empty.")
 
-    def _validate_claim(self, claim):
+    def _validate_claim(self, claim: Dict[str, Any]):
         if not claim:
             raise ValueError("Claim (unclaim) body cannot be null")
         if 'username' not in claim or not claim['username']:
@@ -26,7 +31,7 @@ class OwnersService(object):
         if 'x_device_id' not in claim or not claim['x_device_id']:
             raise ValueError("x_device_id cannot be null or empty.")
 
-    def create(self, owner):
+    def create(self, owner: Dict[str, Any]):
         """ Creates a new owner in the smartobjects platform
 
         :param owner: the owner of the object to be deleted
@@ -34,10 +39,10 @@ class OwnersService(object):
         self._validate_owner(owner)
         self.api_manager.post('owners', owner)
 
-    def claim(self, username, device_id, optionalBody = None):
+    def claim(self, username: str, device_id: str, optionalBody: Optional[Dict[str, Any]] = None):
         """ Owner claims an object
 
-        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-claim
+        https://smartobjects.mnubo.com/documentation/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-claim
 
         :param username: the username of the owner claiming the object
         :param device_id: the device_id of the object being claimed
@@ -57,10 +62,10 @@ class OwnersService(object):
         else:
             self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
 
-    def unclaim(self, username, device_id, optionalBody = None):
+    def unclaim(self, username: str, device_id: str, optionalBody: Optional[Dict[str, Any]] = None):
         """ Owner unclaims an object
 
-        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-unclaim
+        https://smartobjects.mnubo.com/documentation/api_ingestion.html#post-api-v3-owners-username-objects-x-device-id-unclaim
 
         :param username: the username of the owner whom owns the object
         :param device_id: the device_id of the object being unclaimed
@@ -80,10 +85,10 @@ class OwnersService(object):
         else:
             self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id))
 
-    def batch_claim(self, claims):
+    def batch_claim(self, claims: Union[List[Dict[str, Any]], List[Tuple[str, str]]]):
         """ Batch claims of owner to object
 
-        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-claim-batch
+        https://smartobjects.mnubo.com/documentation/api_ingestion.html#post-api-v3-owners-claim-batch
 
         :param claims:
             the claims argument can either a fully constructed batch-claim object as specified in the documentation
@@ -104,10 +109,10 @@ class OwnersService(object):
         r = self.api_manager.post('owners/claim', claims)
         return [Result(**result) for result in r.json()]
 
-    def batch_unclaim(self, unclaims):
+    def batch_unclaim(self, unclaims: Union[List[Dict[str, Any]], List[Tuple[str, str]]]):
         """ Batch unclaims of owner-object combination
 
-        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#post-api-v3-owners-unclaim-batch
+        https://smartobjects.mnubo.com/documentation/api_ingestion.html#post-api-v3-owners-unclaim-batch
 
         :param unclaims:
             the unclaims argument can either a fully constructed batch-unclaim object as specified in the documentation
@@ -119,7 +124,8 @@ class OwnersService(object):
         or
         >>> client.owners.unclaim([("usertest1","object1"), ("usertest2", "object2")])
         """
-        if isinstance(unclaims, list) and all([isinstance(unclaim, tuple) and len(unclaim) == 2 for unclaim in unclaims]):
+        if isinstance(unclaims, list) and all(
+                [isinstance(unclaim, tuple) and len(unclaim) == 2 for unclaim in unclaims]):
             # transform a list of (user, device) pair to a unclaim dictionary
             unclaims = list(map(lambda claim: {"username": claim[0], "x_device_id": claim[1]}, unclaims))
 
@@ -128,7 +134,7 @@ class OwnersService(object):
         r = self.api_manager.post('owners/unclaim', unclaims)
         return [Result(**result) for result in r.json()]
 
-    def update(self, username, owner):
+    def update(self, username: str, owner: Dict[str, str]):
         """ Updates an owner from smartobjects
 
         :param owner: the owner with the updated properties
@@ -140,10 +146,10 @@ class OwnersService(object):
 
         self.api_manager.put('owners/{}'.format(username), owner)
 
-    def create_update(self, owners):
+    def create_update(self, owners: List[Dict[str, str]]):
         """ Create or update a batch of owners at once
 
-        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#put-api-v3-owners-batch
+        https://smartobjects.mnubo.com/documentation/api_ingestion.html#put-api-v3-owners-batch
 
         :param owners: list of owners to be sent to the smartobjects platform. If the owner already exists, it will be
             updated with the new content, otherwise it will be created
@@ -154,7 +160,7 @@ class OwnersService(object):
         r = self.api_manager.put('owners', owners)
         return [Result(**result) for result in r.json()]
 
-    def delete(self, username):
+    def delete(self, username: str) -> Response:
         """ Deletes an owner from the smartobjects platform
 
         :param username: the username of the owner to be deleted
@@ -164,7 +170,7 @@ class OwnersService(object):
 
         return self.api_manager.delete('owners/{}'.format(username))
 
-    def owner_exists(self, username):
+    def owner_exists(self, username: str) -> bool:
         """ Checks if an owner with username `username` exists in the platform
 
         :param username (string): the username we want to check if existing
@@ -179,7 +185,7 @@ class OwnersService(object):
         assert username in json
         return json[username]
 
-    def owners_exist(self, usernames):
+    def owners_exist(self, usernames: List[str]) -> Dict[str, bool]:
         """ Checks if owners with usernames as specified in `usernames` exist in the platform
 
         :param usernames (list): list of owner username we want to check if existing

@@ -75,7 +75,7 @@ def main():
             print("version: {}, created: {}".format(row.get("version"), row.get("time_created", ResultSet.ToDatetime)))
 
     # explore properties of the datamodel with search.get_datasets
-    # https://smartobjects.mnubo.com/apps/doc/api_search.html#get-api-v3-search-datasets
+    # https://smartobjects.mnubo.com/documentation/api_search.html#get-api-v3-search-datasets
     datasets = client.search.get_datasets()
     for owner_field in datasets["event"].fields:
         if not owner_field.key.startswith("x_"):

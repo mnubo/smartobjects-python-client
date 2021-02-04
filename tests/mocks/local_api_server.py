@@ -2,27 +2,28 @@ import json
 import re
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import Union, Dict, Any, Tuple, Callable
 
 from .mock_mnubo_backend import MockMnuboBackend
 from .routes import ROUTES
 
 
 class LocalApiRequestHandler(BaseHTTPRequestHandler):
-    def _send_response(self, body):
+    def _send_response(self, body: Union[str, Dict[str, Any]]):
 
         if isinstance(body, str):
             self.wfile.write(body.encode('utf8'))
         else:
             self.wfile.write(body)
 
-    def _get_route(self, method, path):
+    def _get_route(self, method: str, path: str) -> Tuple[Callable, Tuple]:
         for route, handler in ROUTES[method].items():
             matches = re.search(route, path)
             if matches:
                 return handler, matches.groups()
         raise ValueError
 
-    def _handle(self, method, path):
+    def _handle(self, method: str, path: str):
         if path.startswith('/api/v3'):
             path = path[7:]
 
@@ -98,7 +99,7 @@ class LocalApiServer(object):
         print("stopped local API")
 
     @property
-    def path(self):
+    def path(self) -> str:
         return "http://localhost:{}".format(self.server.server_port)
 
 

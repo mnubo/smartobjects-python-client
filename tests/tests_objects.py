@@ -2,13 +2,12 @@ import unittest
 
 from smartobjects.api_manager import APIManager
 from smartobjects.ingestion.objects import ObjectsService
-
 from tests.mocks.local_api_server import LocalApiServer
 
 
 class TestObjectsService(unittest.TestCase):
     """
-    https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#objects
+    https://smartobjects.mnubo.com/documentation/api_ingestion.html#objects
     """
 
     @classmethod
@@ -16,7 +15,8 @@ class TestObjectsService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None, token_override=None)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False,
+                             backoff_config=None, token_override=None)
         cls.objects = ObjectsService(cls.api)
 
     @classmethod

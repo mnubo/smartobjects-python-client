@@ -1,17 +1,15 @@
 import unittest
+from builtins import filter
 
 from smartobjects.api_manager import APIManager
 from smartobjects.model import *
 from smartobjects.model.model import ModelService
-
 from tests.mocks.local_api_server import LocalApiServer
-
-from builtins import filter
 
 
 class TestModelService(unittest.TestCase):
     """
-    https://smartobjects.mnubo.com/apps/doc/api_model.html
+    https://smartobjects.mnubo.com/documentation/api_modeler.html
     """
 
     @classmethod
@@ -19,7 +17,8 @@ class TestModelService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None, token_override=None)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False,
+                             backoff_config=None, token_override=None)
         cls.model = ModelService(cls.api)
 
     @classmethod
@@ -28,11 +27,11 @@ class TestModelService(unittest.TestCase):
 
     def test_export_empty(self):
         emptyModelJson = {
-          "objectTypes": [],
-          "eventTypes": [],
-          "ownerAttributes": [],
-          "sessionizers": [],
-          "orphans": {}
+            "objectTypes": [],
+            "eventTypes": [],
+            "ownerAttributes": [],
+            "sessionizers": [],
+            "orphans": {}
         }
         value = Model(emptyModelJson)
         self.assertEqual(len(value.object_types), 0)
