@@ -27,7 +27,7 @@ class ResultSet(object):
         if not isinstance(item, int):
             raise IndexError("item must be an integer")
         if not 0 <= item < len(self._rows):
-            raise IndexError("Invalid index: must be in the range [{}, {})".format(0, len(self._rows)))
+            raise IndexError(f"Invalid index: must be in the range [{0}, {len(self._rows)})")
         return ResultRow(self._rows[item], self)
 
     def get_column_index(self, item: str) -> int:
@@ -38,7 +38,7 @@ class ResultSet(object):
             0
         """
         if item not in self._col_to_idx:
-            raise IndexError("Invalid column '{}'".format(item))
+            raise IndexError(f"Invalid column '{item}'")
         return self._col_to_idx[item]
 
     def get_column_type(self, item: str) -> int:
@@ -134,7 +134,7 @@ class ResultRow(object):
             raise ValueError("Invalid type for argument 'item'")
 
         if not 0 <= index < len(self._source):
-            raise IndexError("Invalid index: must be in the range [{}, {})".format(0, len(self._source)))
+            raise IndexError(f"Invalid index: must be in the range [{0}, {len(self._source)})")
 
         if rtype:
             return rtype(self._source[index])

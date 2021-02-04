@@ -6,6 +6,8 @@ from requests.models import Response
 from smartobjects.api_manager import APIManager
 from smartobjects.ingestion import Result
 
+from smartobjects.ingestion import Result
+
 
 class OwnersService(object):
 
@@ -58,9 +60,9 @@ class OwnersService(object):
             raise ValueError("if optionalBody is given, it must be a dictionnary")
 
         if optionalBody and len(optionalBody) > 0:
-            self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id), optionalBody)
+            self.api_manager.post(f'owners/{username}/objects/{device_id}/claim', optionalBody)
         else:
-            self.api_manager.post('owners/{}/objects/{}/claim'.format(username, device_id))
+            self.api_manager.post(f'owners/{username}/objects/{device_id}/claim')
 
     def unclaim(self, username: str, device_id: str, optionalBody: Optional[Dict[str, Any]] = None):
         """ Owner unclaims an object
@@ -81,9 +83,9 @@ class OwnersService(object):
             raise ValueError("if optionalBody is given, it must be a dictionnary")
 
         if optionalBody and len(optionalBody) > 0:
-            self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id), optionalBody)
+            self.api_manager.post(f'owners/{username}/objects/{device_id}/unclaim', optionalBody)
         else:
-            self.api_manager.post('owners/{}/objects/{}/unclaim'.format(username, device_id))
+            self.api_manager.post(f'owners/{username}/objects/{device_id}/unclaim')
 
     def batch_claim(self, claims: Union[List[Dict[str, Any]], List[Tuple[str, str]]]):
         """ Batch claims of owner to object
@@ -144,7 +146,7 @@ class OwnersService(object):
         if not owner:
             raise ValueError("Object body cannot be null or empty.")
 
-        self.api_manager.put('owners/{}'.format(username), owner)
+        self.api_manager.put(f'owners/{username}', owner)
 
     def create_update(self, owners: List[Dict[str, str]]):
         """ Create or update a batch of owners at once
@@ -168,7 +170,7 @@ class OwnersService(object):
         if not username:
             raise ValueError("username cannot be null or empty.")
 
-        return self.api_manager.delete('owners/{}'.format(username))
+        return self.api_manager.delete(f'owners/{username}')
 
     def owner_exists(self, username: str) -> bool:
         """ Checks if an owner with username `username` exists in the platform
@@ -180,7 +182,7 @@ class OwnersService(object):
         if not username:
             raise ValueError("username cannot be null or empty.")
 
-        r = self.api_manager.get('owners/exists/{}'.format(username))
+        r = self.api_manager.get(f'owners/exists/{username}')
         json = r.json()
         assert username in json
         return json[username]
