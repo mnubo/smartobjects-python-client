@@ -2,13 +2,12 @@ import unittest
 
 from smartobjects.api_manager import APIManager
 from smartobjects.ingestion.owners import OwnersService
-
 from tests.mocks.local_api_server import LocalApiServer
 
 
 class TestOwnersService(unittest.TestCase):
     """
-    https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#owners
+    https://smartobjects.mnubo.com/documentation/api_ingestion.html#owners
     """
 
     @classmethod
@@ -16,7 +15,8 @@ class TestOwnersService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None, token_override=None)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False,
+                             backoff_config=None, token_override=None)
         cls.owners = OwnersService(cls.api)
 
     @classmethod
@@ -95,7 +95,8 @@ class TestOwnersService(unittest.TestCase):
         self.server.server.backend.objects['my_device2'] = {'x_device_id': 'my_device2'}
         self.owners.create({'username': 'owner_1'})
 
-        self.owners.batch_claim([{'username': 'owner_1', 'x_device_id': 'my_device'}, {'username': 'owner_1', 'x_device_id': 'my_device2'}])
+        self.owners.batch_claim(
+            [{'username': 'owner_1', 'x_device_id': 'my_device'}, {'username': 'owner_1', 'x_device_id': 'my_device2'}])
 
         self.assertEqual(self.server.server.backend.objects['my_device']['x_owner'], 'owner_1')
         self.assertEqual(self.server.server.backend.objects['my_device2']['x_owner'], 'owner_1')
@@ -184,7 +185,8 @@ class TestOwnersService(unittest.TestCase):
         self.server.server.backend.objects['my_device2'] = {'x_device_id': 'my_device2', 'x_owner': 'owner_1'}
         self.owners.create({'username': 'owner_1'})
 
-        self.owners.batch_unclaim([{'username': 'owner_1', 'x_device_id': 'my_device'}, {'username': 'owner_1', 'x_device_id': 'my_device2'}])
+        self.owners.batch_unclaim(
+            [{'username': 'owner_1', 'x_device_id': 'my_device'}, {'username': 'owner_1', 'x_device_id': 'my_device2'}])
 
         self.assertEqual(self.server.server.backend.objects['my_device']['x_owner'], None)
         self.assertEqual(self.server.server.backend.objects['my_device2']['x_owner'], None)
@@ -320,7 +322,7 @@ class TestOwnersService(unittest.TestCase):
 
     def test_owner_exists_ok(self):
         self.owners.create({'username': 'owner_1', 'some_property': 'green'})
-        
+
         self.assertEqual(self.owners.owner_exists('owner_1'), True)
         self.assertEqual(self.owners.owner_exists('non_existing'), False)
 
@@ -328,7 +330,7 @@ class TestOwnersService(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             self.owners.owner_exists(None)
             self.assertEqual(ctx.exception.message, "username cannot be null or empty.")
-        
+
     def test_owner_exists_username_empty(self):
         with self.assertRaises(ValueError) as ctx:
             self.owners.owner_exists("")
@@ -336,7 +338,7 @@ class TestOwnersService(unittest.TestCase):
 
     def test_owners_exist_ok(self):
         self.owners.create({'username': 'owner_1', 'some_property': 'green'})
-        
+
         resp = self.owners.owners_exist(["owner_1", "non_existing"])
 
         self.assertEqual(resp, {
@@ -348,4 +350,3 @@ class TestOwnersService(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             self.owners.owners_exist(None)
             self.assertEqual(ctx.exception.message, "List of username cannot be null or empty.")
-

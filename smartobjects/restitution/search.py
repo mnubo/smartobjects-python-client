@@ -11,7 +11,7 @@ class SearchService(object):
     def search(self, query):
         """ Sends a basic search query
 
-        see https://smartobjects.mnubo.com/apps/doc/api_search.html#post-api-v3-search-basic for more details
+        see https://smartobjects.mnubo.com/documentation/api_search.html#post-api-v3-search-basic for more details
 
         :param query (dict): the search query
         :returns: ResultSet object
@@ -28,7 +28,7 @@ class SearchService(object):
     def get_datasets(self):
         """ Retrieves the datasets available for the current namespace
 
-        https://smartobjects.mnubo.com/apps/doc/api_search.html#get-api-v3-search-datasets
+        https://smartobjects.mnubo.com/documentation/api_search.html#get-api-v3-search-datasets
 
         :returns: dictionary of Dataset objects: {'dataset name': Dataset}
 
@@ -52,4 +52,3 @@ class SearchService(object):
         """
         r = self.api_manager.post('search/validateQuery', query)
         return QueryValidationResult(r.json())
-

@@ -30,7 +30,7 @@ class ResultSet(object):
             raise IndexError("Invalid index: must be in the range [{}, {})".format(0, len(self._rows)))
         return ResultRow(self._rows[item], self)
 
-    def get_column_index(self, item):
+    def get_column_index(self, item: str) -> int:
         """Returns the column index associated with a given column name
 
         Example:
@@ -41,7 +41,7 @@ class ResultSet(object):
             raise IndexError("Invalid column '{}'".format(item))
         return self._col_to_idx[item]
 
-    def get_column_type(self, item):
+    def get_column_type(self, item: str) -> int:
         """Returns the highLevelType associated with a given column name
 
         :rtype: str
@@ -96,14 +96,15 @@ class ResultSet(object):
         except ImportError:
             raise ImportError('The "pandas" package is required to use this feature')
 
-
     # type conversion utils
     @staticmethod
-    def ToDatetime(date): return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+    def ToDatetime(date):
+        return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 class ResultRow(object):
     """ Single row of a ResultSet object """
+
     def __init__(self, row, parent_rs):
         self._source = row
         self._parent = parent_rs
@@ -147,8 +148,9 @@ class ResultRow(object):
 
 class DataSet(object):
     """
-    https://smartobjects.mnubo.com/apps/doc/api_search.html#get-api-v3-search-datasets
+    https://smartobjects.mnubo.com/documentation/api_search.html#get-api-v3-search-datasets
     """
+
     def __init__(self, json):
         self._source = json
         self.key = self._source.get('key')
@@ -159,8 +161,9 @@ class DataSet(object):
 
 class Field(object):
     """
-    https://smartobjects.mnubo.com/apps/doc/api_search.html#get-api-v3-search-datasets
+    https://smartobjects.mnubo.com/documentation/api_search.html#get-api-v3-search-datasets
     """
+
     def __init__(self, json):
         self._source = json
         self.key = self._source.get('key')
@@ -173,6 +176,7 @@ class Field(object):
 
 class QueryValidationResult(object):
     """ Contains the result of a call to validate_query """
+
     def __init__(self, *args, **kwargs):
         if len(args) == 1 and isinstance(args[0], dict):
             self._source = args[0]

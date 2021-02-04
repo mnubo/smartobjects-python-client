@@ -1,10 +1,11 @@
+from typing import Optional, Dict, Any
 
-from smartobjects.ingestion.events import EventsService
-from smartobjects.ingestion.owners import OwnersService
-from smartobjects.ingestion.objects import ObjectsService
-from smartobjects.restitution.search import SearchService
-from smartobjects.model.model import ModelService
 from smartobjects.api_manager import APIManager
+from smartobjects.ingestion.events import EventsService
+from smartobjects.ingestion.objects import ObjectsService
+from smartobjects.ingestion.owners import OwnersService
+from smartobjects.model.model import ModelService
+from smartobjects.restitution.search import SearchService
 
 
 class Environments:
@@ -13,10 +14,11 @@ class Environments:
     Sandbox = "https://rest.sandbox.mnubo.com"
     Production = "https://rest.api.mnubo.com"
 
+
 class ExponentialBackoffConfig(object):
     """Configuration for exponential backoff retries"""
 
-    def __init__(self, number_of_attempts = 5, initial_delay_in_seconds = 0.5, on_retry = None):
+    def __init__(self, number_of_attempts=5, initial_delay_in_seconds=0.5, on_retry=None):
         """ Config object for exponentional backoff retries
 
         :param number_of_attempts: maximum number of attempts (default: 5)
@@ -27,11 +29,14 @@ class ExponentialBackoffConfig(object):
         self.initial_delay_in_seconds = initial_delay_in_seconds
         self.on_retry = on_retry
 
+
 class SmartObjectsClient(object):
     """ Initializes the smartobjects client which contains the API manager as well as the available resource services
     """
 
-    def __init__(self, client_id, client_secret, environment, compression_enabled=True, backoff_config=None, token_override=None):
+    def __init__(self, client_id: Optional[str], client_secret: Optional[str], environment: str,
+                 compression_enabled: bool = True,
+                 backoff_config=None, token_override=None):
         """ Initialization of the smartobjects client
 
         The client exposes the Events, Objects, Owners and Search services.
@@ -53,7 +58,8 @@ class SmartObjectsClient(object):
         if not environment:
             raise ValueError("environment cannot be null or empty.")
 
-        self._api_manager = APIManager(client_id, client_secret, environment, compression_enabled, backoff_config, token_override)
+        self._api_manager = APIManager(client_id, client_secret, environment, compression_enabled, backoff_config,
+                                       token_override)
         self.owners = OwnersService(self._api_manager)
         self.events = EventsService(self._api_manager)
         self.objects = ObjectsService(self._api_manager)
@@ -61,7 +67,8 @@ class SmartObjectsClient(object):
         self.model = ModelService(self._api_manager)
 
     @classmethod
-    def withToken(cls, token, environment, compression_enabled=True, backoff_config=None):
+    def withToken(cls, token: str, environment: str, compression_enabled: bool = True,
+                  backoff_config: Optional[Dict[str, Any]] = None) -> "SmartObjectsClient":
         """ Initialization of the smartobjects client
 
         The client exposes the Events, Objects, Owners and Search services.
@@ -77,4 +84,5 @@ class SmartObjectsClient(object):
         :note: Do not expose publicly code containing your client_id and client_secret
         .. seealso:: examples/simple_workflow.py
         """
-        return cls(client_id=None, client_secret=None, environment=environment, compression_enabled=compression_enabled, backoff_config=backoff_config, token_override=token)
+        return cls(client_id=None, client_secret=None, environment=environment, compression_enabled=compression_enabled,
+                   backoff_config=backoff_config, token_override=token)

@@ -13,6 +13,7 @@ class Result(object):
      >>> success = Result(id='device_id', result='success')
      >>> failure = Result(id='device_id', result='error', message='Invalid property "some invalid property"')
     """
+
     def __init__(self, *args, **kwargs):
         if len(args) == 1 and isinstance(args[0], dict):
             self._source = args[0]
@@ -26,17 +27,17 @@ class Result(object):
         self._message = self._source.get('message', None)
 
     @property
-    def id(self):
+    def id(self) -> str:
         """identifier of the operation (deviceId for an object, username for an owner)"""
         return self._id
 
     @property
-    def message(self):
+    def message(self) -> str:
         """If `result` is not `success`: contains the reason of the failure"""
         return self._message
 
     @property
-    def result(self):
+    def result(self) -> str:
         """status of the operation: `success` or `failure`"""
         return self._result
 
@@ -53,10 +54,9 @@ class EventResult(Result):
         self._object_exists = self._source.get('objectExists', None)
 
     @property
-    def object_exists(self):
+    def object_exists(self) -> bool:
         """`True` if the object specified by x_object.x_device_id actually exists.
 
         To prevent submitting events to non_existing object, use `must_exist=True` with `send()`
         """
         return self._object_exists
-

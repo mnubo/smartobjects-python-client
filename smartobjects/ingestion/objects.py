@@ -1,14 +1,18 @@
+from typing import Dict, Any, List
+
+from smartobjects.api_manager import APIManager
 from smartobjects.ingestion import Result
+
 
 class ObjectsService(object):
 
-    def __init__(self, api_manager):
+    def __init__(self, api_manager: APIManager):
         """ Initializes ObjectServices with the api manager
         """
 
         self.api_manager = api_manager
 
-    def _validate_object(self, object, validate_object_type=True):
+    def _validate_object(self, object: Dict[str, Any], validate_object_type: bool = True):
         if not object:
             raise ValueError('Object body cannot be null.')
 
@@ -21,7 +25,7 @@ class ObjectsService(object):
         if validate_object_type and ('x_object_type' not in object or not object['x_object_type']):
             raise ValueError('x_object_type cannot be null or empty.')
 
-    def create(self, object):
+    def create(self, object: Dict[str, Any]):
         """ Creates a new object in the smartobjects platform
 
         :param object: dictionary representing the object to be created
@@ -29,7 +33,7 @@ class ObjectsService(object):
         self._validate_object(object)
         self.api_manager.post('objects', object)
 
-    def update(self, device_id, object):
+    def update(self, device_id: str, object: Dict[str, Any]):
         """ Updates an object in the smartobjects platform
 
         :param device_id: deviceId of the targeted object
@@ -42,10 +46,10 @@ class ObjectsService(object):
             raise ValueError("Object body cannot be null or empty.")
         self.api_manager.put('objects/{}'.format(device_id), object)
 
-    def create_update(self, objects):
+    def create_update(self, objects: List[Dict[str, Any]]) -> List[Result]:
         """ create or update a batch of objects
 
-        https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#put-api-v3-objects-batch
+        https://smartobjects.mnubo.com/documentation/api_ingestion.html#put-api-v3-objects-batch
         a single batch can contain up to 1000 objects.
 
         :param objects: list of objects to be sent to smartobjects. If the object already exists, it will be
@@ -56,7 +60,7 @@ class ObjectsService(object):
         r = self.api_manager.put('objects', objects)
         return [Result(**result) for result in r.json()]
 
-    def delete(self, device_id):
+    def delete(self, device_id: str):
         """ Deletes an object from the platform
 
         :param device_id: the device_id of the object to be deleted
@@ -65,7 +69,7 @@ class ObjectsService(object):
             raise ValueError('x_device_id cannot be null or empty.')
         self.api_manager.delete('objects/{}'.format(device_id))
 
-    def object_exists(self, device_id):
+    def object_exists(self, device_id: str) -> bool:
         """ Checks if an object with deviceId `uuid_id` exists in the platform
 
         :param device_id (string): the deviceId we want to check if existing
@@ -79,7 +83,7 @@ class ObjectsService(object):
         assert device_id in json
         return json[device_id]
 
-    def objects_exist(self, device_ids):
+    def objects_exist(self, device_ids: List[str]) -> Dict[str, bool]:
         """ Checks if events with deviceIds as specified in `device_ids` exist in the platform
 
         :param device_ids (list): list of deviceIds we want to check if existing

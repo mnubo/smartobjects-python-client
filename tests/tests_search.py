@@ -3,13 +3,12 @@ import unittest
 from smartobjects.api_manager import APIManager
 from smartobjects.restitution import *
 from smartobjects.restitution.search import SearchService
-
 from tests.mocks.local_api_server import LocalApiServer
 
 
 class TestSearchService(unittest.TestCase):
     """
-    https://smartobjects.mnubo.com/apps/doc/api_search.html#search-api
+    https://smartobjects.mnubo.com/documentation/api_search.html#search-api
     """
 
     @classmethod
@@ -17,7 +16,8 @@ class TestSearchService(unittest.TestCase):
         cls.server = LocalApiServer()
         cls.server.start()
 
-        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False, backoff_config = None, token_override=None)
+        cls.api = APIManager("CLIENT_ID", "CLIENT_SECRET", cls.server.path, compression_enabled=False,
+                             backoff_config=None, token_override=None)
         cls.search = SearchService(cls.api)
 
     @classmethod
@@ -25,7 +25,7 @@ class TestSearchService(unittest.TestCase):
         cls.server.stop()
 
     def test_search_ok(self):
-        # resultset hard coded from: https://smartobjects.mnubo.com/apps/doc/api_search.html#grouping-by-time-intervals
+        # resultset hard coded from: https://smartobjects.mnubo.com/documentation/api_search.html#grouping-by-time-intervals
         resultset = self.search.search({"from": "hardcoded:grouping-by-time-interval"})
 
         self.assertTrue(isinstance(resultset, ResultSet))
@@ -41,7 +41,8 @@ class TestSearchService(unittest.TestCase):
             self.assertEqual(row.get("COUNT(*)", str), "400")
             self.assertEqual(row.get(1, float), 400.0)
 
-            self.assertEqual(row.get("month", lambda date: datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")), datetime(2015, 1, 1, 5))
+            self.assertEqual(row.get("month", lambda date: datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")),
+                             datetime(2015, 1, 1, 5))
             self.assertEqual(row.get("month", ResultSet.ToDatetime), datetime(2015, 1, 1, 5))
 
             # full column as returned by platform
@@ -103,7 +104,8 @@ class TestSearchService(unittest.TestCase):
             self.assertTrue(hasattr(field, 'primary_key'))
 
         self.assertEqual(datasets['owner'].key, "owner")
-        self.assertEqual(datasets['session'].fields[1].description, "The date and time the event have been received by Mnubo")
+        self.assertEqual(datasets['session'].fields[1].description,
+                         "The date and time the event have been received by Mnubo")
         self.assertEqual(datasets['session'].fields[1].high_level_type, "DATETIME")
 
     def test_validate_query_ok(self):
@@ -125,5 +127,3 @@ class TestSearchService(unittest.TestCase):
         self.assertTrue(isinstance(result, QueryValidationResult))
         self.assertEqual(result.is_valid, False)
         self.assertEqual(result.validation_errors, ["Query cannot be empty or null."])
-
-

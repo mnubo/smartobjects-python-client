@@ -4,6 +4,7 @@ import uuid
 from builtins import filter
 from datetime import datetime
 from io import BytesIO
+from typing import Tuple, Dict, Union, Any, List, Optional
 
 import zlib
 
@@ -20,7 +21,7 @@ class MockMnuboBackend(object):
         self.objects = {}
         self.counter = 0
 
-    def _gzip_encode(self, data):
+    def _gzip_encode(self, data: str) -> bytes:
         out = BytesIO()
         f = gzip.GzipFile(mode='wb', fileobj=out)
 
@@ -30,7 +31,7 @@ class MockMnuboBackend(object):
         return out.getvalue()
 
     @route('POST', '^/oauth/.*')
-    def auth(self, body, params):
+    def auth(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[int, Dict[str, Union[str, int]]]:
         return 200, {
             "access_token": "<TOKEN>",
             "token_type": "Bearer",
@@ -40,11 +41,11 @@ class MockMnuboBackend(object):
         }
 
     @route('POST', '^/fail/oauth/.*')
-    def auth(self, body, params):
+    def auth(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[int, str]:
         return 502, '<h1ml>hey oh</html>'
 
     @route('GET', '^/unvailable/(.+)$')
-    def unavailable(self, params):
+    def unavailable(self, params: Dict[str, Any]) -> Tuple[int, Union[Dict[str, Any], str]]:
         count = int(params[0])
         self.counter = self.counter + 1
         if self.counter > count:
@@ -55,7 +56,7 @@ class MockMnuboBackend(object):
             return 503, "Service Unavailable"
 
     # events
-    def _process_event(self, event, must_exists):
+    def _process_event(self, event: Dict[str, Any], must_exists: bool) -> Dict[str, Any]:
         if "x_object" not in event or "x_device_id" not in event["x_object"]:
             return {"result": "error", "message": "Missing x_object.x_device_id"}
 
@@ -75,7 +76,8 @@ class MockMnuboBackend(object):
         return {"result": "success", "id": str(id), "objectExists": device_id in self.objects}
 
     @route('POST', r'^/events(?:\?([a-z=_]+)?)?(?:&([a-z=_]+)?)?$')
-    def post_events(self, body, params):
+    def post_events(self, body: Dict[Dict[str, Any], Any], params: Dict[str, Any]) -> Tuple[
+        int, Optional[Union[List[Union[str, Dict[str, Any]]], str]]]:
         must_exists, report_result = False, False
         for p in params:
             if p and p.startswith('must_exist'):
@@ -95,7 +97,8 @@ class MockMnuboBackend(object):
                 return 200, None
 
     @route('POST', '^/objects/(.+)/events(?:\?([a-z=_]+)?)?$')
-    def post_events_on_object(self, body, params):
+    def post_events_on_object(self, body: Dict[Dict[str, Any], Any], params: Dict[str, Any]) -> Tuple[
+        int, List[Dict[str, Any]]]:
         [event.update({'x_object': {'x_device_id': params[0]}}) for event in body]
         result = [self._process_event(event, True) for event in body]
         failed = filter(lambda r: r['result'] != "success", result)
@@ -103,15 +106,15 @@ class MockMnuboBackend(object):
         return 207 if failed else 200, result
 
     @route('GET', '^/events/exists/(.+)$')
-    def get_events_exists(self, params):
+    def get_events_exists(self, params: Dict[str, Any]) -> Tuple[int, Dict[Any, bool]]:
         return 200, {params[0]: uuid.UUID(params[0]) in self.events}
 
     @route('POST', '^/events/exists$')
-    def post_events_exist(self, body, _):
+    def post_events_exist(self, body: Dict[str, Any], _) -> Tuple[int, List[Dict[str, bool]]]:
         return 200, [{id: uuid.UUID(id) in self.events} for id in body]
 
     # objects
-    def _process_object(self, obj, update=False):
+    def _process_object(self, obj, update=False) -> Dict[str, str]:
         if 'x_device_id' not in obj:
             return {"result": "error", "message": "x_device_id cannot be null or empty."}
 
@@ -134,7 +137,7 @@ class MockMnuboBackend(object):
         return {"result": "success", "id": dev_id}
 
     @route('POST', '^/objects$')
-    def post_one_object(self, body, _):
+    def post_one_object(self, body: Dict[str, Any], _) -> Tuple[int, Union[str, Dict[str, Any]]]:
         result = self._process_object(body)
         if result['result'] != "success":
             return 400, result["message"]
@@ -142,13 +145,13 @@ class MockMnuboBackend(object):
             return 201, body
 
     @route('PUT', '^/objects$')
-    def put_batch_objects(self, body, _):
+    def put_batch_objects(self, body: Dict[str, Any], _) -> Tuple[int, List[Dict[str, Any]]]:
         result = [self._process_object(obj, True) for obj in body]
         failed = filter(lambda r: r['result'] != "success", result)
         return 207 if failed else 200, result
 
     @route('PUT', '^/objects/(.+)$')
-    def put_object_by_id(self, body, params):
+    def put_object_by_id(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         dev_id = params[0]
         if dev_id not in self.objects:
             return 400, "Object with x_device_id '{}' not found.".format(dev_id)
@@ -156,7 +159,7 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('DELETE', '^/objects/(.+)$')
-    def delete_objects(self, _, params):
+    def delete_objects(self, _, params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         dev_id = params[0]
 
         if dev_id not in self.objects:
@@ -166,16 +169,16 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('GET', '^/objects/exists/(.+)$')
-    def get_objects_exists(self, params):
+    def get_objects_exists(self, params: Dict[str, Any]) -> Tuple[int, Dict[Any, bool]]:
         dev_id = params[0]
         return 200, {dev_id: dev_id in self.objects}
 
     @route('POST', '^/objects/exists$')
-    def post_objects_exists(self, body, _):
+    def post_objects_exists(self, body: Dict[str, Any], _) -> Tuple[int, List[Dict[Any, bool]]]:
         return 200, [{dev_id: dev_id in self.objects} for dev_id in body]
 
     # owners
-    def _process_owner(self, owner, update=False):
+    def _process_owner(self, owner: Dict[str, Any], update=False) -> Dict[str, str]:
         if 'username' not in owner:
             return {"result": "error", "message": "username cannot be null or empty."}
 
@@ -197,7 +200,7 @@ class MockMnuboBackend(object):
         return {"result": "success", "id": username}
 
     @route('POST', '^/owners/?$')
-    def post_one_owner(self, body, _):
+    def post_one_owner(self, body: Dict[str, Any], _) -> Tuple[int, str]:
         result = self._process_owner(body)
         if result['result'] != 'success':
             return 400, result['message']
@@ -205,13 +208,13 @@ class MockMnuboBackend(object):
             return 201, self.owners[body['username']]
 
     @route('PUT', '^/owners$')
-    def put_owners(self, body, _):
+    def put_owners(self, body: Dict[str, Any], _) -> Tuple[int, List[Dict[str, str]]]:
         result = [self._process_owner(owner, True) for owner in body]
         failed = filter(lambda r: 'result' in r and r['result'] == "error", result)
         return 207 if failed else 200, result
 
     @route('PUT', '^/owners/(.+)$')
-    def put_owner_by_id(self, body, params):
+    def put_owner_by_id(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         username = params[0]
         if username not in self.owners:
             return 400, "Owner '{}' not found.".format(username)
@@ -220,7 +223,7 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('DELETE', '^/owners/(.+)$')
-    def delete_owners(self, body, params):
+    def delete_owners(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         username = params[0]
 
         if body and 'x_timestamp' in body:
@@ -234,7 +237,7 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('POST', '^/owners/(.+)/objects/(.+)/claim$')
-    def post_owners_claim(self, _, params):
+    def post_owners_claim(self, _, params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         username, device_id = params
 
         if username not in self.owners:
@@ -247,7 +250,7 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('POST', '^/owners/(.+)/objects/(.+)/unclaim$')
-    def post_owners_unclaim(self, _, params):
+    def post_owners_unclaim(self, _, params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         username, device_id = params
 
         if username not in self.owners:
@@ -260,7 +263,7 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('POST', '^/owners/claim$')
-    def post_owners_batch_claim(self, body, _):
+    def post_owners_batch_claim(self, body: Dict[Union[int, slice], Any], _) -> Tuple[int, List[Dict[str, str]]]:
         results = []
         for claim in body:
             username, device_id = claim['username'], claim['x_device_id']
@@ -280,7 +283,7 @@ class MockMnuboBackend(object):
         return 207 if failed else 200, results
 
     @route('POST', '^/owners/unclaim$')
-    def post_owners_batch_unclaim(self, body, _):
+    def post_owners_batch_unclaim(self, body: Dict[Union[int, slice], Any], _):
         results = []
         for unclaim in body:
             username, device_id = unclaim['username'], unclaim['x_device_id']
@@ -305,7 +308,7 @@ class MockMnuboBackend(object):
         return 207 if failed else 200, results
 
     @route('POST', '^/owners/(.+)/password$')
-    def put_owners_password(self, body, params):
+    def put_owners_password(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[int, Optional[str]]:
         username = params[0]
 
         if username not in self.owners:
@@ -318,16 +321,16 @@ class MockMnuboBackend(object):
         return 200, None
 
     @route('GET', '^/owners/exists/(.+)')
-    def get_owner_exists(self, params):
+    def get_owner_exists(self, params: Dict[str, Any]) -> Tuple[int, Dict[Any, bool]]:
         username = params[0]
         return 200, {username: username in self.owners}
 
     @route('POST', '^/owners/exists/?$')
-    def post_owners_exist(self, body, _):
+    def post_owners_exist(self, body: Dict[str, Any], _) -> Tuple[int, List[Dict[Any, bool]]]:
         return 200, [{username: username in self.owners} for username in body]
 
     # search
-    def _validate_query(self, query):
+    def _validate_query(self, query: Dict[str, Any]) -> List[str]:
         # /!\ this validation is for test purpose only and do not implement all checks done by the actual API
         errors = []
         if not query:
@@ -341,7 +344,7 @@ class MockMnuboBackend(object):
         return errors
 
     @route('POST', '^/search/basic$')
-    def post_search_basic(self, query, _):
+    def post_search_basic(self, query: Dict[str, Any], _) -> Tuple[int, Union[Dict[str, Any], str]]:
         errors = self._validate_query(query)
         if errors:
             return 400, errors[0]
@@ -357,7 +360,7 @@ class MockMnuboBackend(object):
         return 200, result
 
     @route('POST', '^/search/validateQuery$')
-    def post_search_validate(self, query, _):
+    def post_search_validate(self, query: Dict[str, Any], _) -> Tuple[int, Dict[str, Union[int, str]]]:
         errors = self._validate_query(query)
 
         return 200, {
@@ -366,8 +369,9 @@ class MockMnuboBackend(object):
         }
 
     @route('GET', '^/search/datasets$')
-    def get_datasets(self, params):
-        # hardcoded dataset from https://smartobjects.mnubo.com/apps/doc/api_ingestion.html#get-api-v3-search-datasets
+    def get_datasets(self, params: Dict[str, Any]) -> Tuple[
+        int, List[Dict[str, Union[str, bool]]]]:
+        # hardcoded dataset from https://smartobjects.mnubo.com/documentation/api_ingestion.html#get-api-v3-search-datasets
         dataset = [
             {"key": "object", "displayName": "Objects", "fields": [
                 {"key": "x_device_id", "highLevelType": "TEXT", "description": "Reserved field",
@@ -393,10 +397,12 @@ class MockMnuboBackend(object):
                  "description": "The unique UUID identifier of the event", "containerType": "none",
                  "primaryKey": True}]}
         ]
+
         return 200, dataset
 
     @route('GET', '^/model/export$')
-    def get_model(self, _):
+    def get_model(self, _) -> Tuple[
+        int, Dict[str, Any]]:
         return 200, {
             "objectTypes": [
                 {
@@ -511,23 +517,28 @@ class MockMnuboBackend(object):
 
     # for tests on API manager itself
     @route('GET', '^/api_manager\??(.*)$')
-    def get_api_manager(self, params):
+    def get_api_manager(self, params: Dict[str, Any]) -> Tuple[
+        int, Dict[str, Any]]:
         return 200, params
 
     @route('POST', '^/api_manager\??(.*)$')
-    def post_api_manager(self, body, params):
+    def post_api_manager(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[
+        int, Tuple[Dict[str, Any], Dict[str, Any]]]:
         return 200, (params, body)
 
     @route('PUT', '^/api_manager\??(.*)$')
-    def put_api_manager(self, body, params):
+    def put_api_manager(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[
+        int, Tuple[Dict[str, Any], Dict[str, Any]]]:
         return 200, (params, body)
 
     @route('DELETE', '^/api_manager\??(.*)$')
-    def delete_api_manager(self, body, params):
+    def delete_api_manager(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[
+        int, Tuple[Dict[str, Any], Dict[str, Any]]]:
         return 200, (params, body)
 
     @route('POST', '^/compression_enabled$')
-    def post_compression_enabled(self, body, params):
+    def post_compression_enabled(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[
+        int, Union[Dict[str, str], bytes]]:
         try:
             decoded = zlib.decompress(body, 16 + zlib.MAX_WBITS)
         except Exception:
@@ -541,7 +552,8 @@ class MockMnuboBackend(object):
         return 200, self._gzip_encode(json.dumps(obj))
 
     @route('PUT', '^/compression_enabled$')
-    def put_compression_enabled(self, body, params):
+    def put_compression_enabled(self, body: Dict[str, Any], params: Dict[str, Any]) -> Tuple[
+        int, Union[Dict[str, str], bytes]]:
         try:
             decoded = zlib.decompress(body, 16 + zlib.MAX_WBITS)
         except Exception:

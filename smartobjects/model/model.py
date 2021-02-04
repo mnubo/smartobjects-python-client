@@ -1,8 +1,12 @@
+from typing import Union, Dict, Any, List, Type
+
+from smartobjects.api_manager import APIManager
 from smartobjects.model import Model, Timeseries, ObjectAttribute, OwnerAttribute, EventType, ObjectType
 
 
 class EntityOps(object):
-    def __init__(self, api_manager, cls):
+    def __init__(self, api_manager: APIManager,
+                 cls: Union[Type[Timeseries], Type[ObjectAttribute], Type[OwnerAttribute]]):
         """Restricted updates operations specialized for the following entities:
             - Object Attribute
             - Owner Attribute
@@ -20,14 +24,14 @@ class EntityOps(object):
 
         self.api_manager = api_manager
 
-    def createOne(self, value):
+    def createOne(self, value: Dict[str, Any]):
         """ Creates an entity
 
         :see create([value])
         """
         self.create([value])
 
-    def create(self, values):
+    def create(self, values: List[Union[Timeseries, OwnerAttribute, Dict[str, Any]]]):
         """ Creates multiple entities
 
         values -- an array of dict or object matching self._class
@@ -45,11 +49,11 @@ class EntityOps(object):
             elif isinstance(v, self._class):
                 payload.append(v.asJson())
             else:
-                raise ValueError("'values' must contain dict or " + self._class)
+                raise ValueError("'values' must contain dict or " + str(self._class))
 
         self.api_manager.post("model/{}".format(self._path), payload)
 
-    def update(self, key, update_entity):
+    def update(self, key: str, update_entity: Dict[str, str]):
         """ Update the entity with the matching key
 
         update_entity -- json with the following format: {
@@ -64,7 +68,7 @@ class EntityOps(object):
         full_path = "model/{}/{}".format(self._path, key)
         self.api_manager.put(full_path, update_entity)
 
-    def generate_deploy_code(self, key):
+    def generate_deploy_code(self, key: str) -> str:
         """ Initiate the deploy process of the entity
             with the matching key
 
@@ -78,7 +82,7 @@ class EntityOps(object):
         else:
             raise ValueError('Expected a code')
 
-    def apply_deploy_code(self, key, code):
+    def apply_deploy_code(self, key: str, code: str):
         """ Completes the deploy process of the entity
             with the matching key
 
@@ -87,15 +91,16 @@ class EntityOps(object):
         full_path = "model/{}/{}/deploy/{}".format(self._path, key, code)
         self.api_manager.post(full_path, None)
 
-    def deploy(self, key):
+    def deploy(self, key: str):
         """ Runs the complete deploy process of the entity
             with the matching key.
         """
         code = self.generate_deploy_code(key)
         self.apply_deploy_code(key, code)
 
+
 class TypeOps(object):
-    def __init__(self, api_manager, cls):
+    def __init__(self, api_manager: APIManager, cls: Union[Type[EventType], Type[ObjectType]]):
         """Restricted updates operations specialized for following types:
             - Object Types
             - Event Types
@@ -112,14 +117,14 @@ class TypeOps(object):
 
         self.api_manager = api_manager
 
-    def createOne(self, value):
+    def createOne(self, value: Dict[str, Any]):
         """ Creates a type
 
         :see create([value])
         """
         self.create([value])
 
-    def create(self, values):
+    def create(self, values: List[Union[EventType, ObjectType, Dict[str, Any]]]):
         """ Creates multiple types
 
         values -- an array of dict or object matching self._class
@@ -136,37 +141,38 @@ class TypeOps(object):
             elif isinstance(v, self._class):
                 payload.append(v.asJson())
             else:
-                raise ValueError("'values' must contain dict or " + self._class)
+                raise ValueError("'values' must contain dict or " + str(self._class))
         self.api_manager.post("model/{}".format(self._path), payload)
 
-    def update(self, key, value):
+    def update(self, key: str, value: dict):
         """ Update the type with the matching key
         """
         full_path = "model/{}/{}".format(self._path, key)
         self.api_manager.put(full_path, value)
 
-    def delete(self, key):
+    def delete(self, key: str):
         """ Delete the type with the matching key
         """
         full_path = "model/{}/{}".format(self._path, key)
         self.api_manager.delete(full_path)
 
-    def add_relation(self, key, entity_key):
+    def add_relation(self, key: str, entity_key: str):
         """ Add a relation from the type identified by `key` to
             the entity identified by `entity_key`
         """
         full_path = "model/{}/{}/{}/{}".format(self._path, key, self._entity_path, entity_key)
         self.api_manager.post(full_path)
 
-    def remove_relation(self, key, entity_key):
+    def remove_relation(self, key: str, entity_key: str):
         """ Remove a relation from the type identified by `typeKey` to
             the entity identified by `entityKey`
         """
         full_path = "model/{}/{}/{}/{}".format(self._path, key, self._entity_path, entity_key)
         self.api_manager.delete(full_path)
 
+
 class ResetOps(object):
-    def __init__(self, api_manager):
+    def __init__(self, api_manager: APIManager):
         """Operations related to the reset process of the sandbox data model
         """
         self.api_manager = api_manager
@@ -183,10 +189,10 @@ class ResetOps(object):
         else:
             raise ValueError('Expected a code')
 
-    def apply_reset_code(self, code):
+    def apply_reset_code(self, code: str):
         """Completes the reset process of the sandboxOps data model
         """
-        full_path = "model/reset/{}".format(self._path, code)
+        full_path = "model/reset/{}".format(code)
         self.api_manager.post(full_path, None)
 
     def reset(self):
@@ -196,9 +202,8 @@ class ResetOps(object):
         self.apply_reset_code(code)
 
 
-
 class SandboxOps(object):
-    def __init__(self, api_manager):
+    def __init__(self, api_manager: APIManager):
         """
          Updates operations are only available in sandbox. If you call methods on this interface when your
          client is configured to hit the production environment, you'll get undefined behaviour:
@@ -217,42 +222,42 @@ class SandboxOps(object):
         self._reset_ops = ResetOps(api_manager)
 
     @property
-    def timeseries_ops(self):
+    def timeseries_ops(self) -> EntityOps:
         """ Sandbox timeseries operations
         :return an instance of EntityOps for timeseries
         """
         return self._ts_ops
 
     @property
-    def object_attributes_ops(self):
+    def object_attributes_ops(self) -> EntityOps:
         """ Sandbox object attributes operations
         :return an instance of EntityOps for object attributes
         """
         return self._obj_ops
 
     @property
-    def owner_attributes_ops(self):
+    def owner_attributes_ops(self) -> EntityOps:
         """ Sandbox owner attributes operations
         :return an instance of EntityOps for owner attributes
         """
         return self._owner_ops
 
     @property
-    def object_types_ops(self):
+    def object_types_ops(self) -> TypeOps:
         """ Sandbox object types operations
         :return an instance of TypeOps for object types
         """
         return self._ot_ops
 
     @property
-    def event_types_ops(self):
+    def event_types_ops(self) -> TypeOps:
         """ Sandbox event types operations
         :return an instance of TypeOps for event types
         """
         return self._et_ops
 
     @property
-    def reset_ops(self):
+    def reset_ops(self) -> ResetOps:
         """ Reset the sandbox data model
         :return an instance of ResetOps
         """
@@ -260,7 +265,7 @@ class SandboxOps(object):
 
 
 class ModelService(object):
-    def __init__(self, api_manager):
+    def __init__(self, api_manager: APIManager):
         """ Initializes ModelService with the api manager
 
         see https://smartobjects.mnubo.com/documentation/api_modeler.html for more details
@@ -270,14 +275,14 @@ class ModelService(object):
         self._sandbox_ops = SandboxOps(api_manager)
 
     @property
-    def sandbox_ops(self):
+    def sandbox_ops(self) -> SandboxOps:
         """ Access to operations only available in the sandbox environment.
 
         :returns: An instance of SandboxOps
         """
         return self._sandbox_ops
 
-    def export(self):
+    def export(self) -> Model:
         """ Export the model in the target environment
 
         :returns: Model
@@ -290,15 +295,15 @@ class ModelService(object):
         """
         return Model(self.api_manager.get('model/export').json())
 
-    def get_timeseries(self):
+    def get_timeseries(self) -> List[Timeseries]:
         """ All timeseries in the target environment.
 
-        :returns: [ObjectAttribute]
+        :returns: [Timeseries]
         """
         _json = self.api_manager.get('model/timeseries').json()
         return [Timeseries(evt, evt.get('eventTypeKeys', [])) for evt in _json]
 
-    def get_object_attributes(self):
+    def get_object_attributes(self) -> List[ObjectAttribute]:
         """ All object attributes in the target environment.
 
         :returns: [ObjectAttribute]
@@ -306,7 +311,7 @@ class ModelService(object):
         _json = self.api_manager.get('model/objectAttributes').json()
         return [ObjectAttribute(evt, evt.get('objectTypeKeys', [])) for evt in _json]
 
-    def get_owner_attributes(self):
+    def get_owner_attributes(self) -> List[OwnerAttribute]:
         """ All owner attributes in the target environment.
 
         :returns: [OwnerAttribute]
@@ -314,7 +319,7 @@ class ModelService(object):
         _json = self.api_manager.get('model/ownerAttributes').json()
         return [OwnerAttribute(evt) for evt in _json]
 
-    def get_object_types(self):
+    def get_object_types(self) -> List[ObjectType]:
         """ All object types in the target environment.
 
         :returns: [ObjectType]
@@ -322,7 +327,7 @@ class ModelService(object):
         _json = self.api_manager.get('model/objectTypes').json()
         return [ObjectType.withKeys(evt) for evt in _json]
 
-    def get_event_types(self):
+    def get_event_types(self) -> List[EventType]:
         """ All event types in the target environment.
 
         :returns: [EventType]
