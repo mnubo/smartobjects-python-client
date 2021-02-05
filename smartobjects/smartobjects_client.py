@@ -11,8 +11,8 @@ from smartobjects.restitution.search import SearchService
 class Environments:
     """ Provide default URL if you don't have a specific one
     """
-    Sandbox = "https://rest.sandbox.mnubo.com"
-    Production = "https://rest.api.mnubo.com"
+    Sandbox = "https://aiot-sandbox.aspentech.ai"
+    Production = "https://aiot-prod.aspentech.ai"
 
 
 class ExponentialBackoffConfig(object):
