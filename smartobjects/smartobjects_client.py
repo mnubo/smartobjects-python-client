@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Any
 
 from smartobjects.api_manager import APIManager
+from smartobjects.datalake.datasets import DatalakeService
 from smartobjects.ingestion.events import EventsService
 from smartobjects.ingestion.objects import ObjectsService
 from smartobjects.ingestion.owners import OwnersService
@@ -65,6 +66,7 @@ class SmartObjectsClient(object):
         self.objects = ObjectsService(self._api_manager)
         self.search = SearchService(self._api_manager)
         self.model = ModelService(self._api_manager)
+        self.datalake = DatalakeService(self._api_manager)
 
     @classmethod
     def withToken(cls, token: str, environment: str, compression_enabled: bool = True,

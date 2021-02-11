@@ -11,6 +11,7 @@ class EventsService(object):
         """
 
         self.api_manager = api_manager
+        self.api_version = "/api/v3"
 
     def send(self, events: List[Dict[str, Any]], must_exist: bool = False, report_results: bool = True) -> Optional[
         List[EventResult]]:
@@ -36,7 +37,7 @@ class EventsService(object):
         if report_results:
             params.append("report_results=true")
 
-        path = f"events?{'&'.join(params)}" if params else "events"
+        path = f"{self.api_version}/events?{'&'.join(params)}" if params else "events"
 
         r = self.api_manager.post(path, self._ensure_serializable(events))
 
@@ -63,7 +64,7 @@ class EventsService(object):
         if not all(['x_event_type' in event and event['x_event_type'] for event in events]):
             raise ValueError("x_event_type cannot be null or empty.")
 
-        path = f"objects/{device_id}/events"
+        path = f"{self.api_version}/objects/{device_id}/events"
         if report_results:
             path += "?report_results=true"
         r = self.api_manager.post(path, self._ensure_serializable(events))
@@ -78,8 +79,7 @@ class EventsService(object):
         """
         assert isinstance(event_id, uuid.UUID)
         str_id = str(event_id)
-
-        r = self.api_manager.get(f'events/exists/{str_id}')
+        r = self.api_manager.get(f'{self.api_version}/events/exists/{str_id}')
         json = r.json()
 
         assert str_id in json and isinstance(json[str_id], bool)
@@ -94,7 +94,7 @@ class EventsService(object):
 
         assert all(isinstance(id, uuid.UUID) for id in event_ids)
 
-        r = self.api_manager.post('events/exists', [str(id) for id in event_ids])
+        r = self.api_manager.post(f'{self.api_version}/events/exists', [str(id) for id in event_ids])
         return {uuid.UUID(key): value for entry in r.json() for key, value in entry.items()}
 
     def _validate_event(self, event: Dict[str, Any]):

@@ -182,7 +182,7 @@ class APIManager(object):
         """ Generates the general API url
         """
 
-        return self.__hostname + '/api/v3/'
+        return self.__hostname
 
     def get_auth_url(self) -> str:
         """ Generates the url to fetch the access token

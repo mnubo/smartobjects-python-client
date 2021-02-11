@@ -27,7 +27,7 @@ class TestBackoff(unittest.TestCase):
         config = ExponentialBackoffConfig()
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False,
                          backoff_config=config, token_override=None)
-        value = api.get('unvailable/1')
+        value = api.get('/api/v3/unvailable/1')
         self.assertEqual(value.json()['data'], "ok")
 
     def test_retry_until_200(self):
@@ -39,7 +39,7 @@ class TestBackoff(unittest.TestCase):
         config = ExponentialBackoffConfig(5, 0.5, on_retry)
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False,
                          backoff_config=config, token_override=None)
-        value = api.get('unvailable/3')
+        value = api.get('/api/v3/unvailable/3')
         self.assertEqual(self.counter, 4)
         self.assertEqual(value.json()['data'], "ok")
 
@@ -53,11 +53,11 @@ class TestBackoff(unittest.TestCase):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False,
                          backoff_config=config, token_override=None)
         with self.assertRaises(ServiceUnavailable) as ctx:
-            api.get('unvailable/100')
+            api.get('/api/v3/unvailable/100')
         self.assertEqual(self.counter, 5)
 
     def test_do_not_retry_if_success(self):
         api = APIManager("CLIENT_ID", "CLIENT_SECRET", self.server.path, compression_enabled=False, backoff_config=None,
                          token_override=None)
-        value = api.get('unvailable/0')
+        value = api.get('/api/v3/unvailable/0')
         self.assertEqual(value.json()['data'], "ok")
