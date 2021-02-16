@@ -1,3 +1,9 @@
+<a name='1.5.0'></a>
+
+# [1.5.0](https://github.com/mnubo/smartobjects-python-client/compare/1.4.0...1.5.0) (2019-06-13)
+
+* Support the datalake ingestion and streaming modeling API
+
 <a name='1.4.0'></a>
 
 # [1.4.0](https://github.com/mnubo/smartobjects-python-client/compare/1.3.3...1.4.0) (2019-06-13)
