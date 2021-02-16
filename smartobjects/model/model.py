@@ -23,6 +23,7 @@ class EntityOps(object):
             raise ValueError('Supported entities are Timeseries, ObjectAttribute and OwnerAttribute')
 
         self.api_manager = api_manager
+        self.api_version = "/api/v3"
 
     def createOne(self, value: Dict[str, Any]):
         """ Creates an entity
@@ -51,7 +52,7 @@ class EntityOps(object):
             else:
                 raise ValueError("'values' must contain dict or " + str(self._class))
 
-        self.api_manager.post(f"model/{self._path}", payload)
+        self.api_manager.post(f"{self.api_version}/model/{self._path}", payload)
 
     def update(self, key: str, update_entity: Dict[str, str]):
         """ Update the entity with the matching key
@@ -65,7 +66,7 @@ class EntityOps(object):
         if not isinstance(update_entity, dict):
             raise ValueError("'update_entity' must be dict")
 
-        full_path = f"model/{self._path}/{key}"
+        full_path = f"{self.api_version}/model/{self._path}/{key}"
         self.api_manager.put(full_path, update_entity)
 
     def generate_deploy_code(self, key: str) -> str:
@@ -74,7 +75,7 @@ class EntityOps(object):
 
         :return code as a string
         """
-        full_path = f"model/{self._path}/{key}/deploy"
+        full_path = f"{self.api_version}/model/{self._path}/{key}/deploy"
         json = self.api_manager.post(full_path, None).json()
 
         if 'code' in json:
@@ -88,7 +89,7 @@ class EntityOps(object):
 
         :return code as a string
         """
-        full_path = "model/{}/{}/deploy/{}".format(self._path, key, code)
+        full_path = f"{self.api_version}/model/{self._path}/{key}/deploy/{code}"
         self.api_manager.post(full_path, None)
 
     def deploy(self, key: str):
@@ -117,6 +118,8 @@ class TypeOps(object):
 
         self.api_manager = api_manager
 
+        self.api_version = "/api/v3"
+
     def createOne(self, value: Dict[str, Any]):
         """ Creates a type
 
@@ -142,32 +145,32 @@ class TypeOps(object):
                 payload.append(v.asJson())
             else:
                 raise ValueError("'values' must contain dict or " + str(self._class))
-        self.api_manager.post(f"model/{self._path}", payload)
+        self.api_manager.post(f"{self.api_version}/model/{self._path}", payload)
 
     def update(self, key: str, value: dict):
         """ Update the type with the matching key
         """
-        full_path = f"model/{self._path}/{key}"
+        full_path = f"{self.api_version}/model/{self._path}/{key}"
         self.api_manager.put(full_path, value)
 
     def delete(self, key: str):
         """ Delete the type with the matching key
         """
-        full_path = f"model/{self._path}/{key}"
+        full_path = f"{self.api_version}/model/{self._path}/{key}"
         self.api_manager.delete(full_path)
 
     def add_relation(self, key: str, entity_key: str):
         """ Add a relation from the type identified by `key` to
             the entity identified by `entity_key`
         """
-        full_path = f"model/{self._path}/{key}/{self._entity_path}/{entity_key}"
+        full_path = f"{self.api_version}/model/{self._path}/{key}/{self._entity_path}/{entity_key}"
         self.api_manager.post(full_path)
 
     def remove_relation(self, key: str, entity_key: str):
         """ Remove a relation from the type identified by `typeKey` to
             the entity identified by `entityKey`
         """
-        full_path = f"model/{self._path}/{key}/{self._entity_path}/{entity_key}"
+        full_path = f"{self.api_version}/model/{self._path}/{key}/{self._entity_path}/{entity_key}"
         self.api_manager.delete(full_path)
 
 
@@ -176,13 +179,14 @@ class ResetOps(object):
         """Operations related to the reset process of the sandbox data model
         """
         self.api_manager = api_manager
+        self.api_version = "/api/v3/"
 
     def generate_reset_code(self):
         """Initiate the reset process of the sandboxOps data model
 
         :return code as a string
         """
-        json = self.api_manager.post('model/reset', None).json()
+        json = self.api_manager.post(f'{self.api_version}/model/reset', None).json()
 
         if 'code' in json:
             return json.get('code')
@@ -192,7 +196,7 @@ class ResetOps(object):
     def apply_reset_code(self, code: str):
         """Completes the reset process of the sandboxOps data model
         """
-        full_path = f"model/reset/{code}"
+        full_path = f"{self.api_version}/model/reset/{code}"
         self.api_manager.post(full_path, None)
 
     def reset(self):
@@ -273,6 +277,7 @@ class ModelService(object):
 
         self.api_manager = api_manager
         self._sandbox_ops = SandboxOps(api_manager)
+        self.api_version = "/api/v3"
 
     @property
     def sandbox_ops(self) -> SandboxOps:
@@ -293,14 +298,14 @@ class ModelService(object):
         >>>        print(obj.key)
         >>>        print(obj.description)
         """
-        return Model(self.api_manager.get('model/export').json())
+        return Model(self.api_manager.get(f'{self.api_version}/model/export').json())
 
     def get_timeseries(self) -> List[Timeseries]:
         """ All timeseries in the target environment.
 
         :returns: [Timeseries]
         """
-        _json = self.api_manager.get('model/timeseries').json()
+        _json = self.api_manager.get(f'{self.api_version}/model/timeseries').json()
         return [Timeseries(evt, evt.get('eventTypeKeys', [])) for evt in _json]
 
     def get_object_attributes(self) -> List[ObjectAttribute]:
@@ -308,7 +313,7 @@ class ModelService(object):
 
         :returns: [ObjectAttribute]
         """
-        _json = self.api_manager.get('model/objectAttributes').json()
+        _json = self.api_manager.get(f'{self.api_version}/model/objectAttributes').json()
         return [ObjectAttribute(evt, evt.get('objectTypeKeys', [])) for evt in _json]
 
     def get_owner_attributes(self) -> List[OwnerAttribute]:
@@ -316,7 +321,7 @@ class ModelService(object):
 
         :returns: [OwnerAttribute]
         """
-        _json = self.api_manager.get('model/ownerAttributes').json()
+        _json = self.api_manager.get(f'{self.api_version}/model/ownerAttributes').json()
         return [OwnerAttribute(evt) for evt in _json]
 
     def get_object_types(self) -> List[ObjectType]:
@@ -324,7 +329,7 @@ class ModelService(object):
 
         :returns: [ObjectType]
         """
-        _json = self.api_manager.get('model/objectTypes').json()
+        _json = self.api_manager.get(f'{self.api_version}/model/objectTypes').json()
         return [ObjectType.withKeys(evt) for evt in _json]
 
     def get_event_types(self) -> List[EventType]:
@@ -332,5 +337,5 @@ class ModelService(object):
 
         :returns: [EventType]
         """
-        _json = self.api_manager.get('model/eventTypes').json()
+        _json = self.api_manager.get(f'{self.api_version}/model/eventTypes').json()
         return [EventType.withKeys(evt) for evt in _json]

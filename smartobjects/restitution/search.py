@@ -8,6 +8,8 @@ class SearchService(object):
 
         self.api_manager = api_manager
 
+        self.api_version = '/api/v3'
+
     def search(self, query):
         """ Sends a basic search query
 
@@ -22,7 +24,7 @@ class SearchService(object):
         >>> f"Got {len(resultset)} results!")
         Got 42 results!
         """
-        r = self.api_manager.post('search/basic', query)
+        r = self.api_manager.post(f'{self.api_version}/search/basic', query)
         return ResultSet(r.json())
 
     def get_datasets(self):
@@ -37,7 +39,7 @@ class SearchService(object):
         >>> datasets['events'].fields[0].key
         temperature
         """
-        r = self.api_manager.get('search/datasets')
+        r = self.api_manager.get(f'{self.api_version}/search/datasets')
         return {dataset['key']: DataSet(dataset) for dataset in r.json()}
 
     def validate_query(self, query):
@@ -50,5 +52,5 @@ class SearchService(object):
         >>> result.is_valid, result.validation_errors
         (False, ["a query must have a 'from' field"])
         """
-        r = self.api_manager.post('search/validateQuery', query)
+        r = self.api_manager.post(f'{self.api_version}/search/validateQuery', query)
         return QueryValidationResult(r.json())

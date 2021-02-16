@@ -494,6 +494,67 @@ ots = client.model.get_object_types()
 print("Number of Object Types: {}", len(ots))
 ```
 
+### Use the Datalake Service
+
+#### Create a Dataset
+
+```python
+from smartobjects.datalake.datasets import Dataset, DatasetField
+
+dataset_field = DatasetField(key="my_field", type="BOOLEAN")
+dataset = Dataset(key="my_dataset", fields=[dataset_field])
+client.datalake.create(dataset)
+```
+
+#### Delete a Dataset
+
+```python
+client.datalake.delete("my_dataset")
+```
+
+#### List Datasets
+```python
+list_of_datasets = client.datalake.list()
+```
+
+#### Update a Dataset
+```python
+from smartobjects.datalake.datasets import DatasetUpdate
+
+update_dataset = DatasetUpdate(displayName="myupdatedschema", description="my updated schema",
+                              metadata={"additionalProp4": "updated_metadata"})
+
+client.datalake.update(datasetKey="my_dataset", dataset=update_dataset)
+```
+
+#### Get a dataset definition
+```python
+dataset_definition = client.datalake.get("my_dataset")
+```
+
+#### Add a Dataset field
+```python
+from smartobjects.datalake.datasets import DatasetField
+
+new_field = DatasetField(key="new_field", type="BOOLEAN")
+client.datalake.add_field(datasetKey="my_dataset", datasetField=new_field)
+```
+
+#### Update a Dataset field
+```python
+from smartobjects.datalake.datasets import DatasetFieldUpdate
+
+field_update = DatasetFieldUpdate(description="updated_string", displayName="updated_string")
+client.datalake.update_field(datasetKey="my_dataset", fieldKey="my_new_field", datasetField=field_update)
+```
+
+#### Send data to a Dataset
+```python
+data = [{"my_field": True}, {"my_other_field": 42}]
+client.datalake.send(datasetKey="my_dataset", data=data)
+```
+
+
 #### Sandbox only operations
 
 ##### Create multiple event types

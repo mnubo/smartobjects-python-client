@@ -1,3 +1,15 @@
+<a name='1.5.1'></a>
+
+# [1.5.1](https://github.com/mnubo/smartobjects-python-client/compare/1.5.0...1.5.1) (2021-02-16)
+
+* Datalake: Do not allow - in field keys
+
+<a name='1.5.0'></a>
+
+# [1.5.0](https://github.com/mnubo/smartobjects-python-client/compare/1.4.0...1.5.0) (2021-02-16)
+
+* Support the datalake ingestion and streaming modeling API
+
 <a name='1.4.0'></a>
 
 # [1.4.0](https://github.com/mnubo/smartobjects-python-client/compare/1.3.3...1.4.0) (2019-06-13)

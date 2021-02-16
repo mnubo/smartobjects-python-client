@@ -1,2 +1,4 @@
 requests>=2.5
 tenacity>=4.2.0
+dataclasses==0.6
+typing_extensions==3.7.4.3
