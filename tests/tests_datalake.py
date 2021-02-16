@@ -54,7 +54,11 @@ class TestDalalakeService(unittest.TestCase):
         with self.assertRaises(ValueError) as err:
             invalid_field_key = ":#$"
             self.datalake._field_key_validation(invalid_field_key)
-        self.assertEqual(err.exception.args[0], f"fieldKey can only contain a-z, A-Z, 0-9, _ and -")
+        self.assertEqual(err.exception.args[0], f"fieldKey can only contain a-z, A-Z, 0-9 and _")
+        with self.assertRaises(ValueError) as err:
+            invalid_field_key = "a-"
+            self.datalake._field_key_validation(invalid_field_key)
+        self.assertEqual(err.exception.args[0], f"fieldKey can only contain a-z, A-Z, 0-9 and _")
         with self.assertRaises(ValueError) as err:
             invalid_field_key = "a" * 65
             self.datalake._field_key_validation(invalid_field_key)

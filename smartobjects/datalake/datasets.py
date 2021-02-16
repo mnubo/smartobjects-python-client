@@ -71,10 +71,10 @@ class DatalakeService(object):
             raise ValueError(f"fieldKey cannot be None")
         if not fieldKey:
             raise ValueError(f"fieldKey cannot be empty")
-        alphas = string.ascii_uppercase + string.ascii_lowercase + "0123456789" + "-" + "_"
+        alphas = string.ascii_uppercase + string.ascii_lowercase + "0123456789" + "_"
         for char in fieldKey:
             if char not in alphas:
-                raise ValueError(f"fieldKey can only contain a-z, A-Z, 0-9, _ and -")
+                raise ValueError(f"fieldKey can only contain a-z, A-Z, 0-9 and _")
         if len(fieldKey) > 64:
             raise ValueError(f"fieldKey cannot exceed 64 characters")
         if fieldKey.lower().startswith(("x_")):
