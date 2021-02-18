@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 from setuptools import setup
@@ -22,10 +23,11 @@ setup(
     author="mnubo, inc.",
     author_email="support@mnubo.com",
     url="https://github.com/mnubo/smartobjects-python-client",
-    packages=["smartobjects", "smartobjects.ingestion", "smartobjects.restitution", "smartobjects.helpers", "smartobjects.model"],
+    packages=["smartobjects", "smartobjects.ingestion", "smartobjects.restitution", "smartobjects.helpers",
+              "smartobjects.model", "smartobjects.datalake"],
     install_requires=requirements,
-    extras_require = {
-        "pandas":  ["pandas"]
+    extras_require={
+        "pandas": ["pandas"]
     },
     keywords=['mnubo', 'api', 'sdk', 'iot', 'smartobjects'],
     classifiers=[
