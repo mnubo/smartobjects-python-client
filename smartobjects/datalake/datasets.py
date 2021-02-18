@@ -176,7 +176,7 @@ class DatalakeService(object):
         return dataset
 
     def create(self, dataset: Dataset):
-        """ Create the user defined dataset in the schema
+        """ Create the streaming dataset
         """
         dataset_dict = self._dataset_to_dict(dataset)
         self.api_manager.post(f"{self.api_version_modeler}/definition/streaming/datasets", dataset_dict)
@@ -190,7 +190,7 @@ class DatalakeService(object):
         full_path = f"{self.api_version_modeler}/definition/streaming/datasets/{datasetKey}"
         self.api_manager.delete(full_path)
 
-    def list(self) -> List[Dataset]:  # return same values than in the dataclass
+    def list(self) -> List[Dataset]:
         '''
         Get all streaming datasets
         '''
@@ -202,7 +202,7 @@ class DatalakeService(object):
 
     def update(self, datasetKey: str, dataset: DatasetUpdate):
         '''
-        Use this API to update an existing user-defined dataset. The body must contain all fields, not only the ones
+        Use this API to update an existing streaming dataset. The body must contain all fields, not only the ones
         that changed. Omitting a field will be interpreted as setting it as NULL. DatasetKey should not be part of the
         body since it is provided in the URL.
         '''
