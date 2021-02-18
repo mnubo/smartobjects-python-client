@@ -1,3 +1,10 @@
+<a name='1.5.2'></a>
+
+# [1.5.2](https://github.com/mnubo/smartobjects-python-client/compare/1.5.1...1.5.2) (2021-02-18)
+
+* Datalake: Add datalake module to distribution
+
+
 <a name='1.5.1'></a>
 
 # [1.5.1](https://github.com/mnubo/smartobjects-python-client/compare/1.5.0...1.5.1) (2021-02-16)
