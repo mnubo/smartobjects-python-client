@@ -1,16 +1,16 @@
 language: python
 python:
-  - '3.6'
-  - '3.7'
-  - '3.8'
-  - '3.9'
+- '3.6'
+- '3.7'
+- '3.8'
+- '3.9'
 install:
-  - pip install -r requirements.txt
-  - pip install pandas
-  - pip install tenacity
+- pip install -r requirements.txt
+- pip install pandas
+- pip install tenacity
 script: "./build.sh"
 deploy:
   provider: pypi
   username: __token__
   password:
-    secure: IzhQbBcU10or5Zb+tb8BAT9enKeRAWysSb5cmqLtUbotrS4Qd9uQyI1smgsYVDGamrnJffaBZsQ9z60APr0MWU5Mm3ZfE2fbsvZZ2JB6+qOHAjA4mTogD14HLAo9EGgHz1sSlil5s2zoH3Xo8aISbsLUxBGGRWNoHM9bT3aOqrUcx+zY2EUKLPO3jM5xIgBl+SlRp7w7b5upDSwUwkkKMc4cLKh4K8rYkUox2Qz1VAr5GMPp2WROpUlBseUnCqCeq9VM735uduzf/Jr8yc5pqx9iOZQz3Ge6oZ7JWz5Y6Znk0KmSwHzmOAnUj6W7afU+6PY4Eze+Is1bcusfJfOQom07yfPV3rSDFAVscTeC5jOuGl3BxtOxA3k2gjwF5JBNcSuvYHsobghgKRI8ApJr5DCMmUaQKK/w88YkHtxMrmy099doahBiP0KhQIFTqQiuZU3R2b27yXJEkqCDPNJ4emCFWBQGLwDuSKtC3eJvAr/dLSCEvizjg2eyXqr/NEmkGVzJ/C6H1f3jiqXPiwbTRACBCifr4UthjQfEI9CKNsob21WcCtX58m/5v5d2tPSFBRRFr3MhJ14jCk/nRYhp1+VYElQ56hEhGJlSjbSRzTkW9cr/48enin4Sdv9ZZn0AZQ7OLIqT+DrWspoibis6E4SsGaYw5wxoBy+5W9sfu7k=
+    secure: CPUXmQJnBPxfjO468zSiRJ377DlFtl5mjNhDNr61bwLmHig99LjDeJ02t13gtZ/zVVxMwsuQqzdIqCfBseJJb+D65vLCx1pThdBZRuu9ygt55EoArgyG3yGq0zTVMSeYdJ3QIfrLz27pmWDrfdcslcBrSc46nVhfyho/FD+G+3Po203gW4S7QfBI+Vd4WIQYjaU01hqKK5o1EjW2JSTVplK3TZA2NpWi/YZj0cx9WpkegrJD8pAbMA8bz6cTQf2meAVNZWE76F8fQgznHOLSoqdJzUluUt8tGpGKGqEb9CBXPaRIc/Ljij5lqoSYCAWqNmX2K6zkUaMaOtgJKXK7BO9enMGWvj2bV5KCoo40aHqYYTnkSPPxGzQdLGBGk+cnWlGoVZTG7Q8RSPv9M0B8qIZ4rRwMA2qG5K7DMMqkCZLV9vZLWAeFdiNOJ/dJCC5IuQNkTCKtZlO+6hnmIQvuu/jtfCWNypLX93855FwEYXZR6fARj8nma62EOL6ErZmzW2Yf6dHW7sHCz0ippxSQ1ESgZW/y98GuUR+R+p/g9NOeyiic+gDlBnReuQlimO+cf3SVNk/92r2N5W1rcaDaAFH8agDh7K3PLd1tvRqaYrkhMZF6Vp66COu5wMiwPV4yk38GxPKFZ+fW/41oeaDQJcEfdANwxMSYmr252od2zY8=
