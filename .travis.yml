@@ -5,26 +5,18 @@ install:
   - pip install pandas
   - pip install tenacity
 stages:
-  - name: build36
-  - name: build37
-  - name: build38
-  - name: build39
+  - name: build
   - name: deploy
     if: branch = master
 jobs:
   include:
-    - stage: build36
+    - stage: build
       script: "./build.sh"
-      python: '3.6'
-    - stage: build37
-      script: "./build.sh"
-      python: '3.7'
-    - stage: build38
-      script: "./build.sh"
-      python: '3.8'
-    - stage: build39
-      script: "./build.sh"
-      python: '3.9'
+      python:
+        - "3.6"
+        - "3.7"
+        - "3.8"
+        - "3.9"
     - stage: deploy
       script: skip
       deploy:
