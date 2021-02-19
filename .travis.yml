@@ -31,5 +31,6 @@ jobs:
         provider: pypi
         username: __token__
         password: $PYPI_API_KEY
+        skip_existing: true
         on:
           branch: master
