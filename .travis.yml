@@ -1,16 +1,17 @@
 language: python
 python:
-- '3.6'
-- '3.7'
-- '3.8'
-- '3.9'
+  - '3.6'
+  - '3.7'
+  - '3.8'
+  - '3.9'
 install:
-- pip install -r requirements.txt
-- pip install pandas
-- pip install tenacity
+  - pip install -r requirements.txt
+  - pip install pandas
+  - pip install tenacity
 script: "./build.sh"
 deploy:
   provider: pypi
   username: __token__
   password:
     secure: CPUXmQJnBPxfjO468zSiRJ377DlFtl5mjNhDNr61bwLmHig99LjDeJ02t13gtZ/zVVxMwsuQqzdIqCfBseJJb+D65vLCx1pThdBZRuu9ygt55EoArgyG3yGq0zTVMSeYdJ3QIfrLz27pmWDrfdcslcBrSc46nVhfyho/FD+G+3Po203gW4S7QfBI+Vd4WIQYjaU01hqKK5o1EjW2JSTVplK3TZA2NpWi/YZj0cx9WpkegrJD8pAbMA8bz6cTQf2meAVNZWE76F8fQgznHOLSoqdJzUluUt8tGpGKGqEb9CBXPaRIc/Ljij5lqoSYCAWqNmX2K6zkUaMaOtgJKXK7BO9enMGWvj2bV5KCoo40aHqYYTnkSPPxGzQdLGBGk+cnWlGoVZTG7Q8RSPv9M0B8qIZ4rRwMA2qG5K7DMMqkCZLV9vZLWAeFdiNOJ/dJCC5IuQNkTCKtZlO+6hnmIQvuu/jtfCWNypLX93855FwEYXZR6fARj8nma62EOL6ErZmzW2Yf6dHW7sHCz0ippxSQ1ESgZW/y98GuUR+R+p/g9NOeyiic+gDlBnReuQlimO+cf3SVNk/92r2N5W1rcaDaAFH8agDh7K3PLd1tvRqaYrkhMZF6Vp66COu5wMiwPV4yk38GxPKFZ+fW/41oeaDQJcEfdANwxMSYmr252od2zY8=
+  skip_existing: true
