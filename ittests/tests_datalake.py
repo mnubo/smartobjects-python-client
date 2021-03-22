@@ -124,3 +124,9 @@ class TestDatalakeService(unittest.TestCase):
 
         if not success:
             raise Exception(f"Could not ingest data into the dataset because of error: {error}")
+
+        data["unknown-field"] = False
+        response = self.client.datalake.send(datasetKey=test_key, data=[data])
+
+        assert response[0]["index"] == 0
+        assert response[0]["retryable"] == False

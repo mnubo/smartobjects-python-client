@@ -247,4 +247,9 @@ class DatalakeService(object):
         '''
         Use this API to stream data into a dataset.
         '''
-        self.api_manager.post(f"{self.api_version_ingestion}/ingestion/datasets/{datasetKey}", data)
+        response = self.api_manager.post(f"{self.api_version_ingestion}/ingestion/datasets/{datasetKey}", data)
+
+        if response.status_code == 207:
+            return response.json()
+        else:
+            return

@@ -33,7 +33,7 @@ class TestBackoff(unittest.TestCase):
     def test_retry_until_200(self):
         self.counter = 0
 
-        def on_retry(func: Callable, trial_number: int):
+        def on_retry(func: Callable):
             self.counter = self.counter + 1
 
         config = ExponentialBackoffConfig(5, 0.5, on_retry)
@@ -46,7 +46,7 @@ class TestBackoff(unittest.TestCase):
     def test_retry_until_limit(self):
         self.counter = 0
 
-        def on_retry(func: Callable, trial_number: int):
+        def on_retry(func: Callable):
             self.counter = self.counter + 1
 
         config = ExponentialBackoffConfig(5, 0.1, on_retry)
