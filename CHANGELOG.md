@@ -1,3 +1,9 @@
+<a name='1.5.4'></a>
+
+# [1.5.4](https://github.com/mnubo/smartobjects-python-client/compare/1.5.2...1.5.4) (2021-03-23)
+
+* fix(datalake): Return response when UDD ingestion fails
+
 <a name='1.5.2'></a>
 
 # [1.5.2](https://github.com/mnubo/smartobjects-python-client/compare/1.5.1...1.5.2) (2021-02-18)
